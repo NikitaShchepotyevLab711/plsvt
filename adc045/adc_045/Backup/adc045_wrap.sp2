@@ -1,0 +1,320 @@
+***********************************************
+* Library Name: FPGA_v3
+* Cell Name:    adc045_wrap
+***********************************************
+
+.SUBCKT adc045_wrap cs dout drdy hard_start hard_wreg rst_l rst_l_adc adc045_data[0] adc045_data[1] adc045_data[2] adc045_data[3] adc045_data[4] adc045_data[5] adc045_data[6] adc045_data[7] adc045_data[8] adc045_data[9] adc045_data[10] adc045_data[11] adc045_data[12] adc045_data[13] adc045_data[14] adc045_data[15] adc045_data[16] adc045_data[17] adc045_data[18] adc045_data[19] adc045_data[20] adc045_data[21] adc045_data[22] adc045_data[23] din nRST ready_sample sclk start clk
+*.PININFO cs:I dout:I drdy:I hard_start:I hard_wreg:I rst_l:I rst_l_adc:I adc045_data[0]:O adc045_data[1]:O adc045_data[2]:O adc045_data[3]:O adc045_data[4]:O adc045_data[5]:O adc045_data[6]:O adc045_data[7]:O adc045_data[8]:O adc045_data[9]:O adc045_data[10]:O adc045_data[11]:O adc045_data[12]:O adc045_data[13]:O adc045_data[14]:O adc045_data[15]:O adc045_data[16]:O adc045_data[17]:O adc045_data[18]:O adc045_data[19]:O adc045_data[20]:O adc045_data[21]:O adc045_data[22]:O adc045_data[23]:O din:O nRST:O ready_sample:O sclk:O start:O clk:I
+XC_BUF_cs cs XC_I_cs / xci2_ib
+XC_BUF_dout dout XC_I_dout / xci2_ib
+XC_BUF_drdy drdy XC_I_drdy / xci2_ib
+XC_BUF_hard_start hard_start XC_I_hard_start / xci2_ib
+XC_BUF_hard_wreg hard_wreg XC_I_hard_wreg / xci2_ib
+XC_BUF_rst_l rst_l XC_I_rst_l / xci2_ib
+XC_BUF_rst_l_adc rst_l_adc XC_I_rst_l_adc / xci2_ib
+XC_BUF_din XC_O_din din / xci2_ob
+XC_BUF_nRST XC_I_rst_l_adc nRST / xci2_ob
+XC_BUF_ready_sample XC_O_ready_sample ready_sample / xci2_ob
+XC_BUF_sclk XC_O_sclk sclk / xci2_ob
+XC_BUF_start XC_I_hard_start start / xci2_ob
+XC_BUF_adc045_data[0] adc_rd.ch1_acc[0] adc045_data[0] / xci2_ob
+XC_BUF_adc045_data[10] adc_rd.ch1_acc[10] adc045_data[10] / xci2_ob
+XC_BUF_adc045_data[11] adc_rd.ch1_acc[11] adc045_data[11] / xci2_ob
+XC_BUF_adc045_data[12] adc_rd.ch1_acc[12] adc045_data[12] / xci2_ob
+XC_BUF_adc045_data[13] adc_rd.ch1_acc[13] adc045_data[13] / xci2_ob
+XC_BUF_adc045_data[14] adc_rd.ch1_acc[14] adc045_data[14] / xci2_ob
+XC_BUF_adc045_data[15] adc_rd.ch1_acc[15] adc045_data[15] / xci2_ob
+XC_BUF_adc045_data[16] adc_rd.ch1_acc[16] adc045_data[16] / xci2_ob
+XC_BUF_adc045_data[17] adc_rd.ch1_acc[17] adc045_data[17] / xci2_ob
+XC_BUF_adc045_data[18] adc_rd.ch1_acc[18] adc045_data[18] / xci2_ob
+XC_BUF_adc045_data[19] adc_rd.ch1_acc[19] adc045_data[19] / xci2_ob
+XC_BUF_adc045_data[1] adc_rd.ch1_acc[1] adc045_data[1] / xci2_ob
+XC_BUF_adc045_data[20] adc_rd.ch1_acc[20] adc045_data[20] / xci2_ob
+XC_BUF_adc045_data[21] adc_rd.ch1_acc[21] adc045_data[21] / xci2_ob
+XC_BUF_adc045_data[22] adc_rd.ch1_acc[22] adc045_data[22] / xci2_ob
+XC_BUF_adc045_data[23] adc_rd.ch1_acc[23] adc045_data[23] / xci2_ob
+XC_BUF_adc045_data[2] adc_rd.ch1_acc[2] adc045_data[2] / xci2_ob
+XC_BUF_adc045_data[3] adc_rd.ch1_acc[3] adc045_data[3] / xci2_ob
+XC_BUF_adc045_data[4] adc_rd.ch1_acc[4] adc045_data[4] / xci2_ob
+XC_BUF_adc045_data[5] adc_rd.ch1_acc[5] adc045_data[5] / xci2_ob
+XC_BUF_adc045_data[6] adc_rd.ch1_acc[6] adc045_data[6] / xci2_ob
+XC_BUF_adc045_data[7] adc_rd.ch1_acc[7] adc045_data[7] / xci2_ob
+XC_BUF_adc045_data[8] adc_rd.ch1_acc[8] adc045_data[8] / xci2_ob
+XC_BUF_adc045_data[9] adc_rd.ch1_acc[9] adc045_data[9] / xci2_ob
+XC_BUF_clk clk XC_C_clk / xci2_ib_gclk
+x._184_ XC_O_sclk _062_ / xci2_inv
+x._185_ XC_I_drdy adc_rd.work_mode _063_ / xci2_and2ft
+x._186_ XC_I_drdy XC_I_dout adc_rd.work_mode _064_ / xci2_and3ftt
+x._187_ adc_rd.bit_cnt[2] adc_rd.bit_cnt[5] _065_ / xci2_nor2
+x._188_ adc_rd.bit_cnt[1] adc_rd.bit_cnt[0] _066_ / xci2_and2ft
+x._189_ adc_rd.bit_cnt[1] adc_rd.bit_cnt[2] adc_rd.bit_cnt[0] _067_ / xci2_and3fft
+x._190_ adc_rd.bit_cnt[3] adc_rd.bit_cnt[4] adc_rd.bit_cnt[5] _068_ / xci2_or3
+x._191_ _067_ _068_ _069_ / xci2_nor2ft
+x._192_ adc_rd.start_mode _067_ _068_ _070_ / xci2_or3fft
+x._193_ adc_rd.wreg_mode adc_rd.start_mode _071_ / xci2_or2
+x._194_ adc_rd.wreg_mode adc_rd.work_mode adc_rd.start_mode _072_ / xci2_nor3
+x._195_ adc_rd.wreg_mode adc_rd.start_mode adc_rd.work_mode _073_ / xci2_oa21ttf
+x._196_ adc_rd.shift_reg[0] _072_ _064_ _074_ / xci2_aoi21
+x._197_ adc_rd.work_mode _070_ _074_ _000_ / xci2_oai21
+x._198_ _069_ _071_ adc_rd.work_mode _075_ / xci2_ao21ftt
+x._199_ adc_rd.work_mode XC_I_drdy _076_ / xci2_nand2
+x._200_ adc_rd.shift_reg[0] _075_ _076_ _077_ / xci2_and3
+x._201_ adc_rd.shift_reg[1] _072_ _077_ _001_ / xci2_ao21
+x._202_ adc_rd.shift_reg[1] _075_ _076_ _078_ / xci2_and3
+x._203_ adc_rd.shift_reg[2] _072_ _078_ _002_ / xci2_ao21
+x._204_ adc_rd.shift_reg[2] _075_ _076_ _079_ / xci2_and3
+x._205_ adc_rd.shift_reg[3] _072_ _079_ _003_ / xci2_ao21
+x._206_ adc_rd.shift_reg[3] _075_ _076_ _080_ / xci2_and3
+x._207_ adc_rd.shift_reg[4] _072_ _080_ _004_ / xci2_ao21
+x._208_ adc_rd.shift_reg[4] _075_ _076_ _081_ / xci2_and3
+x._209_ adc_rd.shift_reg[5] _072_ _081_ _005_ / xci2_ao21
+x._210_ adc_rd.shift_reg[5] _075_ _076_ _082_ / xci2_and3
+x._211_ adc_rd.shift_reg[6] _072_ _082_ _006_ / xci2_ao21
+x._212_ adc_rd.shift_reg[6] _075_ _076_ _083_ / xci2_and3
+x._213_ adc_rd.shift_reg[7] _072_ _083_ _007_ / xci2_ao21
+x._214_ adc_rd.shift_reg[7] _075_ _076_ _084_ / xci2_and3
+x._215_ adc_rd.shift_reg[8] _072_ _084_ _008_ / xci2_ao21
+x._216_ adc_rd.shift_reg[8] _075_ _076_ _085_ / xci2_and3
+x._217_ adc_rd.shift_reg[9] _072_ _085_ _009_ / xci2_ao21
+x._218_ adc_rd.shift_reg[9] _075_ _076_ _086_ / xci2_and3
+x._219_ adc_rd.shift_reg[10] _072_ _086_ _010_ / xci2_ao21
+x._220_ adc_rd.shift_reg[10] _075_ _076_ _087_ / xci2_and3
+x._221_ adc_rd.shift_reg[11] _072_ _087_ _011_ / xci2_ao21
+x._222_ adc_rd.shift_reg[11] _075_ _076_ _088_ / xci2_and3
+x._223_ adc_rd.shift_reg[12] _072_ _088_ _012_ / xci2_ao21
+x._224_ adc_rd.shift_reg[12] _075_ _076_ _089_ / xci2_and3
+x._225_ adc_rd.shift_reg[13] _072_ _089_ _013_ / xci2_ao21
+x._226_ adc_rd.shift_reg[13] _075_ _076_ _090_ / xci2_and3
+x._227_ adc_rd.shift_reg[14] _072_ _090_ _014_ / xci2_ao21
+x._228_ adc_rd.shift_reg[14] _075_ _076_ _091_ / xci2_and3
+x._229_ adc_rd.shift_reg[15] _072_ _091_ _015_ / xci2_ao21
+x._230_ adc_rd.shift_reg[15] _075_ _076_ _092_ / xci2_and3
+x._231_ adc_rd.shift_reg[16] _072_ _092_ _016_ / xci2_ao21
+x._232_ adc_rd.shift_reg[16] _075_ _076_ _093_ / xci2_and3
+x._233_ adc_rd.shift_reg[17] _072_ _093_ _017_ / xci2_ao21
+x._234_ _070_ _073_ _063_ _094_ / xci2_ao21
+x._235_ adc_rd.start_mode _069_ _073_ _095_ / xci2_nand3ftt
+x._236_ adc_rd.shift_reg[17] _094_ _095_ _096_ / xci2_ao21ttf
+x._237_ adc_rd.shift_reg[18] _072_ _096_ _018_ / xci2_ao21
+x._238_ XC_I_drdy adc_rd.work_mode adc_rd.shift_reg[18] _097_ / xci2_and3ftt
+x._239_ adc_rd.shift_reg[18] adc_rd.start_mode _069_ _098_ / xci2_mux2h
+x._240_ _073_ _098_ _097_ _099_ / xci2_ao21
+x._241_ adc_rd.shift_reg[19] _072_ _099_ _019_ / xci2_ao21
+x._242_ adc_rd.shift_reg[19] _094_ _095_ _100_ / xci2_ao21ttf
+x._243_ adc_rd.shift_reg[20] _072_ _100_ _020_ / xci2_ao21
+x._244_ adc_rd.shift_reg[20] _075_ _076_ _101_ / xci2_and3
+x._245_ adc_rd.shift_reg[21] _072_ _101_ _021_ / xci2_ao21
+x._246_ adc_rd.shift_reg[21] _075_ _076_ _102_ / xci2_and3
+x._247_ adc_rd.shift_reg[22] _072_ _102_ _022_ / xci2_ao21
+x._248_ XC_I_drdy adc_rd.work_mode adc_rd.shift_reg[22] _103_ / xci2_and3ftt
+x._249_ adc_rd.shift_reg[22] adc_rd.start_mode _069_ _104_ / xci2_mux2h
+x._250_ _073_ _104_ _103_ _105_ / xci2_ao21
+x._251_ adc_rd.shift_reg[23] _072_ _105_ _023_ / xci2_ao21
+x._252_ adc_rd.state[2] XC_I_cs adc_rd.state[1] _106_ / xci2_and3fft
+x._253_ adc_rd.state[2] XC_I_cs adc_rd.state[1] _107_ / xci2_nand3fft
+x._254_ adc_rd.state[1] XC_I_cs _108_ / xci2_nor2
+x._255_ adc_rd.state[0] adc_rd.state[2] _108_ _109_ / xci2_nand3ftt
+x._256_ adc_rd.bit_cnt[0] adc_rd.bit_cnt[1] _110_ / xci2_and2ft
+x._257_ adc_rd.bit_cnt[3] adc_rd.bit_cnt[4] _111_ / xci2_and2
+x._258_ _065_ _110_ _111_ _112_ / xci2_nand3
+x._259_ _109_ _112_ _113_ / xci2_nand2ft
+x._260_ _109_ _112_ _107_ _114_ / xci2_ao21ftf
+x._261_ _107_ _109_ _115_ / xci2_and2
+x._262_ _114_ _115_ adc_rd.bit_cnt[0] _024_ / xci2_mux2h
+x._263_ adc_rd.bit_cnt[0] adc_rd.bit_cnt[1] _116_ / xci2_xnor2
+x._264_ _065_ _066_ _111_ _117_ / xci2_and3
+x._265_ _117_ _107_ adc_rd.state[0] _118_ / xci2_nand3fft
+x._266_ adc_rd.state[0] _117_ _107_ _119_ / xci2_ao21
+x._267_ _113_ _119_ _116_ _120_ / xci2_aoi21
+x._268_ adc_rd.bit_cnt[1] _115_ _120_ _025_ / xci2_ao21
+x._269_ _115_ adc_rd.bit_cnt[1] adc_rd.bit_cnt[0] _121_ / xci2_nand3ftt
+x._270_ adc_rd.bit_cnt[2] _121_ _026_ / xci2_xnor2
+x._271_ adc_rd.bit_cnt[3] _107_ _109_ _122_ / xci2_and3
+x._272_ adc_rd.bit_cnt[0] adc_rd.bit_cnt[1] adc_rd.bit_cnt[2] _123_ / xci2_and3
+x._273_ adc_rd.bit_cnt[3] adc_rd.bit_cnt[5] adc_rd.bit_cnt[4] _124_ / xci2_and3fft
+x._274_ _123_ _124_ _125_ / xci2_nand2
+x._275_ adc_rd.state[0] _107_ _125_ _126_ / xci2_nand3fft
+x._276_ _118_ _126_ _127_ / xci2_nand2
+x._277_ _113_ _118_ _126_ _128_ / xci2_nand3
+x._278_ adc_rd.bit_cnt[3] _123_ _129_ / xci2_and2
+x._279_ adc_rd.bit_cnt[3] _123_ _130_ / xci2_xnor2ft
+x._280_ _128_ _130_ _122_ _027_ / xci2_ao21
+x._281_ adc_rd.bit_cnt[4] _107_ _109_ _131_ / xci2_and3
+x._282_ adc_rd.bit_cnt[4] _129_ _132_ / xci2_xnor2ft
+x._283_ _128_ _132_ _131_ _028_ / xci2_ao21
+x._284_ _115_ _129_ adc_rd.bit_cnt[4] _133_ / xci2_nand3ftt
+x._285_ adc_rd.bit_cnt[5] _133_ _029_ / xci2_xnor2
+x._286_ adc_rd.wreg_mode _107_ _127_ _030_ / xci2_ao21
+x._287_ _069_ _071_ XC_I_rst_l _134_ / xci2_nand3ftt
+x._288_ adc_rd.shift_reg[23] XC_O_din _134_ _031_ / xci2_mux2h
+x._289_ adc_rd.state[1] XC_I_cs adc_rd.state[0] _135_ / xci2_and3fft
+x._290_ adc_rd.state[2] _135_ _136_ / xci2_and2
+x._291_ adc_rd.state[2] XC_I_hard_wreg _135_ _137_ / xci2_and3fft
+x._292_ adc_rd.state[0] adc_rd.state[2] _108_ _138_ / xci2_nand3fft
+x._293_ _136_ _137_ _138_ _139_ / xci2_and3fft
+x._294_ _125_ adc_rd.state[0] _106_ _140_ / xci2_nand3fft
+x._295_ _109_ _112_ _118_ _141_ / xci2_oa21
+x._296_ _139_ _140_ _141_ _032_ / xci2_nand3
+x._297_ adc_rd.state[2] XC_I_hard_wreg _135_ _142_ / xci2_and3ftt
+x._298_ _142_ _127_ _138_ _033_ / xci2_nand3fft
+x._299_ adc_rd.state[2] XC_I_rst_l_adc _135_ _143_ / xci2_and3
+x._300_ adc_rd.state[0] _106_ _117_ _144_ / xci2_nand3
+x._301_ XC_I_hard_start _137_ _143_ _145_ / xci2_aoi21
+x._302_ _109_ _144_ _145_ _034_ / xci2_nand3
+x._303_ adc_rd.work_mode XC_I_rst_l_adc _136_ _035_ / xci2_mux2h
+x._304_ adc_rd.shift_reg[0] adc_rd.ch1_acc[0] _076_ _036_ / xci2_mux2h
+x._305_ adc_rd.shift_reg[1] adc_rd.ch1_acc[1] _076_ _037_ / xci2_mux2h
+x._306_ adc_rd.shift_reg[2] adc_rd.ch1_acc[2] _076_ _038_ / xci2_mux2h
+x._307_ adc_rd.shift_reg[3] adc_rd.ch1_acc[3] _076_ _039_ / xci2_mux2h
+x._308_ adc_rd.shift_reg[4] adc_rd.ch1_acc[4] _076_ _040_ / xci2_mux2h
+x._309_ adc_rd.shift_reg[5] adc_rd.ch1_acc[5] _076_ _041_ / xci2_mux2h
+x._310_ adc_rd.shift_reg[6] adc_rd.ch1_acc[6] _076_ _042_ / xci2_mux2h
+x._311_ adc_rd.shift_reg[7] adc_rd.ch1_acc[7] _076_ _043_ / xci2_mux2h
+x._312_ adc_rd.shift_reg[8] adc_rd.ch1_acc[8] _076_ _044_ / xci2_mux2h
+x._313_ adc_rd.shift_reg[9] adc_rd.ch1_acc[9] _076_ _045_ / xci2_mux2h
+x._314_ adc_rd.shift_reg[10] adc_rd.ch1_acc[10] _076_ _046_ / xci2_mux2h
+x._315_ adc_rd.shift_reg[11] adc_rd.ch1_acc[11] _076_ _047_ / xci2_mux2h
+x._316_ adc_rd.shift_reg[12] adc_rd.ch1_acc[12] _076_ _048_ / xci2_mux2h
+x._317_ adc_rd.shift_reg[13] adc_rd.ch1_acc[13] _076_ _049_ / xci2_mux2h
+x._318_ adc_rd.shift_reg[14] adc_rd.ch1_acc[14] _076_ _050_ / xci2_mux2h
+x._319_ adc_rd.shift_reg[15] adc_rd.ch1_acc[15] _076_ _051_ / xci2_mux2h
+x._320_ adc_rd.shift_reg[16] adc_rd.ch1_acc[16] _076_ _052_ / xci2_mux2h
+x._321_ adc_rd.shift_reg[17] adc_rd.ch1_acc[17] _076_ _053_ / xci2_mux2h
+x._322_ adc_rd.shift_reg[18] adc_rd.ch1_acc[18] _076_ _054_ / xci2_mux2h
+x._323_ adc_rd.shift_reg[19] adc_rd.ch1_acc[19] _076_ _055_ / xci2_mux2h
+x._324_ adc_rd.shift_reg[20] adc_rd.ch1_acc[20] _076_ _056_ / xci2_mux2h
+x._325_ adc_rd.shift_reg[21] adc_rd.ch1_acc[21] _076_ _057_ / xci2_mux2h
+x._326_ adc_rd.shift_reg[22] adc_rd.ch1_acc[22] _076_ _058_ / xci2_mux2h
+x._327_ adc_rd.shift_reg[23] adc_rd.ch1_acc[23] _076_ _059_ / xci2_mux2h
+x._328_ _112_ adc_rd.start_mode _109_ _060_ / xci2_mux2h
+x._329_ adc_rd.ch1_acc[15] adc_rd.ch1_prev[15] _146_ / xci2_xnor2
+x._330_ adc_rd.ch1_acc[22] adc_rd.ch1_prev[22] _147_ / xci2_xnor2
+x._331_ adc_rd.ch1_acc[2] adc_rd.ch1_prev[2] _148_ / xci2_xnor2
+x._332_ adc_rd.ch1_acc[0] adc_rd.ch1_prev[0] _149_ / xci2_xnor2
+x._333_ adc_rd.ch1_acc[14] adc_rd.ch1_prev[14] _150_ / xci2_xnor2
+x._334_ adc_rd.ch1_acc[13] adc_rd.ch1_prev[13] _151_ / xci2_xnor2
+x._335_ adc_rd.ch1_acc[5] adc_rd.ch1_prev[5] _152_ / xci2_xnor2
+x._336_ adc_rd.ch1_acc[6] adc_rd.ch1_prev[6] _153_ / xci2_xnor2
+x._337_ adc_rd.ch1_acc[12] adc_rd.ch1_prev[12] _154_ / xci2_xnor2
+x._338_ adc_rd.ch1_acc[11] adc_rd.ch1_prev[11] _155_ / xci2_xnor2
+x._339_ adc_rd.ch1_acc[10] adc_rd.ch1_prev[10] _156_ / xci2_xnor2
+x._340_ adc_rd.ch1_acc[20] adc_rd.ch1_prev[20] _157_ / xci2_xnor2
+x._341_ adc_rd.ch1_acc[23] adc_rd.ch1_prev[23] _158_ / xci2_xnor2
+x._342_ adc_rd.ch1_acc[16] adc_rd.ch1_prev[16] _159_ / xci2_xnor2
+x._343_ _152_ _159_ _160_ / xci2_and2
+x._344_ _151_ _154_ _160_ _161_ / xci2_and3
+x._345_ adc_rd.ch1_acc[7] adc_rd.ch1_prev[7] _162_ / xci2_xnor2
+x._346_ adc_rd.ch1_acc[3] adc_rd.ch1_prev[3] _163_ / xci2_xnor2
+x._347_ adc_rd.ch1_acc[17] adc_rd.ch1_prev[17] _164_ / xci2_xnor2
+x._348_ _163_ _164_ _165_ / xci2_and2
+x._349_ _153_ _162_ _165_ _166_ / xci2_and3
+x._350_ adc_rd.ch1_acc[9] adc_rd.ch1_prev[9] _167_ / xci2_xnor2
+x._351_ adc_rd.ch1_acc[18] adc_rd.ch1_prev[18] _168_ / xci2_xnor2
+x._352_ _150_ _155_ _168_ _169_ / xci2_and3
+x._353_ _167_ _169_ _170_ / xci2_and2
+x._354_ _161_ _166_ _170_ _171_ / xci2_and3
+x._355_ adc_rd.ch1_acc[19] adc_rd.ch1_prev[19] _172_ / xci2_xnor2
+x._356_ _158_ _172_ _173_ / xci2_and2
+x._357_ _146_ _148_ _173_ _174_ / xci2_and3
+x._358_ adc_rd.ch1_acc[21] adc_rd.ch1_prev[21] _175_ / xci2_xnor2
+x._359_ _149_ _175_ _176_ / xci2_and2
+x._360_ adc_rd.ch1_acc[8] adc_rd.ch1_prev[8] _177_ / xci2_xnor2
+x._361_ _157_ _176_ _177_ _178_ / xci2_and3
+x._362_ adc_rd.ch1_acc[1] adc_rd.ch1_prev[1] _179_ / xci2_xnor2
+x._363_ adc_rd.ch1_acc[4] adc_rd.ch1_prev[4] _180_ / xci2_xnor2
+x._364_ _147_ _179_ _180_ _181_ / xci2_and3
+x._365_ _156_ _181_ _182_ / xci2_and2
+x._366_ _174_ _178_ _182_ _183_ / xci2_and3
+x._367_ _171_ _183_ _061_ / xci2_nand2
+x._368_ _000_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[0] / xci2_dffcl
+x._369_ _001_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[1] / xci2_dffcl
+x._370_ _002_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[2] / xci2_dffcl
+x._371_ _003_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[3] / xci2_dffcl
+x._372_ _004_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[4] / xci2_dffcl
+x._373_ _005_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[5] / xci2_dffcl
+x._374_ _006_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[6] / xci2_dffcl
+x._375_ _007_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[7] / xci2_dffcl
+x._376_ _008_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[8] / xci2_dffcl
+x._377_ _009_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[9] / xci2_dffcl
+x._378_ _010_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[10] / xci2_dffcl
+x._379_ _011_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[11] / xci2_dffcl
+x._380_ _012_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[12] / xci2_dffcl
+x._381_ _013_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[13] / xci2_dffcl
+x._382_ _014_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[14] / xci2_dffcl
+x._383_ _015_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[15] / xci2_dffcl
+x._384_ _016_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[16] / xci2_dffcl
+x._385_ _017_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[17] / xci2_dffcl
+x._386_ _018_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[18] / xci2_dffcl
+x._387_ _019_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[19] / xci2_dffcl
+x._388_ _020_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[20] / xci2_dffcl
+x._389_ _021_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[21] / xci2_dffcl
+x._390_ _022_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[22] / xci2_dffcl
+x._391_ _023_ XC_O_sclk XC_I_rst_l adc_rd.shift_reg[23] / xci2_dffcl
+x._392_ _024_ XC_O_sclk XC_I_rst_l adc_rd.bit_cnt[0] / xci2_dffcl
+x._393_ _025_ XC_O_sclk XC_I_rst_l adc_rd.bit_cnt[1] / xci2_dffcl
+x._394_ _026_ XC_O_sclk XC_I_rst_l adc_rd.bit_cnt[2] / xci2_dffcl
+x._395_ _027_ XC_O_sclk XC_I_rst_l adc_rd.bit_cnt[3] / xci2_dffcl
+x._396_ _028_ XC_O_sclk XC_I_rst_l adc_rd.bit_cnt[4] / xci2_dffcl
+x._397_ _029_ XC_O_sclk XC_I_rst_l adc_rd.bit_cnt[5] / xci2_dffcl
+x._398_ _030_ XC_O_sclk XC_I_rst_l adc_rd.wreg_mode / xci2_dffcl
+x._399_ _031_ XC_O_sclk XC_O_din / xci2_dff
+x._400_ _032_ XC_O_sclk XC_I_rst_l adc_rd.state[0] / xci2_dffcl
+x._401_ _033_ XC_O_sclk XC_I_rst_l adc_rd.state[1] / xci2_dffcl
+x._402_ _034_ XC_O_sclk XC_I_rst_l adc_rd.state[2] / xci2_dffcl
+x._403_ _035_ XC_O_sclk XC_I_rst_l adc_rd.work_mode / xci2_dffcl
+x._404_ _036_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[0] / xci2_dffcl
+x._405_ _037_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[1] / xci2_dffcl
+x._406_ _038_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[2] / xci2_dffcl
+x._407_ _039_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[3] / xci2_dffcl
+x._408_ _040_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[4] / xci2_dffcl
+x._409_ _041_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[5] / xci2_dffcl
+x._410_ _042_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[6] / xci2_dffcl
+x._411_ _043_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[7] / xci2_dffcl
+x._412_ _044_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[8] / xci2_dffcl
+x._413_ _045_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[9] / xci2_dffcl
+x._414_ _046_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[10] / xci2_dffcl
+x._415_ _047_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[11] / xci2_dffcl
+x._416_ _048_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[12] / xci2_dffcl
+x._417_ _049_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[13] / xci2_dffcl
+x._418_ _050_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[14] / xci2_dffcl
+x._419_ _051_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[15] / xci2_dffcl
+x._420_ _052_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[16] / xci2_dffcl
+x._421_ _053_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[17] / xci2_dffcl
+x._422_ _054_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[18] / xci2_dffcl
+x._423_ _055_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[19] / xci2_dffcl
+x._424_ _056_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[20] / xci2_dffcl
+x._425_ _057_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[21] / xci2_dffcl
+x._426_ _058_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[22] / xci2_dffcl
+x._427_ _059_ XC_O_sclk XC_I_rst_l adc_rd.ch1_acc[23] / xci2_dffcl
+x._428_ _060_ XC_O_sclk XC_I_rst_l adc_rd.start_mode / xci2_dffcl
+x._429_ _062_ XC_C_clk XC_I_rst_l XC_O_sclk / xci2_dffcl
+x._430_ _061_ XC_O_sclk XC_I_rst_l XC_O_ready_sample / xci2_dffcl
+x._431_ adc_rd.ch1_acc[0] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[0] / xci2_dffcl
+x._432_ adc_rd.ch1_acc[1] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[1] / xci2_dffcl
+x._433_ adc_rd.ch1_acc[2] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[2] / xci2_dffcl
+x._434_ adc_rd.ch1_acc[3] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[3] / xci2_dffcl
+x._435_ adc_rd.ch1_acc[4] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[4] / xci2_dffcl
+x._436_ adc_rd.ch1_acc[5] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[5] / xci2_dffcl
+x._437_ adc_rd.ch1_acc[6] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[6] / xci2_dffcl
+x._438_ adc_rd.ch1_acc[7] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[7] / xci2_dffcl
+x._439_ adc_rd.ch1_acc[8] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[8] / xci2_dffcl
+x._440_ adc_rd.ch1_acc[9] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[9] / xci2_dffcl
+x._441_ adc_rd.ch1_acc[10] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[10] / xci2_dffcl
+x._442_ adc_rd.ch1_acc[11] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[11] / xci2_dffcl
+x._443_ adc_rd.ch1_acc[12] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[12] / xci2_dffcl
+x._444_ adc_rd.ch1_acc[13] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[13] / xci2_dffcl
+x._445_ adc_rd.ch1_acc[14] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[14] / xci2_dffcl
+x._446_ adc_rd.ch1_acc[15] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[15] / xci2_dffcl
+x._447_ adc_rd.ch1_acc[16] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[16] / xci2_dffcl
+x._448_ adc_rd.ch1_acc[17] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[17] / xci2_dffcl
+x._449_ adc_rd.ch1_acc[18] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[18] / xci2_dffcl
+x._450_ adc_rd.ch1_acc[19] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[19] / xci2_dffcl
+x._451_ adc_rd.ch1_acc[20] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[20] / xci2_dffcl
+x._452_ adc_rd.ch1_acc[21] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[21] / xci2_dffcl
+x._453_ adc_rd.ch1_acc[22] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[22] / xci2_dffcl
+x._454_ adc_rd.ch1_acc[23] XC_O_sclk XC_I_rst_l adc_rd.ch1_prev[23] / xci2_dffcl
+XCI2_DEV_OE / xci2_devoe
+vGND GND 0 0
+vVDD VDD 0 1.8
+.ENDS
+

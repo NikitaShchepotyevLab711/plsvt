@@ -1,0 +1,13 @@
+    SCRIPT v1.0.7
+***********************
+
+***********************
+    X-Map v0.51.20             
+***********************
+  TCL Lib ---> [OK] : D:/xcad/bin/../src/libraries/XCI2/XCI2_LE.tcl
+  TCL Lib ---> [OK] : D:/xcad/bin/../src/libraries/XCI2/XCI2_IO.tcl
+  TCL Lib ---> [OK] : D:/xcad/bin/../src/libraries/XCI2/XCI2_macro.tcl
+  Parsing ---> [OK] : C:/Users/Admin-PC/Desktop/sny/adc1_plasvet/adc_045/adc045_wrap.syn_y.v
+  Library ---> [OK] : adc045_wrap.xmap.lib.tcl
+  Netlist ---> [OK] : adc045_wrap.xmap.tcl
+  Destroy ---> [OK]

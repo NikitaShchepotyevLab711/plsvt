@@ -1,0 +1,520 @@
+*****************************************************************
+**
+**      Tool:        X-CORE
+**      Version:     4.12
+**      Created:     Dec 27 2024, 13:01:58
+**      Time:        25/04/09 13:21:42
+**
+*****************************************************************
+
+~~~ Reading D:/xcad/src/data/XCI2/XCI2.cdl spice -lD:/xcad/src/data/XCI2/XCI2.lib.cdl ...
+--- Time: 13:21:42
+*** Reading Spice Netlist < D:/xcad/src/data/XCI2/XCI2.cdl > ...
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:80: Integral resistor < RI0 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:276: Integral resistor < RI9 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:277: Integral resistor < RI8 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:278: Integral resistor < RI7 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:279: Integral resistor < RI6 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:280: Integral resistor < RI5 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:281: Integral resistor < RI4 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:282: Integral resistor < RI3 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:283: Integral resistor < RI2 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:284: Integral resistor < RI1 > is ignored
+X-CORE: No further messages of this type will appear.
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:671: Diode line < DI3 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:707: Diode line < DI1 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:9047: Integral capacitor < CC3 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:9048: Integral capacitor < CC2 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11422: Integral capacitor < CC18 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11423: Integral capacitor < CC17 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11424: Integral capacitor < CC16 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11425: Integral capacitor < CC15 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11426: Integral capacitor < CC14 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11427: Integral capacitor < CC13 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11428: Integral capacitor < CC12 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:11429: Integral capacitor < CC11 > is ignored
+X-CORE: No further messages of this type will appear.
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35660: Diode line < DI446 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35675: Diode line < DI6 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35676: Diode line < DI4 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35698: Diode line < DI448 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35699: Diode line < DI447 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35711: Diode line < DI6 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35712: Diode line < DI4 > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:35723: Diode line < DI1 > is ignored
+X-CORE: No further messages of this type will appear.
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:55380: Unknown control line < *.SUBCKT > is ignored
+X-CORE: Warning: D:/xcad/src/data/XCI2/XCI2.cdl:55381: Unknown control line < *.ENDS > is ignored
+--- Time: 13:21:42
+*** Evaluating Spice parameters ...
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M0, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M1, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M3, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M62, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M49, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M50, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M51, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M4, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M5, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_spice/sp_flat.c:157: Top Device: M I3622.I2.M9, ckt:GEN_FOR_PROC_UCCLAB noRoElem: 2
+X-CORE: No further messages of this type will appear.
+*** Ckt loading: FPGA_v3 100000
+*** Ckt loading: FPGA_v3 200000
+*** Ckt loading: FPGA_v3 300000
+*** Ckt loading: FPGA_v3 400000
+*** Ckt loading: FPGA_v3 500000
+*** Ckt loading: FPGA_v3 600000
+*** Ckt loading: FPGA_v3 700000
+*** Ckt loading: FPGA_v3 800000
+*** Ckt loading: FPGA_v3 900000
+*** Ckt loading: FPGA_v3 1000000
+*** Ckt loading: FPGA_v3 1100000
+*** Ckt loading: FPGA_v3 1200000
+*** Ckt loading: FPGA_v3 1300000
+*** Ckt loading: FPGA_v3 1400000
+*** Ckt loading: FPGA_v3 1500000
+*** Ckt loading: FPGA_v3 1600000
+*** Ckt loading: FPGA_v3 1700000
+*** Ckt loading: FPGA_v3 1800000
+*** Ckt loading: FPGA_v3 1900000
+*** Ckt loading: FPGA_v3 2000000
+*** Ckt loading: FPGA_v3 2100000
+*** Ckt loading: FPGA_v3 2200000
+*** Ckt loading: FPGA_v3 2300000
+*** Ckt loading: FPGA_v3 2400000
+*** Ckt loading: FPGA_v3 2500000
+*** Ckt loading: FPGA_v3 2600000
+*** Ckt loading: FPGA_v3 2700000
+*** Ckt loading: FPGA_v3 2800000
+*** Ckt loading: FPGA_v3 2900000
+*** Ckt loading: FPGA_v3 3000000
+*** Ckt loading: FPGA_v3 3100000
+*** xc_run top_prepare started,  time: 13:21:51 ...
+*** Statistics: Top Ckt: FPGA_v3
+*** Statistics: #subCkt = 77
+*** Statistics: #Node: 4297226
+*** Statistics: #Aliases: 0
+*** Statistics: #Instance: 3154797, (#Cell: 3044585, #Tran: 110212, #Res: 0, #Caps: 0)
+*** Statistics: #LibCell: 18417
+*** Statistics: #RoElem: 3026168
+*** Statistics: #SWB: 0
+*** Statistics: #Decoders: 0
+*** Statistics: #UNCONNECTED: 40
+*** Statistics: inst  mem: 88, sum 277.622136, node_arr 38.658732
+*** Statistics: cells mem: 48, sum 151.430256
+*** Statistics: nodes mem: 72, sum 309.400272
+*** Statistics: icons mem: 24, sum 239.887656
+*** Statistics: alias mem: 24, sum 0.000000
+*** Statistics: btree mem: 40, sum 298.080920
+*** Statistics: summary mem: page = 181363, size = 1474118464 bytes, sum 1474.118464 MB
+Memory g0open: 82 (1474809344 bytes in 181448 pages) 3651 free pages, g0calloc: 6384642
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M1
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M3
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M62
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M49
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M50
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M51
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M4
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M5
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:283: PMOS on the top level: I3622.I2.M9
+X-CORE: No further messages of this type will appear.
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M39
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M30
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M40
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M45
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M46
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M36
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M7
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M48
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M44
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:270: NMOS on the top level: I3622.I2.M38
+X-CORE: No further messages of this type will appear.
+*** Netlist Validation ...
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:314: SW rail connection: gnd!
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: I3622.I2.net0346
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:314: SW rail connection: UCCLAB!
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: I3621.I152.net312
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: conf_umd_l<21>
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: I3621.I152.net284
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: conf_umd_l<20>
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: I3620.I152.net312
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: conf_umu_l<21>
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: I3620.I152.net284
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: conf_umu_l<20>
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:314: SW rail connection: vdd!
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:316: SW connected net: FET connections: net10448<3>
+X-CORE: No further messages of this type will appear.
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_prepare.c:314: SW rail connection: ELLR15_30<0>
+*** xc_run top_prepare finished, time: 13:21:51
+*** CPU time = 1.89 ...
+~~~ Reading D:/xcad/src/data/XCI2/XCI2.pex.tcl pex  ...
+*** CPU time = 0.644 ...
+*** xc_lib_cell xci2_inv LE_4p0
+*** xc_lib_cell xci2_vdd LE_4p0
+*** xc_lib_cell xci2_gnd LE_4p0
+*** xc_lib_cell xci2_buf LE_4p0
+*** xc_lib_cell xci2_and2 LE_4p0
+*** xc_lib_cell xci2_and2ft LE_4p0
+*** xc_lib_cell xci2_nand2 LE_4p0
+*** xc_lib_cell xci2_nand2ft LE_4p0
+*** xc_lib_cell xci2_and3 LE_4p0
+*** xc_lib_cell xci2_nand3 LE_4p0
+*** xc_lib_cell xci2_nand3fft LE_4p0
+*** xc_lib_cell xci2_nand3ftt LE_4p0
+*** xc_lib_cell xci2_and3fft LE_4p0
+*** xc_lib_cell xci2_and3ftt LE_4p0
+*** xc_lib_cell xci2_aoi21 LE_4p0
+*** xc_lib_cell xci2_aoi21ttf LE_4p0
+*** xc_lib_cell xci2_aoi21ftt LE_4p0
+*** xc_lib_cell xci2_aoi21ftf LE_4p0
+*** xc_lib_cell xci2_mux2l LE_4p0
+*** xc_lib_cell xci2_mux2h LE_4p0
+*** xc_lib_cell xci2_ao21 LE_4p0
+*** xc_lib_cell xci2_ao21ftf LE_4p0
+*** xc_lib_cell xci2_ao21ftt LE_4p0
+*** xc_lib_cell xci2_ao21ttf LE_4p0
+*** xc_lib_cell xci2_or2 LE_4p0
+*** xc_lib_cell xci2_or2ft LE_4p0
+*** xc_lib_cell xci2_or3 LE_4p0
+*** xc_lib_cell xci2_or3fft LE_4p0
+*** xc_lib_cell xci2_or3ftt LE_4p0
+*** xc_lib_cell xci2_nor2 LE_4p0
+*** xc_lib_cell xci2_nor2ft LE_4p0
+*** xc_lib_cell xci2_nor3 LE_4p0
+*** xc_lib_cell xci2_nor3fft LE_4p0
+*** xc_lib_cell xci2_nor3ftt LE_4p0
+*** xc_lib_cell xci2_oa21 LE_4p0
+*** xc_lib_cell xci2_oa21ftf LE_4p0
+*** xc_lib_cell xci2_oa21ftt LE_4p0
+*** xc_lib_cell xci2_oa21ttf LE_4p0
+*** xc_lib_cell xci2_oai21 LE_4p0
+*** xc_lib_cell xci2_oai21ftf LE_4p0
+*** xc_lib_cell xci2_oai21ftt LE_4p0
+*** xc_lib_cell xci2_oai21ttf LE_4p0
+*** xc_lib_cell xci2_xor2 LE_4p0
+*** xc_lib_cell xci2_xor2ft LE_4p0
+*** xc_lib_cell xci2_xnor2 LE_4p0
+*** xc_lib_cell xci2_xnor2ft LE_4p0
+*** xc_lib_cell xci2_ld LE_4p0
+*** xc_lib_cell xci2_ldi LE_4p0
+*** xc_lib_cell xci2_ldc LE_4p0
+*** xc_lib_cell xci2_ldci LE_4p0
+*** xc_lib_cell xci2_ldl LE_4p0
+*** xc_lib_cell xci2_ldli LE_4p0
+*** xc_lib_cell xci2_ldlc LE_4p0
+*** xc_lib_cell xci2_ldlci LE_4p0
+*** xc_lib_cell xci2_ldls LE_4p0
+*** xc_lib_cell xci2_ldlsi LE_4p0
+*** xc_lib_cell xci2_lds LE_4p0
+*** xc_lib_cell xci2_ldsi LE_4p0
+*** xc_lib_cell xci2_dff LE_4p0
+*** xc_lib_cell xci2_dffi LE_4p0
+*** xc_lib_cell xci2_dffl LE_4p0
+*** xc_lib_cell xci2_dffli LE_4p0
+*** xc_lib_cell xci2_dffc LE_4p0
+*** xc_lib_cell xci2_dffci LE_4p0
+*** xc_lib_cell xci2_dfflc LE_4p0
+*** xc_lib_cell xci2_dfflci LE_4p0
+*** xc_lib_cell xci2_dffls LE_4p0
+*** xc_lib_cell xci2_dfflsi LE_4p0
+*** xc_lib_cell xci2_dffs LE_4p0
+*** xc_lib_cell xci2_dffsi LE_4p0
+*** xc_lib_cell xci2_dffcl LE_4p0
+*** xc_lib_cell xci2_dffcli LE_4p0
+*** xc_lib_cell xci2_dfflcl LE_4p0
+*** xc_lib_cell xci2_dfflcli LE_4p0
+*** xc_lib_cell xci2_ib IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_d IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_dpd IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_shm IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_d_shm IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_dpd_shm IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_gclk IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ib_gclk_shm IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_dffc_ib IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_fast IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_strong0 IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_strong1 IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_strong2 IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_strong3 IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_vdd IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_ob_gnd IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_otb IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_iotb IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_dffc_ob IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_dffc_iotb IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_devoe IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_devoe_pu IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell xci2_devoe_pd IO_cell_JTAG_v3_UCCLAB
+*** xc_lib_cell cpu_fpga_in BS_cell_IN_UCCLAB
+*** xc_lib_cell cpu_fpga_out BS_cell_OUT_UCCLAB
+*** xc_lib_cell cpu_fpga_out_clk BS_cell_OUT_UCCLAB
+*** xc_lib_cell cpu_clk_in io_clk_in_dummy
+*** xc_lib_cell cpu_clk_out io_clk_out
+*** xc_lib_cell LVDS_receiver LVDS_receiver_5V_v3
+*** xc_lib_cell ram_test ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_gen ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_swrite_sread ramblock_4x_v2_UCCLAB
+*** xc_lib_cell fifo_4x_swrite_sread ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_custom ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_aswrite_asread ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_swrite_asread ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_aswrite_sread ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_01 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_23 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock4x_ram_2 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock4x_ram_pb_2 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock4x_sw_sr_conv_cntrld_2 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock4x_asw_asr_conv_cntrld_2 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock4x_asw_asr_nc_2 ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_asyncwr_asyncrd ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_asyncwr_syncrd ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_syncwr_asyncrd ramblock_4x_v2_UCCLAB
+*** xc_lib_cell ramblock_4x_syncwr_syncrd ramblock_4x_v2_UCCLAB
+*** xc_lib_cell pll_firstfb pll_design_v5
+*** xc_lib_cell pll_firstfb_div2 pll_design_v5
+*** xc_lib_cell pll_firstfb_div4 pll_design_v5
+*** xc_lib_cell pll_firstfb_mul2 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_outdiv2 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_outdiv4 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_div1 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_div2 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_div4 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_div8 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_div16 pll_design_v5
+*** xc_lib_cell pll_intfb_pa0_div32 pll_design_v5
+*** xc_lib_cell pll_extfb pll_design_v5
+~~~ Writing adc045_wrap.sp2 spice project  ...
+~~~ Writing adc045_wrap.gate.v verilog_netlist lib_names sim_iv ...
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_io_wrv.c:877: Cell XCI2_DEV_OE is preload. Skip it
+*** xc_run place_prepare started,  time: 13:21:55 ...
+*** Placement prepare started... 
+*** Placement prepare finished!
+*** xc_run place_prepare finished, time: 13:21:55
+*** xc_run packing started,  time: 13:21:55 ...
+
+*** LE Clustering ... 
+*** Number of Instances: 271
+*** Max LE local inputs: 4
+*** Sorting instance array... Done 
+--- LE Clustering Done!
+
+*** xc_run packing finished, time: 13:21:55
+~~~ Writing adc045_wrap hgr   ...
+*** xc_run place started,  time: 13:21:56 ...
+
+*** Initial LAB Placement ...
+*** Initial placement, iteration 0
+~~~ -923896 543264 LAB0 -> ILAB0504.ILE0908.ILE1
+~~~ -945500 486271 LAB3 -> ILAB0604.ILE0908.ILE1
+~~~ -1.05135e+06 474174 LAB2 -> ILAB0503.ILE0908.ILE1
+~~~ -909064 543825 LAB4 -> ILAB0505.ILE0908.ILE1
+~~~ -906623 629560 LAB5 -> ILAB0404.ILE0908.ILE1
+~~~ -962120 686645 LAB6 -> ILAB0603.ILE0908.ILE1
+~~~ -947175 682642 LAB9 -> ILAB0605.ILE0908.ILE1
+~~~ -956829 667933 LAB8 -> ILAB0704.ILE0908.ILE1
+~~~ -945283 652730 LAB10 -> ILAB0403.ILE0908.ILE1
+~~~ -1.03613e+06 839526 LAB7 -> ILAB0405.ILE0908.ILE1
+~~~ -959781 687831 LAB1 -> ILAB0703.ILE0908.ILE1
+*** xc_run place finished, time: 13:21:56
+*** xc_run place started,  time: 13:21:56 ...
+--- Time: 13:21:56
+*** Lab Placement ...
+LAB0 - (5, 3)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB0 ...
+--- Finished Time: 13:21:56
+LAB3 - (4, 3)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB3 ...
+--- Finished Time: 13:21:56
+LAB2 - (5, 2)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB2 ...
+--- Finished Time: 13:21:56
+LAB4 - (5, 4)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB4 ...
+--- Finished Time: 13:21:56
+LAB5 - (6, 3)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB5 ...
+--- Finished Time: 13:21:56
+LAB6 - (4, 2)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB6 ...
+--- Finished Time: 13:21:56
+LAB9 - (4, 4)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB9 ...
+--- Finished Time: 13:21:56
+LAB8 - (3, 3)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB8 ...
+--- Finished Time: 13:21:56
+LAB10 - (6, 2)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB10 ...
+--- Finished Time: 13:21:56
+LAB7 - (6, 4)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB7 ...
+--- Finished Time: 13:21:56
+LAB1 - (3, 2)
+--- Time: 13:21:56
+*** Le Placement ...
+*** LAB1 ...
+--- Finished Time: 13:21:56
+--- Finished Time: 13:21:56
+*** xc_run place finished, time: 13:21:56
+*** xc_run place_sa started,  time: 13:21:56 ...
+
+--- Time: 13:21:56
+*** Placement started... 
+*** Num of nets before being removed: 314
+*** Num of nets to be removed: 
+	 - with less than 2 connections: 36
+	 - with more than 200 connections: 0
+--- Number of Externals : 38
+--- Number of LEs       : 271
+*** Number of placement instances: 309
+*** Number of nets: 278
+
+*** Simulated Annealing placement ... 
+*** Parameter Inner Loop multiplier (SA_InnerLoopMultiplier): 350
+*** Start Cost: 10892.016200
+*** Start Congestion: 0.000000
+*** Start Temperature: 3615.923388
+*** Final Temperature: 0.195900
+*** Start Cost: 10892.016200
+*** Inner loop criteria: 64866
+*** Iteration #1, Temperature: 3615.923388, Minimal Cost: 10772.149180, RA = 0.999260*** Iteration #2, Temperature: 1807.961694, Minimal Cost: 10193.820560, RA = 0.998520*** Iteration #3, Temperature: 903.980847, Minimal Cost: 10193.820560, RA = 0.997225*** Iteration #4, Temperature: 451.990423, Minimal Cost: 10150.299620, RA = 0.994373*** Iteration #5, Temperature: 225.995212, Minimal Cost: 10150.299620, RA = 0.989609*** Iteration #6, Temperature: 112.997606, Minimal Cost: 10024.287860, RA = 0.976952*** Iteration #7, Temperature: 56.498803, Minimal Cost: 9852.602340, RA = 0.955755*** Iteration #8, Temperature: 50.848923, Minimal Cost: 9627.389180, RA = 0.948263*** Iteration #9, Temperature: 45.764030, Minimal Cost: 9606.517680, RA = 0.943021*** Iteration #10, Temperature: 41.187627, Minimal Cost: 9606.517680, RA = 0.938088*** Iteration #11, Temperature: 37.068865, Minimal Cost: 9524.598200, RA = 0.930549*** Iteration #12, Temperature: 33.361978, Minimal Cost: 9382.664660, RA = 0.920698*** Iteration #13, Temperature: 30.025780, Minimal Cost: 9262.651500, RA = 0.916181*** Iteration #14, Temperature: 27.023202, Minimal Cost: 9262.651500, RA = 0.905713*** Iteration #15, Temperature: 24.320882, Minimal Cost: 9262.651500, RA = 0.898884*** Iteration #16, Temperature: 21.888794, Minimal Cost: 9262.651500, RA = 0.883837*** Iteration #17, Temperature: 19.699914, Minimal Cost: 9262.651500, RA = 0.875836*** Iteration #18, Temperature: 17.729923, Minimal Cost: 9022.278420, RA = 0.859957*** Iteration #19, Temperature: 15.956931, Minimal Cost: 8972.182160, RA = 0.847717*** Iteration #20, Temperature: 14.361238, Minimal Cost: 8908.767960, RA = 0.834150*** Iteration #21, Temperature: 12.925114, Minimal Cost: 8652.734780, RA = 0.813770*** Iteration #22, Temperature: 11.632602, Minimal Cost: 8474.034340, RA = 0.796920*** Iteration #23, Temperature: 11.050972, Minimal Cost: 8423.682140, RA = 0.788564*** Iteration #24, Temperature: 10.498424, Minimal Cost: 8217.294240, RA = 0.778574*** Iteration #25, Temperature: 9.973503, Minimal Cost: 8217.294240, RA = 0.762942*** Iteration #26, Temperature: 9.474827, Minimal Cost: 8217.294240, RA = 0.758949*** Iteration #27, Temperature: 9.001086, Minimal Cost: 8126.244220, RA = 0.746416*** Iteration #28, Temperature: 8.551032, Minimal Cost: 8068.543200, RA = 0.737721*** Iteration #29, Temperature: 8.123480, Minimal Cost: 7919.823280, RA = 0.722983*** Iteration #30, Temperature: 7.717306, Minimal Cost: 7844.329780, RA = 0.712762*** Iteration #31, Temperature: 7.331441, Minimal Cost: 7787.610080, RA = 0.698394*** Iteration #32, Temperature: 6.964869, Minimal Cost: 7504.744700, RA = 0.676348*** Iteration #33, Temperature: 6.616625, Minimal Cost: 7504.744700, RA = 0.663753*** Iteration #34, Temperature: 6.285794, Minimal Cost: 7382.539660, RA = 0.648938*** Iteration #35, Temperature: 5.971504, Minimal Cost: 7353.903780, RA = 0.631826*** Iteration #36, Temperature: 5.672929, Minimal Cost: 7353.903780, RA = 0.623979*** Iteration #37, Temperature: 5.389283, Minimal Cost: 7219.440100, RA = 0.606635*** Iteration #38, Temperature: 5.119819, Minimal Cost: 7135.400840, RA = 0.589986*** Iteration #39, Temperature: 4.863828, Minimal Cost: 7027.393160, RA = 0.580227*** Iteration #40, Temperature: 4.620636, Minimal Cost: 6938.539720, RA = 0.560818*** Iteration #41, Temperature: 4.389604, Minimal Cost: 6741.625820, RA = 0.545401*** Iteration #42, Temperature: 4.170124, Minimal Cost: 6666.703920, RA = 0.521568*** Iteration #43, Temperature: 3.961618, Minimal Cost: 6489.699480, RA = 0.504317*** Iteration #44, Temperature: 3.763537, Minimal Cost: 6330.640440, RA = 0.482795*** Iteration #45, Temperature: 3.575360, Minimal Cost: 6330.640440, RA = 0.478278*** Iteration #46, Temperature: 3.396592, Minimal Cost: 6175.008780, RA = 0.456957*** Iteration #47, Temperature: 3.226763, Minimal Cost: 5992.633600, RA = 0.442374*** Iteration #48, Temperature: 3.065425, Minimal Cost: 5831.803160, RA = 0.414655*** Iteration #49, Temperature: 2.912153, Minimal Cost: 5729.226220, RA = 0.402846*** Iteration #50, Temperature: 2.766546, Minimal Cost: 5666.316480, RA = 0.380631*** Iteration #51, Temperature: 2.628218, Minimal Cost: 5608.502380, RA = 0.363349*** Iteration #52, Temperature: 2.496807, Minimal Cost: 5455.565240, RA = 0.347917*** Iteration #53, Temperature: 2.371967, Minimal Cost: 5346.402380, RA = 0.321833*** Iteration #54, Temperature: 2.253369, Minimal Cost: 5253.316560, RA = 0.314834*** Iteration #55, Temperature: 2.140700, Minimal Cost: 5143.652360, RA = 0.298431*** Iteration #56, Temperature: 2.033665, Minimal Cost: 5052.328100, RA = 0.281550*** Iteration #57, Temperature: 1.931982, Minimal Cost: 4910.124180, RA = 0.255773*** Iteration #58, Temperature: 1.835383, Minimal Cost: 4776.699340, RA = 0.246431*** Iteration #59, Temperature: 1.743614, Minimal Cost: 4690.944300, RA = 0.229118*** Iteration #60, Temperature: 1.656433, Minimal Cost: 4661.053360, RA = 0.213594*** Iteration #61, Temperature: 1.573611, Minimal Cost: 4603.762900, RA = 0.200059*** Iteration #62, Temperature: 1.494931, Minimal Cost: 4553.817340, RA = 0.186138*** Iteration #63, Temperature: 1.420184, Minimal Cost: 4506.148220, RA = 0.175947*** Iteration #64, Temperature: 1.349175, Minimal Cost: 4437.693960, RA = 0.156816*** Iteration #65, Temperature: 1.281716, Minimal Cost: 4412.050860, RA = 0.145947*** Iteration #66, Temperature: 1.025373, Minimal Cost: 4312.717540, RA = 0.098017*** Iteration #67, Temperature: 0.820298, Minimal Cost: 4245.597340, RA = 0.071995*** Iteration #68, Temperature: 0.656239, Minimal Cost: 4177.054740, RA = 0.046573*** Iteration #69, Temperature: 0.524991, Minimal Cost: 4131.142940, RA = 0.032421*** Iteration #70, Temperature: 0.419993, Minimal Cost: 4089.891640, RA = 0.020319*** Iteration #71, Temperature: 0.335994, Minimal Cost: 4058.747740, RA = 0.013859*** Iteration #72, Temperature: 0.268795, Minimal Cost: 4052.860640, RA = 0.011084*** Iteration #73, Temperature: 0.215036, Minimal Cost: 4050.538640, RA = 0.008679*** Final temperature: 0.215036
+*** Start Cost: 10892.016200, End Cost: 4050.538640 
+*** Cost reduced on: 62.811856 %
+*** End Congestion: nan
+*** HPWL: 4050.538640
+
+--- Time: 13:22:00
+*** Placement finished 
+*** Placement CPU = 6.517 ...
+*** xc_run place_sa finished, time: 13:22:00
+~~~ Writing adc045_wrap.place.tcl place_tcl   ...
+*** xc_run route_prepare started,  time: 13:22:00 ...
+*** Create routing graph ...
+*** Statistics: #RoV: 802669
+*** Statistics: #RoE: 2987155
+*** Statistics: #Res: 720
+*** Preparing Project nets ...
+*** xc_run route_prepare finished, time: 13:22:02
+*** xc_run route started,  time: 13:22:02 ...
+
+*** Constant Routing stage ...
+*** Set unused LE inputs to GND
+*** All constant nets are routed!
+
+*** Clock Routing stage ...
+	XC_C_clk
+*** Param max_sw:        200
+*** Param factor_v_h:    1.000000
+*** Param factor_v_p:    12.000000
+*** Param max_path_w:    2000.000000
+*** Param max_path_l:    300
+*** Param sharedRoute:   2
+*** Param routeReuse:    0
+*** Param maxStepBT:     6
+*** Param factorBT:      0.500000
+*** Param factorPRR:     0.010000
+*** Param factorPRS:     0.080000
+*** Param factorPRC:     0.040000
+*** Routing iteration 1...
+	>= 0 vertex shared
+*** Number of iterations: 1
+*** Routing CPU = 0.018 ...
+*** Summary used routing elements: 17.
+*** Routing check ...
+*** Success!
+
+*** Init tail trees for signal nets...
+*** BT initialization CPU = 0.259 ...
+
+*** Signal Routing stage ...
+*** Param max_sw:        200
+*** Param factor_v_h:    1.000000
+*** Param factor_v_p:    12.000000
+*** Param max_path_w:    2000.000000
+*** Param max_path_l:    300
+*** Param sharedRoute:   2
+*** Param routeReuse:    0
+*** Param maxStepBT:     6
+*** Param factorBT:      0.500000
+*** Param factorPRR:     0.010000
+*** Param factorPRS:     0.080000
+*** Param factorPRC:     0.040000
+*** Routing iteration 1...
+	>= 282 vertex shared
+*** Routing iteration 2...
+	>= 92 vertex shared
+*** Routing iteration 3...
+	>= 21 vertex shared
+*** Routing iteration 4...
+	>= 3 vertex shared
+*** Routing iteration 5...
+	>= 1 vertex shared
+*** Routing iteration 6...
+	>= 1 vertex shared
+*** Routing iteration 7...
+	>= 0 vertex shared
+*** Number of iterations: 7
+*** Routing CPU = 1.546 ...
+*** Summary used routing elements: 3987.
+*** Routing check ...
+*** Success!
+*** Set simulations flags ...
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO33.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO33.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO33.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO33.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO33.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO33.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO10.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO10.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO10.m<160> = 0
+X-CORE: Warning: C:/Users/user/Documents/Repos/XCAD/src/lib_m/xc_ro_set.c:66: Second set: IIO10.m<160> = 0
+X-CORE: No further messages of this type will appear.
+*** Check default rail connection - gnd!
+*** Check default rail connection - vdd!
+*** xc_run route finished, time: 13:22:04
+~~~ Writing adc045_wrap.ro_tree.tcl ro_tree   ...
+~~~ Writing adc045_wrap.il skill   ...
+~~~ Writing adc045_wrap.ro_tree.tcl ro_tree   ...
+~~~ Writing adc045_wrap.geom.gds geom_gds   ...
+~~~ Writing adc045_wrap.mem MEM   ...
+~~~ Writing adc045_wrap.prog1 PROG 1  ...
+*** CRC32 = 9529d3
+~~~ Writing adc045_wrap.progc PROG c  ...
+*** CRC32 = 9529d3
+*** CRC32 = 449962f8
+*** xc_run cap_prepare started,  time: 13:22:04 ...
+*** xc_run cap_prepare finished, time: 13:22:04
+~~~ Writing adc045_wrap.cap.tcl CAP   ...
+~~~ Writing adc045_wrap.routed.v verilog_netlist routed_dot sim_iv ...
+~~~ Writing adc045_wrap.sp3 spice top  ...
+~~~ Writing adc045_wrap.nodes.tcl nodes_tcl   ...
+~~~ Writing adc045_wrap.vec vec   ...
+~~~ Writing adc045_wrap.scs spice scs  ...
+~~~ Time xc_quit: 13:22:06
+
+!!! Total number of warnings: 328213
