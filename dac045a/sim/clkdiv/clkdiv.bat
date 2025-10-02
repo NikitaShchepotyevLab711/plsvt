@@ -1,0 +1,1 @@
+questasim -do clkdiv.do

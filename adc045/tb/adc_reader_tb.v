@@ -3,8 +3,8 @@
 module adc_reader_tb();
 
 localparam CLK_PERIOD = 100; 
-localparam ADC_SAMPLE_RATE = 256_000;
-localparam SIGNAL_FREQ = 5000; // 5kHz
+localparam ADC_SAMPLE_RATE = 1_000;
+localparam SIGNAL_FREQ = 30; // 5kHz
 localparam ADC_PERIOD = 1000000000/ADC_SAMPLE_RATE;  // Период DRDY 256 kHz (3906.25 нс)
 
 // Сигналы
@@ -70,6 +70,14 @@ initial begin
     adc_clk = 0;
     forever #(ADC_PERIOD/2) adc_clk = ~adc_clk;
 end
+
+reg freq30hz;
+
+initial begin
+    freq30hz = 0;
+    forever #33333333 freq30hz = ~freq30hz;
+end
+
 
 always @(posedge adc_clk or negedge nRST) begin 
     if (!nRST) begin
