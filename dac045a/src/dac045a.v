@@ -1,11 +1,12 @@
 module dac045a (
     input  wire        clk,
-    input  wire        sync_300Hz,  // строб с частотой 300 Гц - частота обновления ЦАП
     input  wire        rst_l,
-    input  wire        mode,        // 0 - установка фикс. значения, 1 - плавное изменение до порога
+
+    input  wire        sync_300Hz,  // строб с частотой 300 Гц - частота обновления ЦАП
+    input  wire        mode,        // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
     input  wire [15:0] fixed_value, // порог, равный по умолчанию 0хffff
     input  wire        cs,
-
+    // добавить сигнал busy
     // spi //
     input  wire        SDO,
     output wire        SDI,

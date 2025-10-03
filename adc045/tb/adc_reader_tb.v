@@ -18,12 +18,12 @@ reg         cs;
 wire        din;           
 wire        sclk;
 wire        nRST;
-wire        start;
 
 // signals from above //
 reg        hard_start;
 reg        hard_wreg;
 reg        rst_l_adc;
+reg sync;
 
 // signals up //
 wire        ready_sample;
@@ -43,22 +43,20 @@ adc045_wrap uut (
     .rst_l(reset),
 
     // interface to adc//
-    .drdy(drdy),           
-    .dout(dout),    
-    .cs(cs),       
-    .din(din),           
-    .sclk(sclk),
+    .DRDY(drdy),           
+    .DOUT(dout),    
+    .CS(),       
+    .DIN(din),           
+    .SCLK(sclk),
     .nRST(nRST),
-    .start(start),
+    .START(),
     
     // signals from above //
-    .hard_start(hard_start),
-    .hard_wreg(hard_wreg),
-    .rst_l_adc(rst_l_adc),
+    .sync(sync),
 
     // signals up //
     .ready_sample(ready_sample),
-    .adc045_data(adc045_data)
+    .adc045_data(adc045_data)    
 );
 
 initial begin
@@ -71,13 +69,16 @@ initial begin
     forever #(ADC_PERIOD/2) adc_clk = ~adc_clk;
 end
 
-reg freq30hz;
-
 initial begin
-    freq30hz = 0;
-    forever #33333333 freq30hz = ~freq30hz;
+    sync = 0;
+    forever begin  
+        #3333290;
+        @(posedge clk);
+        sync = 1;
+        @(posedge clk);
+        sync = 0;     
+    end
 end
-
 
 always @(posedge adc_clk or negedge nRST) begin 
     if (!nRST) begin
@@ -86,7 +87,7 @@ always @(posedge adc_clk or negedge nRST) begin
         ch1_sample = 0;
     end
     else begin
-        if (uut.adc_rd.work_mode) begin
+        if (uut.adc_rd.start_command) begin
             time_counter = time_counter + dt;
             sin_value = $sin(2 * 3.141592653589793 * SIGNAL_FREQ * time_counter);
             ch1_sample = sin_value * (2**23 - 1);
@@ -128,37 +129,41 @@ initial begin
 end
 
 initial begin
-    reset = 1'b1;
-    rst_l_adc = 1;
-    cs = 1;
-    drdy = 1'b0;
-    dout = 1'b0;
-    hard_wreg = 0;
-    hard_start = 0;
-    
-    #100;
-    reset = 1'b0;
-    #100;
-    reset = 1'b1;
-    cs = 0;
+    fork
+        begin
+            sync = 0;
+            reset = 1'b1;
+            rst_l_adc = 1;
+            cs = 1;
+            drdy = 1'b0;
+            dout = 1'b0;
+            hard_wreg = 0;
+            hard_start = 0;
+            
+            #100;
+            reset = 1'b0;
+            #100;
+            reset = 1'b1;
+            cs = 0;
+            #1000;
+            sync = 1;
+            @(posedge clk);
+            @(posedge clk);
+            @(posedge clk);
+            sync = 0;
+        end
 
-    #400000;
-    rst_l_adc = 0;
-
-    #100;
-    rst_l_adc = 1;
-
-    #100000;
-    hard_wreg = 1;
-
-    #100;
-    hard_wreg = 0;
-
-    #50000;
-    hard_start = 1;
-
-    #100;
-    hard_start = 0;
+        begin
+        sync = 0;
+        forever begin  
+            #3333290;
+            @(posedge clk);
+            sync = 1;
+            @(posedge clk);
+            sync = 0;     
+        end            
+        end
+    join
 end
 
 endmodule

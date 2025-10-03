@@ -5,21 +5,19 @@ module adc_reader (
     // interface to adc//
     input  wire        drdy,           
     input  wire        dout,    
-    input  wire        cs,       
+    output wire        cs,       
     output reg         din,           
     output wire        sclk,
+    output reg         nrst,
 
     //external signals//
-    input  wire        rst_l_adc,
-    input  wire        hard_start,
+    input  wire        start_capture,
+    input  wire        start_command,
     input  wire        hard_wreg,
     input  wire [15:0] wreg_command,
     output wire [23:0] ch1_data,
     output reg         ready
 );
-
-reg sclk_reg;
-assign sclk = sclk_reg;
 
 reg [23:0] shift_reg;
 reg [23:0] ch1_acc;
@@ -34,9 +32,35 @@ parameter WORK_HEADER   = 3'b100;
 parameter WORK          = 3'b101;
 
 reg [5:0] bit_cnt;
-reg work_mode;
-reg start_mode;
-reg wreg_mode;
+reg [3:0] rst_cnt;
+
+always @(posedge clk or negedge rst_l) begin
+    if (!rst_l) begin
+        nrst <= 1'b1;
+        rst_cnt <= 4'h0;
+    end
+    else begin
+        case (rst_cnt)
+            0, 1, 2, 3: begin 
+                    rst_cnt <= rst_cnt + 1'h1;
+                    nrst <= 1;
+            end
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14: begin 
+                    rst_cnt <= rst_cnt + 1'h1;
+                    nrst <= 0;
+            end
+            15: begin 
+                    rst_cnt <= rst_cnt;
+                    nrst <= 1;
+            end
+            default: begin 
+                rst_cnt <= 4'h0;
+                nrst <= 0;
+            end
+        endcase
+
+    end
+end
 
 always @(posedge sclk or negedge rst_l) begin
     if (!rst_l) begin
@@ -52,122 +76,14 @@ always @(posedge sclk or negedge rst_l) begin
     end
 end
 
-always @(posedge clk or negedge rst_l) begin
-    if (!rst_l) begin
-        sclk_reg <= 0;
-    end else
-        sclk_reg <= ~sclk_reg; 
-end
-
-always @(posedge sclk or negedge rst_l) begin
-    if (!rst_l) begin
-        state <= 0;
-        wreg_mode <= 0;
-        work_mode <= 0;
-        start_mode <= 0;
-        bit_cnt <= 0;
-    end
-    else begin
-        case (state)
-
-            IDLE: begin
-                if (!cs)
-                    state <= REG_LOAD;
-                else
-                    state <= IDLE;
-            end
-
-            HARD_IDLE: begin // вызывается сбросом АЦП
-                if (!cs) begin
-                    if (hard_wreg)
-                        state <= HARD_REG_LOAD;
-                    else begin 
-                        if (hard_start)
-                            state <= WORK;
-                        else
-                            state <= HARD_IDLE;
-                    end
-                end
-                else
-                    state <= IDLE;
-            end
-
-            HARD_REG_LOAD: begin   // состояние для неавтоматической загрузки регистра АЦП 
-                if (!cs) begin
-                    if (bit_cnt == 23) begin
-                        bit_cnt <= 0;
-                        state <= HARD_IDLE;
-                        wreg_mode <= 0;
-                    end
-                    else begin
-                        bit_cnt <= bit_cnt + 1;
-                        wreg_mode <= 1;
-                    end
-                end
-                else
-                    state <= IDLE;
-            end
-
-            REG_LOAD: begin   // автоматическая загрузка регситра АЦП при включении
-                if (!cs) begin
-                    if (bit_cnt == 25) begin
-                        bit_cnt <= 0;
-                        state <= WORK_HEADER;
-                        wreg_mode <= 0;
-                    end
-                    else begin
-                        bit_cnt <= bit_cnt + 1;
-                        wreg_mode <= 1;
-                        state <= REG_LOAD;
-                    end
-                end
-                else
-                    state <= IDLE;
-            end
-
-            WORK_HEADER: begin // автоматическое начало работы АЦП после включения
-                if (!cs) begin
-                    if (bit_cnt == 26) begin
-                        bit_cnt <= 0;
-                        state <= WORK;
-                        start_mode <= 0;             
-                    end else begin
-                        start_mode <= 1'b1;
-                        bit_cnt <= bit_cnt + 1;
-                        state <= WORK_HEADER;
-                    end
-                end
-                else
-                    state <= IDLE;
-            end
-
-            WORK: begin // состояние непрерывной работы АЦП
-                if (!cs) begin
-                    if (!rst_l_adc) begin    
-                        state <= HARD_IDLE;
-                        work_mode <= 0;
-                    end
-                    else
-                        work_mode <= 1;
-                        
-                end
-                else
-                    state <= IDLE;
-            end
-
-            default: state <= IDLE;
-        endcase
-    end
-end
-
 always @(posedge sclk or negedge rst_l) begin
     if (!rst_l) begin
         shift_reg <= 0;
         ch1_acc <= 0;
     end else begin
 
-        if (wreg_mode) begin
-            if (bit_cnt == 1)
+        if (hard_wreg) begin
+            if (bit_cnt == 1) // сделать приходящий сверху первый счет счетчика для прогрузки шифтрега
                 shift_reg <= {8'b00010100, wreg_command};
             else begin
                 shift_reg <= {shift_reg[22:0], 1'b0};
@@ -175,7 +91,7 @@ always @(posedge sclk or negedge rst_l) begin
             end
         end
 
-        if (start_mode) begin
+        if (start_command) begin
             if (bit_cnt == 1)
                 shift_reg <= {8'b10001000, 16'b1};
             else begin
@@ -184,7 +100,7 @@ always @(posedge sclk or negedge rst_l) begin
             end
         end
 
-        if (work_mode) begin
+        if (start_capture) begin
             if (drdy) begin
                 shift_reg <= 24'b0;
                 ch1_acc <= shift_reg;

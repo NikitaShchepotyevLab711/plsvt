@@ -4,31 +4,139 @@ module adc045_wrap (
     input  wire        rst_l,
 
     // interface to adc//
-    input  wire        drdy,           
-    input  wire        dout,    
-    input  wire        cs,       
-    output wire        din,           
-    output wire        sclk,
+    input  wire        DRDY,           
+    input  wire        DOUT,    
+    output wire        CS,       
+    output wire        DIN,           
+    output wire        SCLK,
     output wire        nRST,
-    output wire        start,
+    output wire        START,
     
     // signals from above //
-    input  wire        hard_start,
-    input  wire        hard_wreg,
-    input  wire        rst_l_adc,
+    input  wire        sync,
 
     // signals up //
     output wire        ready_sample,
-    output wire [23:0] adc045_data
-    
+    output wire [23:0] adc045_data    
 );
 
-assign start = hard_start;
-assign nRST = rst_l_adc;
+reg [1:0] A_MUX;
+reg [5:0] mode_switch_counter;
+reg [2:0] state;
+localparam IDLE  = 3'd0;
+localparam WREG1 = 3'd1;
+localparam CH1   = 3'd2;
+localparam WREG2 = 3'd3;
+localparam CH2   = 3'd4;
 
-wire [1:0] A_MUX = 2'b00; // 1st mux input channel 
-//reg [1:0] A_MUX = 2'b01; // 2nd mux input channel 
-//reg [1:0] A_MUX = 2'b1x; // 1 mux input channel 
+reg hard_wreg;
+reg start_capture, start_command;
+wire strb;
+
+always @(posedge clk or negedge rst_l) begin
+    if (!rst_l) begin
+        mode_switch_counter <= 6'h0;
+        hard_wreg <= 1'b0;
+        A_MUX <= 2'b0;
+        state <= IDLE;
+        start_command <= 1'b0;
+        start_capture <= 1'b0;    
+    end
+    else begin
+        if (strb) begin
+        case (state)
+            IDLE: begin
+                if (sync) begin
+                    mode_switch_counter <= 6'h0;
+
+                    hard_wreg <= 1'b0;
+                    A_MUX <= 2'b0;
+                    state <= WREG1;
+                end
+            end
+
+            WREG1: begin
+                if (mode_switch_counter == 6'd23) begin
+                    state <= CH1;
+                    mode_switch_counter <= 6'd0;
+                end
+                else  begin
+                    state <= WREG1;
+                    mode_switch_counter <= mode_switch_counter + 1'b1;                    
+                end  
+
+                hard_wreg <= 1'b1;
+                A_MUX <= 2'b0;
+            end
+
+            CH1: begin
+                if (mode_switch_counter == 6'd47) begin
+                    state <= WREG2;
+                    mode_switch_counter <= 6'd0;
+                end
+                else  begin
+                    state <= CH1;
+                    mode_switch_counter <= mode_switch_counter + 1'b1;    
+                    if (mode_switch_counter > 6'd23)  begin
+                        start_command <= 1'b0;
+                        start_capture <= 1'b1;     
+                    end 
+                    else begin
+                        start_command <= 1'b1;
+                        start_capture <= 1'b0;                              
+                    end       
+                end  
+
+                    hard_wreg <= 1'b0;
+                    A_MUX <= 2'b0;
+                end
+            
+            WREG2: begin
+                if (mode_switch_counter == 6'd23) begin
+                    state <= CH2;
+                    mode_switch_counter <= 6'd0;
+                end
+                else  begin
+                    state <= WREG2;
+                    mode_switch_counter <= mode_switch_counter + 1'b1;                    
+                end  
+
+                hard_wreg <= 1'b1;
+                A_MUX <= 2'b1;
+            end
+
+            CH2: begin
+                if (mode_switch_counter == 6'd47) begin
+                    state <= WREG2;
+                    mode_switch_counter <= 6'd0;
+                end
+                else  begin
+                    state <= CH1;
+                    mode_switch_counter <= mode_switch_counter + 1'b1;    
+                    if (mode_switch_counter > 6'd23)  begin
+                        start_command <= 1'b0;
+                        start_capture <= 1'b1;     
+                    end 
+                    else begin
+                        start_command <= 1'b1;
+                        start_capture <= 1'b0;                              
+                    end       
+                end  
+
+                    hard_wreg <= 1'b0;
+                    A_MUX <= 2'b1;
+                end
+
+            default: begin
+
+                hard_wreg <= 1'b1;
+                A_MUX <= 2'b1;
+                state <= WREG1;   
+            end
+        endcase
+        end
+    end
+end
 
 wire POL = 0; // non inverted input channels
 //reg POL = 1; // inverted input channels
@@ -63,17 +171,26 @@ wire [1:0] Tech2 = 2'b00; // technical bits
 wire [15:0] wreg_command;
 assign wreg_command =  {A_MUX, POL, GAIN, REF, MODE, DR, Tech1, SCALE, BUF_DIS, Tech2};
 
+clk_divider3 clkdiv_inst (
+    .clk_i(clk),
+    .clk_o(SCLK),
+    .rst_l(rst_l),
+    .strb(strb),
+    .enable(1)    
+);
+
 adc_reader adc_rd (
     .clk(clk),
     .rst_l(rst_l),
-    .drdy(drdy),           
-    .dout(dout),           
-    .din(din),    
-    .cs(cs),       
-    .sclk(sclk),
+    .drdy(DRDY),           
+    .dout(DOUT),           
+    .din(DIN),    
+    .cs(CS),       
+    .sclk(SCLK),
+    .nrst(nRST),
     .ch1_data(adc045_data),
-    .hard_start(hard_start),
-    .rst_l_adc(rst_l_adc),
+    .start_capture(start_capture),
+    .start_command(start_command),
     .hard_wreg(hard_wreg),
     .wreg_command(wreg_command),
     .ready(ready_sample)
