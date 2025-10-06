@@ -3,8 +3,8 @@
 module adc_reader_tb();
 
 localparam CLK_PERIOD = 100; 
-localparam ADC_SAMPLE_RATE = 1_000;
-localparam SIGNAL_FREQ = 30; // 5kHz
+localparam ADC_SAMPLE_RATE = 100000;
+localparam SIGNAL_FREQ = 300; // 5kHz
 localparam ADC_PERIOD = 1000000000/ADC_SAMPLE_RATE;  // Период DRDY 256 kHz (3906.25 нс)
 
 // Сигналы
@@ -20,10 +20,10 @@ wire        sclk;
 wire        nRST;
 
 // signals from above //
-reg        hard_start;
-reg        hard_wreg;
-reg        rst_l_adc;
-reg sync;
+reg         hard_start;
+reg         hard_wreg;
+reg         rst_l_adc;
+reg         sync;
 
 // signals up //
 wire        ready_sample;
@@ -32,8 +32,11 @@ wire [23:0] adc045_data;
 real time_counter = 0;
 real dt = 1.0 / ADC_SAMPLE_RATE;
 real sin_value;
-reg [23:0] ch1_sample = '0;
+real cos_value;
+wire [23:0] ch1_sample;
 reg [23:0] prev_ch1_sample = '0;
+reg [23:0] sin_signal;
+reg [23:0] cos_signal;
 
 reg adc_clk;
 integer bit_counter;
@@ -55,8 +58,8 @@ adc045_wrap uut (
     .sync(sync),
 
     // signals up //
-    .ready_sample(ready_sample),
-    .adc045_data(adc045_data)    
+    .adc045_data_ch1(),
+    .adc045_data_ch2()
 );
 
 initial begin
@@ -82,18 +85,23 @@ end
 
 always @(posedge adc_clk or negedge nRST) begin 
     if (!nRST) begin
-        time_counter = 0;
-        sin_value = 0;
-        ch1_sample = 0;
+        time_counter <= 0;
+        sin_value <= 0;
+        cos_value <= 0;
     end
     else begin
-        if (uut.adc_rd.start_command) begin
-            time_counter = time_counter + dt;
-            sin_value = $sin(2 * 3.141592653589793 * SIGNAL_FREQ * time_counter);
-            ch1_sample = sin_value * (2**23 - 1);
+        begin
+            time_counter <= time_counter + dt;
+            sin_value <= $sin(2 * 3.141592653589793 * SIGNAL_FREQ * time_counter);
+            cos_value <= $cos(2 * 3.141592653589793 * SIGNAL_FREQ * time_counter);
+            sin_signal <= sin_value * (2**23 - 1);
+            cos_signal <= cos_value * (2**23 - 1);           
         end
     end
 end
+
+assign ch1_sample = (uut.A_MUX == 0) ? sin_signal : cos_signal;
+
 
 task send_adc_data;
     input [23:0] ch1;
@@ -156,9 +164,11 @@ initial begin
         begin
         sync = 0;
         forever begin  
-            #3333290;
+            #150000;
             @(posedge clk);
             sync = 1;
+            @(posedge clk);
+            @(posedge clk);
             @(posedge clk);
             sync = 0;     
         end            

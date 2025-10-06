@@ -10,4 +10,4 @@ vsim -debugDB -gui work.adc_reader_tb
 
 do {wave.do}
 
-run 200us
+run 2000us

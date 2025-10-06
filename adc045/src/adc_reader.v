@@ -11,18 +11,16 @@ module adc_reader (
     output reg         nrst,
 
     //external signals//
-    input  wire        start_capture,
-    input  wire        start_command,
-    input  wire        hard_wreg,
-    input  wire [15:0] wreg_command,
-    output wire [23:0] ch1_data,
-    output reg         ready
+    input  wire        start_capture, // по высокому уровню происходит захват данных приходящих по DOUT
+    input  wire        start_command, // по высокому уровню происходит выдача в АЦП команды START
+    input  wire        hard_wreg,     // по высокому уровню происходит выдача в АЦП конфигурационных данных
+    input  wire [15:0] wreg_command, // конфигурационные данные для регистра АЦП 
+    input  wire        load, // строб, который должен приходить перед выдачей по DIN команд для АЦП (загрузка данных в регистр)
+    output wire [23:0] data_o
 );
 
 reg [23:0] shift_reg;
 reg [23:0] ch1_acc;
-reg [23:0] ch1_prev;
-
 reg [2:0] state;
 parameter IDLE          = 3'b000;
 parameter HARD_IDLE     = 3'b001;
@@ -33,6 +31,8 @@ parameter WORK          = 3'b101;
 
 reg [5:0] bit_cnt;
 reg [3:0] rst_cnt;
+
+assign cs = 1'b0;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
@@ -64,26 +64,12 @@ end
 
 always @(posedge sclk or negedge rst_l) begin
     if (!rst_l) begin
-        ch1_prev <= 0;
-        ready <= 0;
-    end
-    else begin
-        ch1_prev <= ch1_acc;
-        if (ch1_acc != ch1_prev)
-            ready <= 1;
-        else
-            ready <= 0;
-    end
-end
-
-always @(posedge sclk or negedge rst_l) begin
-    if (!rst_l) begin
         shift_reg <= 0;
         ch1_acc <= 0;
     end else begin
 
         if (hard_wreg) begin
-            if (bit_cnt == 1) // сделать приходящий сверху первый счет счетчика для прогрузки шифтрега
+            if (load) 
                 shift_reg <= {8'b00010100, wreg_command};
             else begin
                 shift_reg <= {shift_reg[22:0], 1'b0};
@@ -92,7 +78,7 @@ always @(posedge sclk or negedge rst_l) begin
         end
 
         if (start_command) begin
-            if (bit_cnt == 1)
+            if (load)
                 shift_reg <= {8'b10001000, 16'b1};
             else begin
                 shift_reg <= {shift_reg[22:0], 1'b0};
@@ -107,10 +93,12 @@ always @(posedge sclk or negedge rst_l) begin
             end
             else
                 shift_reg <= {shift_reg[22:0], dout};
+
+            din <= 0;
         end
     end
 end
 
-assign ch1_data = ch1_acc;
+assign data_o = ch1_acc;
 
 endmodule
