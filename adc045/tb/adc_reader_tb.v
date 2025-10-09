@@ -54,12 +54,9 @@ adc045_wrap uut (
     .nRST(nRST),
     .START(),
     
-    // signals from above //
-    .sync(sync),
-
-    // signals up //
-    .adc045_data_ch1(),
-    .adc045_data_ch2()
+    .sync(sync), 
+    .DATA_OUT(),
+    .RD_EN()
 );
 
 initial begin
@@ -70,17 +67,6 @@ end
 initial begin
     adc_clk = 0;
     forever #(ADC_PERIOD/2) adc_clk = ~adc_clk;
-end
-
-initial begin
-    sync = 0;
-    forever begin  
-        #3333290;
-        @(posedge clk);
-        sync = 1;
-        @(posedge clk);
-        sync = 0;     
-    end
 end
 
 always @(posedge adc_clk or negedge nRST) begin 
@@ -100,22 +86,22 @@ always @(posedge adc_clk or negedge nRST) begin
     end
 end
 
-assign ch1_sample = (uut.A_MUX == 0) ? sin_signal : cos_signal;
+assign ch1_sample = (uut.adc_inst.A_MUX == 0) ? sin_signal : cos_signal;
 
 
 task send_adc_data;
     input [23:0] ch1;
     integer i;
     begin
-        for (i = 23; i >= 0; i = i - 1) begin
+        for (i = 24; i >= 0; i = i - 1) begin
             dout = ch1[i];
             bit_counter = i; 
             @(posedge sclk);
             
-            if (i == 0) begin
+            if (i == 24) begin
                 drdy <= 1'b1;
+                dout = ch1[i];
                 @(posedge sclk); drdy <= 1'b0;
-                dout <= 0;
             end
         end
     end
