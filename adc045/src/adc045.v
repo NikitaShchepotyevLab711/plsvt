@@ -23,20 +23,16 @@ module adc045 (
 
 localparam IDLE          = 4'd0;
 localparam LOAD_WREG1    = 4'd1;
-localparam WREG1         = 4'd2;
-localparam LOAD_DATA1    = 4'd3;
-localparam CH1_START     = 4'd4;
+localparam WREG          = 4'd2;
+localparam LOAD_DATA     = 4'd3;
+localparam CH_START      = 4'd4;
 localparam DELAY         = 4'd5;
-localparam CH1_TX        = 4'd6;
+localparam CH_TX         = 4'd6;
 localparam CH1_RESULT    = 4'd7;
 localparam WAIT_FOR_SYNC = 4'd8;
 localparam WAIT_FOR_DRDY = 4'd9;
 localparam LOAD_WREG2    = 4'd10;
-localparam WREG2         = 4'd11;
-localparam LOAD_DATA2    = 4'd12;
-localparam CH2_START     = 4'd13;
-localparam CH2_TX        = 4'd14;
-localparam CH2_RESULT    = 4'd15;
+localparam CH2_RESULT    = 4'd11;
 
 reg [23:0] shift_reg;
 reg [23:0] ch1_acc;
@@ -107,7 +103,6 @@ always @(posedge clk or negedge rst_l) begin
                     start_command <= 1'b0;
                     start_capture <= 1'b0; 
                     channel <= 1'b0;
-                    rd_en <= 1'b0;
                     busy <= 1'b0;
                     word_received <= 1'b0;
                     set_delay_start <= 1'b0;
@@ -122,60 +117,52 @@ always @(posedge clk or negedge rst_l) begin
 
             LOAD_WREG1: begin // загрузка конфигурационных данных АЦП (чтение из 1ого канала) в сдвиговый регистр
                 cnt <= 6'd0;
-                state <= WREG1;
+                state <= WREG;
                 A_MUX <= 2'b0;
                 load <= 1'b1;
                 hard_wreg <= 1'b1;
                 start_command <= 1'b0;
                 start_capture <= 1'b0;  
                 channel <= 1'b0;
-                rd_en <= 1'b0;
                 busy <= 1'b1;
                 word_received <= 1'b0;
                 set_delay_start <= 1'b0;
                 START <= 1'b0;
             end
 
-            WREG1: begin // отправка по DIN конфигурационных данных 
+            WREG: begin
                 if (cnt == 6'd23) begin
-                    state <= LOAD_DATA1;
+                    state <= LOAD_DATA;
                     cnt <= 6'd0;
                 end
                 else  begin
-                    state <= WREG1;
+                    state <= WREG;
                     cnt <= cnt + 1'b1;                    
                 end  
-
                 hard_wreg <= 1'b1;
                 start_command <= 1'b0;
                 start_capture <= 1'b0;    
-                A_MUX <= 2'b0;
                 load <= 1'b0;
                 busy <= 1'b1; 
-                channel <= 1'b0;
-                rd_en <= 1'b0;
                 word_received <= 1'b0;
                 set_delay_start <= 1'b0;
-                START <= 1'b0;
+                START <= 1'b0;                
             end
 
-            LOAD_DATA1: begin // загрузка команды START в сдвиговый регистр
+            LOAD_DATA: begin // загрузка команды START в сдвиговый регистр
                 cnt <= 6'd0;
-                state <= CH1_START;
+                state <= CH_START;
                 hard_wreg <= 1'b0;
                 start_command <= 1'b1;
                 start_capture <= 1'b0;   
-                A_MUX <= 2'b0; 
                 load <= 1'b1;
                 busy <= 1'b1;
-                channel <= 1'b0;
-                rd_en <= 1'b0;
                 word_received <= 1'b0;
                 set_delay_start <= 1'b0;
                 START <= 1'b0;
             end
 
-            CH1_START: begin // отправка команды START по DIN
+            CH_START: begin // отправка команды START по DIN
 /*                if (cnt == 6'd23) begin
                     if (delay_done_reg) begin
                         if (DRDY) begin
@@ -197,7 +184,6 @@ always @(posedge clk or negedge rst_l) begin
                     start_capture <= 1'b0;   
                     load <= 1'b0; 
                     channel <= 1'b0;
-                    rd_en <= 1'b0;
                     busy <= 1'b1;
                     word_received <= 1'b0;
                     A_MUX <= 2'b0;
@@ -207,7 +193,7 @@ always @(posedge clk or negedge rst_l) begin
                 if (delay_start_done) begin
                     if (delay_done_reg) begin
                             if (DRDY)
-                                state <= CH1_TX;
+                                state <= CH_TX;
                         end
                     else begin
                         state <= DELAY;
@@ -217,14 +203,12 @@ always @(posedge clk or negedge rst_l) begin
                 end
                 else begin
                     START <= 1'b1;
-                    state <= CH1_START;
+                    state <= CH_START;
                     cnt <= 1'b0;
                     hard_wreg <= 1'b0;
                     start_command <= 1'b0;
                     start_capture <= 1'b0;   
                     load <= 1'b0; 
-                    channel <= 1'b0;
-                    rd_en <= 1'b0;
                     busy <= 1'b1;
                     word_received <= 1'b0;
                 end
@@ -241,38 +225,32 @@ always @(posedge clk or negedge rst_l) begin
                     if (delay_done) begin
                         delay_done_reg <= 1'b1;
                         if (DRDY)
-                            state <= CH1_TX;
+                            state <= CH_TX;
                     end
                 end
                 else begin
                     if (DRDY)
                         cnt <= cnt + 1'd1;
                     if (cnt == 6'd5) begin
-                        if (channel_choice == 2'b10)
-                            state <= CH2_TX;
-                        else
-                            state <= CH1_TX;
+                            state <= CH_TX;
                         cnt <= 6'd1;
                         delay_done_reg <= 1'b1;
                     end
                 end
             end
 
-            CH1_TX: begin // получение значения из первого канала
+            CH_TX: begin // получение значения из первого канала
                 if (cnt == 6'd24) begin
-                    state <= CH1_RESULT;
+                    state <= channel ? CH2_RESULT : CH1_RESULT;
                     cnt <= 6'd0;
                     word_received <= 1'b1;
                 end
                 else begin
-                    state <= CH1_TX;
                     cnt <= cnt + 1'b1;
                     hard_wreg <= 1'b0;
                     start_command <= 1'b0;
                     start_capture <= 1'b1;    
                     load <= 1'b0; 
-                    channel <= 1'b0;
-                    rd_en <= 1'b0;
                     busy <= 1'b1;
                     word_received <= 1'b0; 
                     START <= 1'b0;
@@ -299,10 +277,7 @@ always @(posedge clk or negedge rst_l) begin
 
             WAIT_FOR_DRDY: begin
                 if (DRDY) begin
-                    if (channel_choice == 2'b10)
-                        state <= CH2_TX;
-                    else 
-                        state <= CH1_TX;
+                    state <= CH_TX;
                 end
                 else
                     state <= WAIT_FOR_DRDY;
@@ -312,7 +287,6 @@ always @(posedge clk or negedge rst_l) begin
                 start_command <= 1'b0;
                 start_capture <= 1'b0;    
                 load <= 1'b0; 
-                rd_en <= 1'b0;
                 busy <= 1'b1;
                 word_received <= 1'b0; 
                 set_delay_start <= 1'b0;
@@ -320,133 +294,16 @@ always @(posedge clk or negedge rst_l) begin
 
             LOAD_WREG2: begin // загрузка конфигурационных данных АЦП (чтение из 2ого канала) в сдвиговый регистр
                 cnt <= 6'd0;
-                state <= WREG2;
+                state <= WREG;
                 hard_wreg <= 1'b1;
                 start_command <= 1'b0;
                 start_capture <= 1'b0;   
-                A_MUX <= 2'b0;
-                load <= 1'b1;
-                channel <= 1'b1;
-                rd_en <= 1'b0;
-                busy <= 1'b1;
-                word_received <= 1'b0;
-                set_delay_start <= 1'b0;
-            end
-            
-            WREG2: begin // отправка по DIN конфигурационных данных 
-                if (cnt == 6'd23) begin
-                    state <= LOAD_DATA2;
-                    cnt <= 6'd0;
-                end
-                else  begin
-                    state <= WREG2;
-                    cnt <= cnt + 1'b1;                    
-                end  
-
-                hard_wreg <= 1'b1;
-                start_command <= 1'b0;
-                start_capture <= 1'b0;                
                 A_MUX <= 2'b1;
-                load <= 1'b0;
-                channel <= 1'b1;
-                rd_en <= 1'b0;
-                busy <= 1'b1;
-                word_received <= 1'b0;
-                set_delay_start <= 1'b0;
-            end
-
-            LOAD_DATA2: begin // загрузка команды START в сдвиговый регистр
-                cnt <= 6'd0;
-                state <= CH2_START;
-                hard_wreg <= 1'b0;
-                start_command <= 1'b1;
-                start_capture <= 1'b0;   
                 load <= 1'b1;
                 channel <= 1'b1;
-                rd_en <= 1'b0;
                 busy <= 1'b1;
                 word_received <= 1'b0;
                 set_delay_start <= 1'b0;
-                START <= 1'b0;
-            end
-
-            CH2_START: begin  // отправка команды START по DIN
-/*
-                if (cnt == 6'd23) begin
-                    if (delay_done_reg) begin
-                        if (DRDY) begin
-                            state <= CH2_TX;
-                            cnt <= 6'd0;
-                        end
-                    end
-                    else begin
-                        state <= DELAY;
-                        cnt <= 1'b0;
-                    end 
-                end
-                else begin
-                    START <= 1'b1;
-                    state <= CH2_START;
-                    cnt <= cnt + 1'b1;
-                    hard_wreg <= 1'b0;
-                    start_command <= 1'b1;
-                    start_capture <= 1'b0;   
-                    load <= 1'b0; 
-                    channel <= 1'b1;
-                    rd_en <= 1'b0;
-                    busy <= 1'b1;
-                    word_received <= 1'b0;
-                end
-                */
-
-                if (delay_start_done) begin
-                    if (delay_done_reg) begin
-                        if (DRDY)
-                            state <= CH2_TX;
-                    end
-                    else begin
-                        state <= DELAY;
-                        cnt <= 1'b0;
-                    end 
-                    START <= 1'b0;        
-                end
-
-                else begin
-                    START <= 1'b1;
-                    state <= CH2_START;
-                    cnt <= 1'b0;
-                    hard_wreg <= 1'b0;
-                    start_command <= 1'b0;
-                    start_capture <= 1'b0;   
-                    load <= 1'b0; 
-                    channel <= 1'b1;
-                    rd_en <= 1'b0;
-                    busy <= 1'b1;
-                    word_received <= 1'b0;
-                end
-                set_delay_start <= 1'b1;
-            end
-
-            CH2_TX: begin // получение значения из второго канала
-                if (cnt == 6'd24) begin
-                    state <= CH2_RESULT;
-                    cnt <= 6'd0;
-                    word_received <= 1'b1;
-                end
-                else begin
-                    state <= CH2_TX;
-                    cnt <= cnt + 1'b1;
-                    hard_wreg <= 1'b0;
-                    start_command <= 1'b0;
-                    start_capture <= 1'b1;    
-                    load <= 1'b0; 
-                    rd_en <= 1'b0;
-                    word_received <= 1'b0;
-                end
-                channel <= 1'b1;
-                busy <= 1'b1;
-                set_delay_start <= 1'b0;
-                START <= 1'b0;
             end
 
             CH2_RESULT: begin
@@ -469,7 +326,6 @@ always @(posedge clk or negedge rst_l) begin
                 load <= 1'b0;
                 channel <= 1'b0;
                 data_o <= 1'b0;
-                rd_en <= 1'b0;
                 busy <= 1'b0;
                 word_received <= 1'b0;
                 set_delay_start <= 1'b0;

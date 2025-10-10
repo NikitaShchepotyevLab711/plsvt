@@ -19,9 +19,10 @@ add wave -noupdate /adc_reader_tb/uut/adc_inst/channel
 add wave -noupdate /adc_reader_tb/uut/adc_inst/data_o
 add wave -noupdate /adc_reader_tb/uut/wreg_command
 add wave -noupdate /adc_reader_tb/uut/channel_choice
+add wave -noupdate /adc_reader_tb/uut/adc_inst/state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1995191590 ps} 0} {{Cursor 2} {42361204 ps} 0}
-quietly wave cursor active 2
+WaveRestoreCursors {{Cursor 1} {1241784882 ps} 0} {{Cursor 2} {42361204 ps} 0}
+quietly wave cursor active 1
 configure wave -namecolwidth 305
 configure wave -valuecolwidth 112
 configure wave -justifyvalue left
@@ -36,4 +37,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {1699491154 ps}
+WaveRestoreZoom {385483404 ps} {2084974558 ps}
