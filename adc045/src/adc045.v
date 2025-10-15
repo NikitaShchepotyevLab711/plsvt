@@ -377,8 +377,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 DIN <= shift_reg[23]; 
             end
         end
-
-        if (start_command) begin
+        else if (start_command) begin
             if (load)
                 shift_reg <= {8'b00001000, 16'b0};
             else begin
@@ -386,16 +385,14 @@ always @(posedge SCLK or negedge rst_l) begin
                 DIN <= shift_reg[23];
             end
         end
-
-        if (start_capture) begin
+        else if (start_capture) begin
+            DIN <= 0;
             if (word_received) begin
                 shift_reg <= 24'b0;
                 captured_data <= shift_reg;
             end
             else
-                shift_reg <= {shift_reg[22:0], DOUT};
-
-            DIN <= 0;
+                shift_reg <= {shift_reg[22:0], DOUT};   
         end
     end
 end
