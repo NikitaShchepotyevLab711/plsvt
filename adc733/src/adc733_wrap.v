@@ -8,14 +8,15 @@ module adc733_wrap (
     input  wire        SDO,
     output wire        SDIFS,
     output wire        SDI,
-    output wire        SE,   
+    output wire        SE,  
 
-    input  wire        sync  
+    input  wire        sync,
+    output reg  [15:0] data_o 
 );
 
 wire [15:0] control_word;
 reg  [7:0]  register_data;
-
+wire [2:0] channel;
 wire [7:0] CRA;
 wire [7:0] CRB;
 wire [7:0] CRC;
@@ -26,21 +27,17 @@ wire [7:0] CRG;
 wire [7:0] CRH;
 wire [7:0] DATAMODE_SET;
 
-reg [3:0] state;
-reg [3:0] cnt;
-reg       op_mode; // 0 = programm, 1 = data_mode
-wire      word_sent;
+reg  [3:0]  state;
+reg  [3:0]  cnt;
+reg         op_mode; // 0 = programm, 1 = data_mode
+wire        word_sent;
+wire [15:0] captured_data;
 
-localparam IDLE      = 4'd0;
-localparam CRA_LOAD  = 4'd1;
-localparam CRB_LOAD  = 4'd2;
-localparam CRC_LOAD  = 4'd3;
-localparam CRD_LOAD  = 4'd4;
-localparam CRE_LOAD  = 4'd5;
-localparam CRF_LOAD  = 4'd6;
-localparam CRG_LOAD  = 4'd7;
-localparam CRH_LOAD  = 4'd8;
-localparam DATMOD_LD = 4'd9;
+localparam IDLE          = 2'd0;
+localparam SEND_WORD     = 2'd1;
+localparam SEND_DATAMODE = 2'd2;
+localparam DATAMODE      = 2'd3;
+
 /*
 assign CRA          = 8'b0;
 assign CRB          = 8'h8; //деление внешней MCLK на 2 и получение SCLK = 16.384/2 = 8.192 МГц
@@ -63,174 +60,70 @@ assign CRG          = 8'h6;// узнать про режим
 assign CRH          = 8'h7; 
 assign DATAMODE_SET = 8'h8;
 
-assign control_word = {op_mode, 1'b1, 4'b000, register_data};
+assign control_word = {op_mode, 1'b1, 6'b000, register_data};
+reg [3:0] reg_counter;
+
+always @(posedge clk or negedge rst_l) begin
+    if (!rst_l)
+        data_o <= 4'd0;
+    else
+        data_o <= captured_data;
+end
 
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
-        state         <= 3'd0;
-        cnt           <= 3'd0;
-        op_mode       <= 1'b0;
-        register_data <= 8'd0;
-    end
-    else begin
+        state       <= IDLE;
+        reg_counter <= 4'd0;
+        op_mode     <= 1'b0;
+    end else begin
         case (state)
             IDLE: begin
-                cnt           <= 4'd0;
-                state         <= CRA_LOAD;
-                op_mode       <= 1'b0;
-                register_data <= 8'd0;
-            end 
-
-            CRA_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRB_LOAD;
-                        cnt <= 4'd0; 
+                reg_counter <= 4'd0;
+                op_mode     <= 1'b0;
+                state       <= SEND_WORD;
+            end
+            
+            SEND_WORD: begin
+                if (word_sent) begin
+                    if (reg_counter == 4'd8) begin
+                        state <= SEND_DATAMODE;
+                    end else begin
+                        reg_counter <= reg_counter + 1;
                     end
-                    else 
-                        state <= CRA_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRA;
                 end
             end
-
-            CRB_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRC_LOAD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRB_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRB;
-                end
-            end
-
-            CRC_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRD_LOAD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRC_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRC;
-                end
-            end
-
-            CRD_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRE_LOAD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRD_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRD;
-                end
-            end
-
-            CRE_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRF_LOAD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRE_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRE;
-                end
-            end
-
-            CRF_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRG_LOAD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRF_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRF;
-                end
-            end
-
-            CRG_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= CRH_LOAD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRG_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRG;
-                end
-            end
-
-            CRH_LOAD: begin
-                op_mode <= 1'b0;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= DATMOD_LD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRH_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= CRH;
-                end
-            end
-
-            DATMOD_LD: begin
+            
+            SEND_DATAMODE: begin
                 op_mode <= 1'b1;
-                if (cnt == 4'd15) begin
-                    if (word_sent) begin
-                        state <= DATMOD_LD;
-                        cnt <= 4'd0; 
-                    end
-                    else 
-                        state <= CRH_LOAD;
-                end
-                else begin
-                    cnt <= cnt + 1'b1;
-                    register_data <= DATAMODE_SET;
+                if (word_sent && SDOFS) begin
+                    state <= DATAMODE;
                 end
             end
+            
+            DATAMODE: begin
 
-            default: begin
-                state         <= 3'd0;
-                cnt           <= 3'd0;
-                op_mode       <= 1'b0;
-                register_data <= 8'd0;
-            end      
+            end
+            
+            default: state <= IDLE;
+        endcase
+    end
+end
+
+// Выбор данных регистра
+always @(*) begin
+    if (state == SEND_DATAMODE) begin
+        register_data = DATAMODE_SET;
+    end else begin
+        case (reg_counter)
+            4'd0: register_data = CRA;
+            4'd1: register_data = CRB;
+            4'd2: register_data = CRC;
+            4'd3: register_data = CRD;
+            4'd4: register_data = CRE;
+            4'd5: register_data = CRF;
+            4'd6: register_data = CRG;
+            4'd7: register_data = CRH;
+            default: register_data = 8'd0;
         endcase
     end
 end
@@ -251,7 +144,8 @@ adc733 adc_inst (
     .channel(channel),
     .busy(busy),
     .rd_en(rd_en),
-    .word_sent(word_sent)
+    .word_sent(word_sent),
+    .captured_data(captured_data)
 );
 
 endmodule

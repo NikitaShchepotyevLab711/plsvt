@@ -6,41 +6,37 @@ module adc733 (
     input  wire        SCLK,
     input  wire        SDOFS,
     input  wire        SDO,
-    output wire        SDIFS,
+    output reg         SDIFS,
     output reg         SDI,
     output reg         SE,
 
     input  wire        sync,
     input  wire [15:0] control_word,
-    output wire        channel,
+    output reg  [2:0]  channel,
     output wire        busy,
-    output wire        rd_en,
-    output reg         word_sent
+    output reg         rd_en,
+    output reg         word_sent,
+    output reg [15:0]  captured_data 
 );
 
-reg [1:0]  state;
-reg [15:0] shift_reg;
-reg        set_delay;
-reg        prog_mode;
-reg        set_data_mode;
-reg        start_capture;
-reg        load;
-reg [3:0]  bit_cnt;
-reg [3:0]  adc_regs_cnt;
-reg        word_received;
-reg        captured_data;
-reg        second_cycle;
-
-wire       delay_done;
+reg [2:0]  state;
+reg [15:0] shift_reg; // сдвиговый регистр последовательного интерфейса 
+reg        prog_mode; // регистр, настравивающий сдвиг. регистр в режим отправки конфигурации в АЦП
+reg        start_capture; // регистр, настраивающи сдвиг. регистр в режим приема данных АЦП
+reg        load; // инициирует загрузку контрольного слова в сдвиговый регистр
+reg [3:0]  bit_cnt; // счётчик до 16 для отсчета отправляемых и принимаемых битов
+reg [3:0]  adc_regs_cnt; // счетчик до 8, считает регистры АЦП при их поочередной конфигурации
+reg        second_cycle;  // сигнал, служащий для разделения загрузки сдвигового регистра и выставления SDIFS
 
 localparam IDLE           = 3'd0;
 localparam WREG_LOAD      = 3'd1;
 localparam WREG           = 3'd2;
 localparam WORK_MODE      = 3'd3;
+localparam WAIT_FOR_SDOFS = 3'd4;
 
-assign SDIFS = load;
+assign busy = SE;
 
-always @(posedge sync or negedge rst_l) begin
+always @(posedge sync or negedge rst_l) begin // разрешающий работу АЦП сигнал SE выставляется после прихода sync навсегда
     if (!rst_l) 
         SE <= 1'b0;
     else
@@ -54,7 +50,7 @@ always @(posedge SCLK or negedge rst_l) begin
         start_capture <= 1'b0;
         bit_cnt       <= 4'b0;
         adc_regs_cnt  <= 4'h0;
-        word_received <= 1'b0;
+        rd_en <= 1'b0;
         load          <= 1'b0;
         word_sent     <= 1'b0;
         second_cycle  <= 1'b0;
@@ -68,37 +64,47 @@ always @(posedge SCLK or negedge rst_l) begin
                 load          <= 1'b0;
                 bit_cnt       <= 4'b0;
                 adc_regs_cnt  <= 4'h0;
-                word_received <= 1'b0;
+                rd_en <= 1'b0;
                 word_sent     <= 1'b0;
                 second_cycle  <= 1'b0;
+                SDIFS         <= 1'b0;
             end 
 
             WREG_LOAD: begin
                 if (!second_cycle) begin
                     second_cycle <= 1'b1;
                     state <= WREG_LOAD;
-                    load          <= 1'b0;
+                    load          <= 1'b1;
+                    SDIFS         <= 1'b0;
                 end else begin
                     second_cycle <= 1'b0;
                     state        <= WREG;
-                    load         <= 1'b1; 
+                    load         <= 1'b0; 
+                    SDIFS        <= 1'b1;
                 end
                 
                 prog_mode     <= 1'b1; 
                 start_capture <= 1'b0;   
                 bit_cnt       <= 4'b0;  
-                word_received <= 1'b0;    
+                rd_en <= 1'b0;    
                 word_sent     <= 1'b0;
             end
 
             WREG: begin
-                prog_mode     <= 1'b1; 
+                SDIFS         <= 1'b0; 
                 start_capture <= 1'b0;        
                 load          <= 1'b0;
-                word_received <= 1'b0; 
+                rd_en <= 1'b0; 
+                prog_mode     <= 1'b1; 
                 if (adc_regs_cnt == 4'h8) begin // 9 раз повторяется это состояние вместе с предыдущим, записывая конфигурацию во все 8 регистров АЦП, а после переводя АЦП в Data mode
-                    state <= SDOFS ? WORK_MODE : WREG;
-                    bit_cnt <= 1'b0;
+                    if (bit_cnt == 4'hf) begin
+                        state <= SDOFS ? WORK_MODE : WREG;
+                        word_sent <= 1'b1;
+                    end
+                    else begin
+                        bit_cnt       <= bit_cnt + 1'b1;
+                        word_sent     <= 1'b0;
+                    end
                 end
                 else begin
                     if (bit_cnt == 4'hf) begin
@@ -116,17 +122,31 @@ always @(posedge SCLK or negedge rst_l) begin
             end
 
             WORK_MODE: begin
-                if (bit_cnt == 4'hf)
-                    word_received <= 1'b1;
-                else
-                    word_received <= 1'b0;
+                if (bit_cnt == 4'hf) begin
+                    rd_en <= 1'b1;
+                    state         <= WAIT_FOR_SDOFS;
+                    if (channel < 5)
+                        channel <= channel + 1'b1;
+                    else
+                        channel <= 1'b0;
+                end
+                else begin
+                    rd_en <= 1'b0;
+                    bit_cnt       <= bit_cnt + 1'b1;
+                    state         <= WORK_MODE;
+                end
 
-                state         <= WORK_MODE;
                 prog_mode     <= 1'b0; 
                 start_capture <= 1'b1;        
-                load          <= 1'b0;   
-                bit_cnt       <= 4'b0;
+                load          <= 1'b0; 
                 word_sent     <= 1'b0;
+            end
+
+            WAIT_FOR_SDOFS: begin
+                bit_cnt       <= 1'b0;
+                start_capture <= 1'b0;
+                state         <= SDOFS ? WORK_MODE : WAIT_FOR_SDOFS;
+                rd_en <= 1'b0;
             end
 
             default: begin
@@ -136,7 +156,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 load          <= 1'b0;
                 bit_cnt       <= 4'b0;
                 adc_regs_cnt  <= 4'h0;
-                word_received <= 1'b0;
+                rd_en <= 1'b0;
                 word_sent     <= 1'b0;
             end
         endcase
@@ -147,43 +167,29 @@ always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         shift_reg     <= 1'b0;
         captured_data <= 1'b0;
-//        SDIFS         <= 1'b0;
         SDI           <= 1'b0;
     end else begin
 
         if (prog_mode) begin // приходит команда работы режима программирования АЦП
             if (load) begin
                 shift_reg <= control_word; // загрузка программного слова в сдвиговый регистр последовательного интерфейса
-//                SDIFS     <= 1'b1;
                 SDI       <= 1'b0;
             end
             else begin
                 shift_reg <= {shift_reg[14:0], 1'b0}; // отправка программного слова в АЦП
                 SDI       <= shift_reg[15]; 
-//                SDIFS     <= 1'b0;
             end
         end
-        else if (start_capture) begin
-            SDI <= 0;
-            if (word_received) begin
+        else if (start_capture) begin // приходит сигнал о начале приема данных от АЦП
+            SDI <= 0;                 // при этом в АЦП мы ничего не отправляем  
+            if (rd_en) begin  // по истечении 16 тактов выставляется сигнал rd_en, 16битное слово от АЦП сохраняется
                 shift_reg <= 16'b0;
                 captured_data <= shift_reg;
             end
             else
-                shift_reg <= {shift_reg[14:0], SDO};   
+                shift_reg <= SDOFS ? 16'b0 : {shift_reg[14:0], SDO};   
         end
     end
 end
 
-/*
-delay #(
-    .FREQ_MHZ(12),
-    .DELAY_US(127)
-) delay_inst (
-    .clk(clk),
-    .rst_l(rst_l),
-    .delay_done(delay_done),
-    .enable(set_delay)
-);
-*/
 endmodule
