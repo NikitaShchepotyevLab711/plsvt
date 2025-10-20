@@ -85,10 +85,12 @@ always @(posedge SCLK or negedge rst_l) begin
             
             SEND_WORD: begin
                 if (word_sent) begin
-                    if (reg_counter == 4'd8) begin
+                    if (reg_counter == 4'd7) begin
                         state <= SEND_DATAMODE;
+                        op_mode <= 1'b1;
                     end else begin
                         reg_counter <= reg_counter + 1;
+                        op_mode <= 1'b0;
                     end
                 end
             end
@@ -145,7 +147,8 @@ adc733 adc_inst (
     .busy(busy),
     .rd_en(rd_en),
     .word_sent(word_sent),
-    .captured_data(captured_data)
+    .captured_data(captured_data),
+    .operation_mode(operation_mode)
 );
 
 endmodule

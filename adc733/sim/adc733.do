@@ -9,4 +9,4 @@ vsim -debugDB -fsmdebug -gui work.tb_adc733
 
 do {wave.do}
 
-run 100us
+run 1000us
