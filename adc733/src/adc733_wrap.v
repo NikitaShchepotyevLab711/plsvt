@@ -10,8 +10,11 @@ module adc733_wrap (
     output wire        SDI,
     output wire        SE,  
 
-    input  wire        sync,
-    output reg  [15:0] data_o 
+    input  wire        SYNC,
+    output reg  [15:0] DATA_O, 
+    output reg         RD_EN,
+    output reg         OP_MODE,
+    output reg  [2:0]  CHANNEL
 );
 
 wire [15:0] control_word;
@@ -32,6 +35,11 @@ reg  [3:0]  cnt;
 reg         op_mode; // 0 = programm, 1 = data_mode
 wire        word_sent;
 wire [15:0] captured_data;
+wire        adc_rd_en;
+wire        adc_operation_mode;
+wire        adc_busy;
+wire [2:0]  adc_channel;
+reg         sync;
 
 localparam IDLE          = 2'd0;
 localparam SEND_WORD     = 2'd1;
@@ -64,10 +72,18 @@ assign control_word = {op_mode, 1'b1, 6'b000, register_data};
 reg [3:0] reg_counter;
 
 always @(posedge clk or negedge rst_l) begin
-    if (!rst_l)
-        data_o <= 4'd0;
-    else
-        data_o <= captured_data;
+    if (!rst_l) begin
+        DATA_O      <= 4'd0;
+        RD_EN       <= 1'b0;
+        OP_MODE     <= 1'b0;
+        CHANNEL     <= 3'b0;
+    end
+    else begin
+        DATA_O  <= captured_data;
+        RD_EN   <= adc_rd_en;
+        OP_MODE <= adc_operation_mode;
+        CHANNEL <= adc_channel;
+    end
 end
 
 always @(posedge SCLK or negedge rst_l) begin
@@ -75,7 +91,9 @@ always @(posedge SCLK or negedge rst_l) begin
         state       <= IDLE;
         reg_counter <= 4'd0;
         op_mode     <= 1'b0;
+        sync        <= 1'b0;
     end else begin
+        sync    <= SYNC;
         case (state)
             IDLE: begin
                 reg_counter <= 4'd0;
@@ -131,24 +149,28 @@ always @(*) begin
 end
 
 adc733 adc_inst (
-    .clk(clk),
-    .rst_l(rst_l),
+    .clk           (clk               ),
+    .rst_l         (rst_l             ),
 
     // serial port //
-    .SCLK(SCLK),
-    .SDOFS(SDOFS),
-    .SDO(SDO),
-    .SDIFS(SDIFS),
-    .SDI(SDI),
-    .SE(SE),
-    .sync(sync),
-    .control_word(control_word),
-    .channel(channel),
-    .busy(busy),
-    .rd_en(rd_en),
-    .word_sent(word_sent),
-    .captured_data(captured_data),
-    .operation_mode(operation_mode)
+    .SCLK          (SCLK              ),
+    .SDOFS         (SDOFS             ),
+    .SDO           (SDO               ),
+    .SDIFS         (SDIFS             ),
+    .SDI           (SDI               ),
+    .SE            (SE                ),
+
+    // internal signals //
+    .sync          (sync              ),
+    .control_word  (control_word      ),
+    .word_sent     (word_sent         ),
+    .captured_data (captured_data     ),
+
+    // output signals //
+    .channel       (adc_channel       ),
+    .busy          (adc_busy          ),
+    .rd_en         (adc_rd_en         ),
+    .operation_mode(adc_operation_mode)
 );
 
 endmodule

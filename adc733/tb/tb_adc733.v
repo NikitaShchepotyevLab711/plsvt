@@ -25,7 +25,7 @@ adc733_wrap dut (
     .SDIFS(SDIFS),
     .SDI(SDI),
     .SE(SE),
-    .sync(sync)
+    .SYNC(sync)
 ); 
 
 reg adc_clk;
@@ -146,6 +146,7 @@ always begin
     if (SE) begin
         SCLK = 0;
         forever #61.035 SCLK = ~SCLK;  // 8.192 MHz
+        //forever #122.07 SCLK = ~SCLK; 
     end else begin
         SCLK = 0;
         wait(SE); 
