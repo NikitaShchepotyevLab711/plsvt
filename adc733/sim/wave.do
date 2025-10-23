@@ -13,6 +13,8 @@ add wave -noupdate /tb_adc733/dut/adc_inst/sync
 add wave -noupdate -radix hexadecimal /tb_adc733/dut/adc_inst/control_word
 add wave -noupdate /tb_adc733/dut/adc_inst/word_sent
 add wave -noupdate /tb_adc733/send_adc_data/ch1
+add wave -noupdate /tb_adc733/dut/adc_inst/rcvd_words
+add wave -noupdate /tb_adc733/dut/adc_inst/state
 add wave -noupdate /tb_adc733/dut/adc_inst/sdofs_counter
 add wave -noupdate /tb_adc733/dut/adc_inst/captured_data
 add wave -noupdate /tb_adc733/dut/adc_inst/rd_en
@@ -23,7 +25,7 @@ add wave -noupdate /tb_adc733/dut/RD_EN
 add wave -noupdate /tb_adc733/dut/OP_MODE
 add wave -noupdate /tb_adc733/dut/CHANNEL
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {244451 ns} 0}
+WaveRestoreCursors {{Cursor 1} {843584 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 267
 configure wave -valuecolwidth 123
@@ -39,4 +41,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {55911 ns} {390225 ns}
+WaveRestoreZoom {823515 ns} {1009289 ns}

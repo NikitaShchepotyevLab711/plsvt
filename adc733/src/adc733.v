@@ -10,26 +10,26 @@ module adc733 (
     output reg         SDI,
     output wire        SE,
 
-    input  wire        sync,
-    input  wire [15:0] control_word,
-    output wire  [2:0] channel,
-    output wire        busy,
-    output reg         rd_en,
-    output reg         word_sent,
-    output reg         operation_mode,
-    output reg [15:0]  captured_data 
+    input  wire        sync,            //импульс - команда для захвата данных с 6 каналов
+    input  wire [15:0] control_word,    //контрольное слово (конфигурация регистров АЦП)
+    output wire  [2:0] channel,         //номер канала, из которого выводится значение на данный момент
+    output wire        busy,            //сигнал активности модуля
+    output reg         rd_en,           //импульс, сообщающий о новом полученном значении
+    output reg         word_sent,       //импульс, сообщающий об отправленном значении
+    output reg         operation_mode,  //высокий уровень - режим захвата данных, низкий - режим программирования 
+    output reg  [15:0] captured_data    //полученное значение из АЦП
 );
 
 reg [2:0]  state;
-reg [15:0] shift_reg; // сдвиговый регистр последовательного интерфейса 
-reg        prog_mode; // регистр, настравивающий сдвиг. регистр в режим отправки конфигурации в АЦП
+reg [15:0] shift_reg;     // сдвиговый регистр последовательного интерфейса 
+reg        prog_mode;     // регистр, настравивающий сдвиг. регистр в режим отправки конфигурации в АЦП
 reg        start_capture; // регистр, настраивающи сдвиг. регистр в режим приема данных АЦП
-reg        load; // инициирует загрузку контрольного слова в сдвиговый регистр
-reg [3:0]  bit_cnt; // счётчик до 16 для отсчета отправляемых и принимаемых битов
-reg [3:0]  adc_regs_cnt; // счетчик до 8, считает регистры АЦП при их поочередной конфигурации
+reg        load;          // инициирует загрузку контрольного слова в сдвиговый регистр
+reg [3:0]  bit_cnt;       // счётчик до 16 для отсчета отправляемых и принимаемых битов
+reg [3:0]  adc_regs_cnt;  // счетчик до 8, считает регистры АЦП при их поочередной конфигурации
 reg        second_cycle;  // сигнал, служащий для разделения загрузки сдвигового регистра и выставления SDIFS
-reg [2:0]  sdofs_counter;
-reg [2:0]  rcvd_words;
+reg [2:0]  sdofs_counter; // постоянно считает импульсы sdofs для контроля номера канала
+reg [2:0]  rcvd_words;    // счётчик полученных значений (от 0 до 5)
 
 localparam IDLE            = 3'd0;
 localparam WREG_LOAD       = 3'd1;
@@ -43,6 +43,7 @@ assign busy = SE;
 assign SE = 1'b1;
 assign channel = sdofs_counter;
 
+// конечный автомат управления захватом данных и их выдачей //
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         state          <= 3'b0;
@@ -55,7 +56,8 @@ always @(posedge SCLK or negedge rst_l) begin
         word_sent      <= 1'b0;
         second_cycle   <= 1'b0;
         operation_mode <= 1'b0;
-        rcvd_words <= 3'd0;
+        rcvd_words     <= 3'd0;
+        SDIFS          <= 1'b0;
     end
     else begin
         case (state)
@@ -71,7 +73,6 @@ always @(posedge SCLK or negedge rst_l) begin
                 second_cycle   <= 1'b0;
                 SDIFS          <= 1'b0;
                 operation_mode <= 1'b0;
-//                channel        <= 1'b0;
             end 
 
             WREG_LOAD: begin
@@ -132,10 +133,6 @@ always @(posedge SCLK or negedge rst_l) begin
                 if (bit_cnt == 4'hf) begin
                     rd_en <= 1'b1;
                     state         <= WAIT_FOR_SDOFS;
-//                    if (channel < 5)
-//                        channel <= channel + 1'b1;
-//                    else
-//                        channel <= 1'b0;
                 end
                 else begin
                     rd_en <= 1'b0;
@@ -206,6 +203,7 @@ always @(posedge SCLK or negedge rst_l) begin
     end
 end
 
+// счетчик по стробам sdofs для понимания номера канала //
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         sdofs_counter <= 3'd0;
@@ -222,6 +220,7 @@ always @(posedge SCLK or negedge rst_l) begin
     end
 end
 
+// сдвиговый регистр последовтельного интерфейса и логика выдачи и приема данных //
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         shift_reg     <= 1'b0;

@@ -10,11 +10,11 @@ module adc733_wrap (
     output wire        SDI,
     output wire        SE,  
 
-    input  wire        SYNC,
-    output reg  [15:0] DATA_O, 
-    output wire        RD_EN,
-    output wire        OP_MODE,
-    output reg  [2:0]  CHANNEL
+    input  wire        SYNC,    //импульс - команда для захвата данных с 6 каналов
+    output reg  [15:0] DATA_O,  //полученное значение из АЦП
+    output wire        RD_EN,   //импульс, сообщающий о новом полученном значении
+    output wire        OP_MODE, //высокий уровень - режим захвата данных, низкий - режим программирования 
+    output reg  [2:0]  CHANNEL  //номер канала, из которого выводится значение на данный момент
 );
 
 // регистры и провода для конфигурирования АЦП //
@@ -63,10 +63,10 @@ wire [2:0]  adc_channel;
 reg         sync;
 
 reg  [3:0]  state;
+
 localparam IDLE          = 2'd0;
 localparam SEND_WORD     = 2'd1;
 localparam SEND_DATAMODE = 2'd2;
-localparam DATAMODE      = 2'd3;
 
 reg [3:0] reg_counter;
 reg adc_rd_en_r;
@@ -76,6 +76,7 @@ wire sync_pulse;
 
 assign control_word = {op_mode, 1'b1, 6'b000, register_data};
 
+// пересинхронизация импульса sync в домен SCLK из clk //
 pulse_to_toggle pulse_to_toggle_inst (
     .clk(clk),
     .rst(rst_l),
@@ -90,9 +91,11 @@ sync2_toggle_to_pulse toggle_to_pulse_inst (
     .pulse(sync_pulse)
 );
 
-front_detector front_detector_rden   (clk, rst_l, adc_rd_en_r, RD_EN);
-sync2 i_sync2_opmode (clk, rst_l, adc_operation_mode, OP_MODE);
+// пересинхронизация rd_en и op_mode в домен clk из SCLK //
+front_detector front_detector_rden   (clk, rst_l, adc_rd_en_r, RD_EN); // 3 триггера и детектор перепада уровня
+sync2 i_sync2_opmode (clk, rst_l, adc_operation_mode, OP_MODE); // 2 триггера
 
+// пересинхронизация данных и канала в домен clk из SCLK //
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
         DATA_O      <= 16'd0;
@@ -104,8 +107,10 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
+// задержка на такт rd_en, чтобы в домене clk этот сигнал не опережал данные //
 always @(posedge SCLK or negedge rst_l) adc_rd_en_r <= !rst_l ? 1'b0 : adc_rd_en; 
 
+// конечный автомат, задающий порядок действий прошивки АЦП и перехода в рабочий режим //
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         state       <= IDLE;
@@ -131,23 +136,14 @@ always @(posedge SCLK or negedge rst_l) begin
                 end
             end
             
-            SEND_DATAMODE: begin
-                op_mode <= 1'b1;
-                if (word_sent && SDOFS) begin
-                    state <= DATAMODE;
-                end
-            end
-            
-            DATAMODE: begin
-
-            end
+            SEND_DATAMODE: op_mode <= 1'b1;
             
             default: state <= IDLE;
         endcase
     end
 end
 
-// Выбор данных регистра
+// Выбор данных регистра //
 always @(*) begin
     if (state == SEND_DATAMODE) begin
         register_data = DATAMODE_SET;
