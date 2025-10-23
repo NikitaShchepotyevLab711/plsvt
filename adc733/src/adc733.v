@@ -12,7 +12,7 @@ module adc733 (
 
     input  wire        sync,
     input  wire [15:0] control_word,
-    output reg  [2:0]  channel,
+    output wire  [2:0] channel,
     output wire        busy,
     output reg         rd_en,
     output reg         word_sent,
@@ -41,6 +41,7 @@ localparam WAIT_FOR_1ST_CH = 3'd6;
 
 assign busy = SE;
 assign SE = 1'b1;
+assign channel = sdofs_counter;
 
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
@@ -70,7 +71,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 second_cycle   <= 1'b0;
                 SDIFS          <= 1'b0;
                 operation_mode <= 1'b0;
-                channel        <= 1'b0;
+//                channel        <= 1'b0;
             end 
 
             WREG_LOAD: begin
@@ -131,10 +132,10 @@ always @(posedge SCLK or negedge rst_l) begin
                 if (bit_cnt == 4'hf) begin
                     rd_en <= 1'b1;
                     state         <= WAIT_FOR_SDOFS;
-                    if (channel < 5)
-                        channel <= channel + 1'b1;
-                    else
-                        channel <= 1'b0;
+//                    if (channel < 5)
+//                        channel <= channel + 1'b1;
+//                    else
+//                        channel <= 1'b0;
                 end
                 else begin
                     rd_en <= 1'b0;

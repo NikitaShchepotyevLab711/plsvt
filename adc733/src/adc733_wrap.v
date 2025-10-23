@@ -12,14 +12,14 @@ module adc733_wrap (
 
     input  wire        SYNC,
     output reg  [15:0] DATA_O, 
-    output reg         RD_EN,
-    output reg         OP_MODE,
+    output wire        RD_EN,
+    output wire        OP_MODE,
     output reg  [2:0]  CHANNEL
 );
 
+// регистры и провода для конфигурирования АЦП //
 wire [15:0] control_word;
 reg  [7:0]  register_data;
-wire [2:0] channel;
 wire [7:0] CRA;
 wire [7:0] CRB;
 wire [7:0] CRC;
@@ -30,21 +30,15 @@ wire [7:0] CRG;
 wire [7:0] CRH;
 wire [7:0] DATAMODE_SET;
 
-reg  [3:0]  state;
-reg  [3:0]  cnt;
-reg         op_mode; // 0 = programm, 1 = data_mode
-wire        word_sent;
-wire [15:0] captured_data;
-wire        adc_rd_en;
-wire        adc_operation_mode;
-wire        adc_busy;
-wire [2:0]  adc_channel;
-reg         sync;
-
-localparam IDLE          = 2'd0;
-localparam SEND_WORD     = 2'd1;
-localparam SEND_DATAMODE = 2'd2;
-localparam DATAMODE      = 2'd3;
+assign CRA          = 8'h0;
+assign CRB          = 8'h1; //деление внешней MCLK на 2 и получение SCLK = 16.384/2 = 8.192 МГц
+assign CRC          = 8'h2;
+assign CRD          = 8'h3;
+assign CRE          = 8'h4;
+assign CRF          = 8'h5;
+assign CRG          = 8'h6;// узнать про режим
+assign CRH          = 8'h7; 
+assign DATAMODE_SET = 8'h8;
 
 /*
 assign CRA          = 8'b0;
@@ -58,42 +52,66 @@ assign CRH          = 8'b0;
 assign DATAMODE_SET = 8'b1;
 */
 
-assign CRA          = 8'h0;
-assign CRB          = 8'h1; //деление внешней MCLK на 2 и получение SCLK = 16.384/2 = 8.192 МГц
-assign CRC          = 8'h2;
-assign CRD          = 8'h3;
-assign CRE          = 8'h4;
-assign CRF          = 8'h5;
-assign CRG          = 8'h6;// узнать про режим
-assign CRH          = 8'h7; 
-assign DATAMODE_SET = 8'h8;
+// регистры и провода для захвата данных и контроля работы модуля adc733 //
+reg         op_mode; // 0 = programm, 1 = data_mode
+wire        word_sent;
+wire [15:0] captured_data;
+wire        adc_rd_en;
+wire        adc_operation_mode;
+wire        adc_busy;
+wire [2:0]  adc_channel;
+reg         sync;
+
+reg  [3:0]  state;
+localparam IDLE          = 2'd0;
+localparam SEND_WORD     = 2'd1;
+localparam SEND_DATAMODE = 2'd2;
+localparam DATAMODE      = 2'd3;
+
+reg [3:0] reg_counter;
+reg adc_rd_en_r;
+
+wire sync_toggle;
+wire sync_pulse;
 
 assign control_word = {op_mode, 1'b1, 6'b000, register_data};
-reg [3:0] reg_counter;
+
+pulse_to_toggle pulse_to_toggle_inst (
+    .clk(clk),
+    .rst(rst_l),
+    .pulse(SYNC),
+    .toggle(sync_toggle)
+);
+
+sync2_toggle_to_pulse toggle_to_pulse_inst (
+    .clk(SCLK),
+    .rst(rst_l),
+    .toggle(sync_toggle),
+    .pulse(sync_pulse)
+);
+
+front_detector front_detector_rden   (clk, rst_l, adc_rd_en_r, RD_EN);
+sync2 i_sync2_opmode (clk, rst_l, adc_operation_mode, OP_MODE);
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        DATA_O      <= 4'd0;
-        RD_EN       <= 1'b0;
-        OP_MODE     <= 1'b0;
+        DATA_O      <= 16'd0;
         CHANNEL     <= 3'b0;
     end
-    else begin
+    else if (RD_EN) begin
         DATA_O  <= captured_data;
-        RD_EN   <= adc_rd_en;
-        OP_MODE <= adc_operation_mode;
         CHANNEL <= adc_channel;
     end
 end
+
+always @(posedge SCLK or negedge rst_l) adc_rd_en_r <= !rst_l ? 1'b0 : adc_rd_en; 
 
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         state       <= IDLE;
         reg_counter <= 4'd0;
         op_mode     <= 1'b0;
-        sync        <= 1'b0;
     end else begin
-        sync    <= SYNC;
         case (state)
             IDLE: begin
                 reg_counter <= 4'd0;
@@ -161,7 +179,7 @@ adc733 adc_inst (
     .SE            (SE                ),
 
     // internal signals //
-    .sync          (sync              ),
+    .sync          (sync_pulse        ),
     .control_word  (control_word      ),
     .word_sent     (word_sent         ),
     .captured_data (captured_data     ),

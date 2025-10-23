@@ -145,8 +145,7 @@ end
 always begin
     if (SE) begin
         SCLK = 0;
-        forever #61.035 SCLK = ~SCLK;  // 8.192 MHz
-        //forever #122.07 SCLK = ~SCLK; 
+        forever #(61.035*4) SCLK = ~SCLK;  // 8.192 MHz
     end else begin
         SCLK = 0;
         wait(SE); 
@@ -172,7 +171,7 @@ initial begin
         begin
             sync = 0;
             forever begin  
-            #150000;
+            #(333333/2); //  sync будет с частотой максимум 300 Гц, но тут для наглядности 3 или 6 КГц
             @(posedge clk);
             sync = 1;
             @(posedge clk);
