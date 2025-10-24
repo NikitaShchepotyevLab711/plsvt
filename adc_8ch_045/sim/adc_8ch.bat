@@ -1,0 +1,1 @@
+questasim -do adc_8ch.do
