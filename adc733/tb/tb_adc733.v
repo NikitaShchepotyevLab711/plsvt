@@ -145,7 +145,7 @@ end
 always begin
     if (SE) begin
         SCLK = 0;
-        forever #(61.035*4) SCLK = ~SCLK;  // 8.192 MHz
+        forever #(61.035) SCLK = ~SCLK;  // 8.192 MHz
     end else begin
         SCLK = 0;
         wait(SE); 

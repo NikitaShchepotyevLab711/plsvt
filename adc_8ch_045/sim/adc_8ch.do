@@ -10,4 +10,4 @@ vsim -debugDB -fsmdebug -gui work.tb_adc_8ch_045
 
 do {wave.do}
 
-run 1000us
+run 500us
