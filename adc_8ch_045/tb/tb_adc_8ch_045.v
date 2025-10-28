@@ -127,10 +127,10 @@ task send_adc_data;
     integer i;
     begin
         for (i = 15; i >= 0; i = i - 1) begin
-            if (i >= 12)
+            if (i >= 13)
                 SDO = 0;
             else
-                SDO = ch1[i];
+                SDO = ch1[i-1];
 
             if (i == 0)
                 SDO = 1'hz;
