@@ -26,9 +26,9 @@ adc_8ch_045 dut (
     .CS_ADC(),
     .CD_MUX(),
     .DIN(),
-    .channel(channel),
+    .CHANNEL(channel),
     
-    .sync(sync)
+    .SYNC(sync)
 ); 
 
 reg adc_clk;
@@ -142,7 +142,7 @@ endtask
 
 initial begin
     forever begin
-        @(posedge dut.start_capture);
+        @(posedge dut.data_mode);
         send_adc_data(ch1_sample);
     end
 end
@@ -152,11 +152,11 @@ initial begin
         begin
             rst_l = 1;
             sync = 0;
-            repeat(3)@(negedge clk);
+            repeat(3)@(posedge clk);
             rst_l = 0;
-            repeat(3)@(negedge clk);
+            repeat(3)@(posedge clk);
             rst_l = 1;
-            repeat(3)@(negedge clk);
+            repeat(3)@(posedge clk);
             sync = 1;
             @(posedge clk);
             sync = 0;  
@@ -167,9 +167,9 @@ initial begin
             sync = 0;
             forever begin  
             #(333333/4); //  sync будет с частотой максимум 300 Гц, но тут для наглядности 3 или 6 КГц
-            @(negedge clk);
+            @(posedge clk);
             sync = 1;
-            @(negedge clk);
+            @(posedge clk);
             sync = 0;     
         end
         end
