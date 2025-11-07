@@ -100,7 +100,7 @@ task send_adc_data;
             
             if (i == 24) begin
                 drdy <= 1'b1;
-                dout = ch1[i];
+                dout = 1'b0;
                 @(posedge sclk); drdy <= 1'b0;
             end
         end
@@ -115,10 +115,7 @@ initial begin
     
     forever begin
         @(posedge adc_clk);
-        if (ch1_sample !== prev_ch1_sample) begin
-            prev_ch1_sample = ch1_sample;
-            send_adc_data(ch1_sample);
-        end
+        send_adc_data(ch1_sample);
     end
 end
 

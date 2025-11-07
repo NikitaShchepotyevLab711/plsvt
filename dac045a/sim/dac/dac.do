@@ -11,4 +11,4 @@ vsim -debugDB work.dac_tb
 
 do {wave.do}
 
-run 3000ms
+run 30ms

@@ -269,6 +269,7 @@ always @(posedge clk or negedge rst_l) begin
             end
 
             WAIT_FOR_SYNC: begin
+                start_capture <= 1'b0;
                 if (sync) 
                     state <= WAIT_FOR_DRDY;
                 else
