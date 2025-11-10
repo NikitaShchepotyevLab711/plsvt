@@ -37,7 +37,7 @@ wire 	    geqth2;
 
 wire RDB_buf, WRB_buf;
 
-codegen #(.DATA_WIDTH(8)) codegen_inst (
+vsi_codegen #(.DATA_WIDTH(8)) vsi_codegen_inst (
 	.clk(clk),
 	.rst_l(rst_l),
 	.data(data_inf),

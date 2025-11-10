@@ -136,12 +136,6 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
-clk_divider3 clkdiv_inst (
-    .clk_i(clk),
-    .clk_o(SCK),
-    .rst_l(rst_l),
-    .strb(strb),
-    .enable(SCK_en)    
-);
-    
+clk_divider3 #(.DIV(3)) clkdiv_8ch_inst (clk, rst_l, SCK_en, strb, SCK); 
+
 endmodule

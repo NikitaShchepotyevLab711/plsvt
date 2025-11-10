@@ -279,7 +279,7 @@ end
     
    
 // делитель частоты для последовательного интерфейса //
-clk_divider3 #(.DIV(2)) clkdiv_inst (clk, rst_l, 1, strb, divided_clk); 
+clk_divider3 #(.DIV(2)) clkdiv_8ch_inst (clk, rst_l, 1, strb, divided_clk); 
 
 // синхронизация (устранение расфазировки 180 градусов с глобальным clk) //
 

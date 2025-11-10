@@ -92,7 +92,7 @@ sync2_toggle_to_pulse toggle_to_pulse_inst (
 );
 
 // пересинхронизация rd_en и op_mode в домен clk из SCLK //
-front_detector front_detector_rden   (clk, rst_l, adc_rd_en_r, RD_EN); // 3 триггера и детектор перепада уровня
+front_detector adc_733_front_detector_rden   (clk, rst_l, adc_rd_en_r, RD_EN); // 3 триггера и детектор перепада уровня
 sync2 i_sync2_opmode (clk, rst_l, adc_operation_mode, OP_MODE); // 2 триггера
 
 // пересинхронизация данных и канала в домен clk из SCLK //
@@ -108,9 +108,15 @@ always @(posedge clk or negedge rst_l) begin
 end
 
 // задержка на такт rd_en, чтобы в домене clk этот сигнал не опережал данные //
-always @(posedge SCLK or negedge rst_l) adc_rd_en_r <= !rst_l ? 1'b0 : adc_rd_en; 
+always @(posedge SCLK or negedge rst_l) begin
+    if (!rst_l)
+        adc_rd_en_r <= 1'b0;
+    else
+        adc_rd_en_r <= adc_rd_en;
+end
 
 // конечный автомат, задающий порядок действий прошивки АЦП и перехода в рабочий режим //
+
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         state       <= IDLE;
@@ -138,27 +144,36 @@ always @(posedge SCLK or negedge rst_l) begin
             
             SEND_DATAMODE: op_mode <= 1'b1;
             
-            default: state <= IDLE;
+            default: begin
+                state <= IDLE;
+                op_mode <= 1'b0;
+                reg_counter <= 1'b0;
+            end
+            
         endcase
     end
 end
 
 // Выбор данных регистра //
-always @(*) begin
-    if (state == SEND_DATAMODE) begin
-        register_data = DATAMODE_SET;
+always @(posedge SCLK or negedge rst_l) begin
+    if (!rst_l) begin
+        register_data <= 8'd0;
     end else begin
-        case (reg_counter)
-            4'd0: register_data = CRA;
-            4'd1: register_data = CRB;
-            4'd2: register_data = CRC;
-            4'd3: register_data = CRD;
-            4'd4: register_data = CRE;
-            4'd5: register_data = CRF;
-            4'd6: register_data = CRG;
-            4'd7: register_data = CRH;
-            default: register_data = 8'd0;
-        endcase
+        if (state == SEND_DATAMODE) begin
+            register_data <= DATAMODE_SET;
+        end else if (state == SEND_WORD) begin
+            case (reg_counter)
+                4'd0: register_data <= CRA;
+                4'd1: register_data <= CRB;
+                4'd2: register_data <= CRC;
+                4'd3: register_data <= CRD;
+                4'd4: register_data <= CRE;
+                4'd5: register_data <= CRF;
+                4'd6: register_data <= CRG;
+                4'd7: register_data <= CRH;
+                default: register_data <= 8'd0;
+            endcase
+        end
     end
 end
 

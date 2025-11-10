@@ -35,7 +35,7 @@ spi_controller spi_inst (
     .CSn(CSn)
 );
 
-codegen #(.DATA_WIDTH(16)) codegen_inst (
+dac_codegen #(.DATA_WIDTH(16)) dac_codegen_inst (
 	.clk(clk),
 	.rst_l(rst_l),
 	.data(data_increment),

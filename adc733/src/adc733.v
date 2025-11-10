@@ -169,7 +169,6 @@ always @(posedge SCLK or negedge rst_l) begin
 
             WAIT_FOR_SDOFS: begin
                 bit_cnt        <= 1'b0;
-                start_capture  <= 1'b0;
                 if (SDOFS) begin
                     if (operation_mode == 1'b0)
                         state <= WREG_LOAD;
@@ -177,10 +176,12 @@ always @(posedge SCLK or negedge rst_l) begin
                         if (rcvd_words == 3'd6) begin
                             state <= WAIT_FOR_SYNC;
                             rcvd_words <= 3'd0;
+                            start_capture  <= 1'b0;
                         end
                         else begin
                             state <= WORK_MODE;
                             rcvd_words <= rcvd_words + 1'b1;
+                            start_capture  <= 1'b1;
                         end
                     end
                 end
