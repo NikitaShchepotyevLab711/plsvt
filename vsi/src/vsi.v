@@ -1,13 +1,13 @@
-`define DEBUG_MODE
+//`define DEBUG_MODE
 
 module vsi (
     input  wire bb_clk_in,
     input  wire rst_l,
 
     // запрос на запись в память
-    output wire RX_RAM_REQ_WR,
+//    output wire RX_RAM_REQ_WR,
     // завершение действия по запросу на запись в память
-    input  wire RX_RAM_RDY_WR,
+//    input  wire RX_RAM_RDY_WR,
 
     // линия передачи 1
     output wire DATA1,
@@ -30,9 +30,9 @@ wire [15:0] RX_BYTE_NUMBER;
 wire 	   RX_FLAG_BYTE_NUMBER_RD_EN;
 
 // запрос на запись в память
-//wire 		RX_RAM_REQ_WR;
+wire 		RX_RAM_REQ_WR;
 // завершение действия по запросу на запись в память
-//wire 		RX_RAM_RDY_WR;
+wire 		RX_RAM_RDY_WR;
 
 // выходная шина адреса
 wire  [15:0]	RX_RAM_ADDR_OUT;

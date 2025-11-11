@@ -35,8 +35,6 @@ module top (
     output wire        dac045a_csn,
 
     // vsi interface //
-    input  wire        vsi_rx_ram_req_wr,
-    output wire        vsi_rx_ram_rdy_wr,
     output wire        vsi_data1,
     output wire        vsi_data2,
     input  wire        vsi_com1,
@@ -120,11 +118,6 @@ dac045a dac_045_inst (
 vsi vsi_inst (
     .bb_clk_in    (clk),
     .rst_l        (rst_l),
-
-    // запрос на запись в память
-    .RX_RAM_REQ_WR(vsi_rx_ram_req_wr),
-    // завершение действия по запросу на запись в память
-    .RX_RAM_RDY_WR(vsi_rx_ram_rdy_wr),
 
     // линия передачи 1
     .DATA1        (vsi_data1),

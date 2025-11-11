@@ -399,7 +399,7 @@ always @(posedge SCLK or negedge rst_l) begin
 end
 
 // формирование частоты (<5MHz) со скважностью 50% и строба длительностью в такт clk
-clk_divider3 #(.DIV(3)) clkdiv_8ch_inst (clk, rst_l, 1, strb, SCLK);
+clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, 1, strb, SCLK);
 
 delay #(
     .FREQ_MHZ(12),

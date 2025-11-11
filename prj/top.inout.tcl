@@ -1,7 +1,7 @@
 ############################################################
 ###                                                         
 ###   Generated     X-Place v2.48.61                             
-###   Date/Time     10.11.2025 / 18:36:27                                 
+###   Date/Time     11.11.2025 / 15:38:17                                 
 ###                                                         
 ############################################################
 ###                                                         
@@ -16,7 +16,6 @@ set xc(inout) {
 	{ dac045a_clrn IO[26] }
 	{ dac045a_ldac IO[27] }
 	{ dac045a_csn IO[28] }
-	{ vsi_rx_ram_rdy_wr IO[29] }
 	{ vsi_data1 IO[30] }
 	{ vsi_data2 IO[31] }
 	{ adc045_start IO[16] }
@@ -28,7 +27,6 @@ set xc(inout) {
 	{ adc8ch_cd_mux IO_GCLK[22] }
 	{ adc8ch_din IO_GCLK[23] }
 	{ dac045a_sdi IO[8] }
-	{ vsi_rx_ram_req_wr IO[9] }
 	{ vsi_com1 IO[10] }
 	{ vsi_com2 IO[11] }
 	{ adc045_cs IO[12] }
@@ -50,7 +48,6 @@ set xc(inout_type) {
 	{ dac045a_clrn xci2_ob x }
 	{ dac045a_ldac xci2_ob x }
 	{ dac045a_csn xci2_ob x }
-	{ vsi_rx_ram_rdy_wr xci2_ob x }
 	{ vsi_data1 xci2_ob x }
 	{ vsi_data2 xci2_ob x }
 	{ adc045_start xci2_ob x }
@@ -62,7 +59,6 @@ set xc(inout_type) {
 	{ adc8ch_cd_mux xci2_ob x }
 	{ adc8ch_din xci2_ob x }
 	{ dac045a_sdi xci2_ib a }
-	{ vsi_rx_ram_req_wr xci2_ib a }
 	{ vsi_com1 xci2_ib a }
 	{ vsi_com2 xci2_ib a }
 	{ adc045_cs xci2_ob x }
