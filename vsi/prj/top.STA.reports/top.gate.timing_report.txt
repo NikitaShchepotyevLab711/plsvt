@@ -1,0 +1,278 @@
+Startpoint: _2175_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: DATA1 (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _2175_/clk (xci2_dffs)
+   0.058199    0.506781    2.433901    2.433901 v _2175_/q (xci2_dffs)
+   5.000000    3.592054    6.554522    8.988422 v XC_BUF_DATA1/x (xci2_ob)
+               3.592054    0.000000    8.988422 v DATA1 (out)
+                                       8.988422   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                      -8.988422   data arrival time
+---------------------------------------------------------------------------------------
+                                      16.011576   slack (MET)
+
+
+Startpoint: _2175_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: DATA2 (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _2175_/clk (xci2_dffs)
+   0.058199    0.506781    2.433901    2.433901 v _2175_/q (xci2_dffs)
+   5.000000    3.592054    6.554522    8.988422 v XC_BUF_DATA2/x (xci2_ob)
+               3.592054    0.000000    8.988422 v DATA2 (out)
+                                       8.988422   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                      -8.988422   data arrival time
+---------------------------------------------------------------------------------------
+                                      16.011576   slack (MET)
+
+
+Startpoint: _2175_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: DATA1 (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _2175_/clk (xci2_dffs)
+   0.058201    0.533917    2.247215    2.247215 ^ _2175_/q (xci2_dffs)
+   5.000000    2.603000    5.682817    7.930032 ^ XC_BUF_DATA1/x (xci2_ob)
+               2.603000    0.000000    7.930032 ^ DATA1 (out)
+                                       7.930032   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                      -7.930032   data arrival time
+---------------------------------------------------------------------------------------
+                                      17.069967   slack (MET)
+
+
+Startpoint: _2175_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: DATA2 (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _2175_/clk (xci2_dffs)
+   0.058201    0.533917    2.247215    2.247215 ^ _2175_/q (xci2_dffs)
+   5.000000    2.603000    5.682817    7.930032 ^ XC_BUF_DATA2/x (xci2_ob)
+               2.603000    0.000000    7.930032 ^ DATA2 (out)
+                                       7.930032   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                      -7.930032   data arrival time
+---------------------------------------------------------------------------------------
+                                      17.069967   slack (MET)
+
+
+Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
+            (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _2097_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
+                           0.000000   42.000000   clock network delay (ideal)
+               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
+   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[1] (ramblock_4x_swrite_sread)
+   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[1].buf_inst0/y (xci2_buf)
+   0.058214    0.528704    2.223562   47.331825 ^ _2025_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162789   49.494614 ^ _2026_/y (xci2_ao21)
+               0.528725    0.000000   49.494614 ^ _2097_/d (xci2_dffc)
+                                      49.494614   data arrival time
+
+               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
+                           0.000000   84.000000   clock network delay (ideal)
+                           0.000000   84.000000   clock reconvergence pessimism
+                                      84.000000 ^ _2097_/clk (xci2_dffc)
+                          -0.859709   83.140297   library setup time
+                                      83.140297   data required time
+---------------------------------------------------------------------------------------
+                                      83.140297   data required time
+                                     -49.494614   data arrival time
+---------------------------------------------------------------------------------------
+                                      33.645679   slack (MET)
+
+
+Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
+            (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _2098_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
+                           0.000000   42.000000   clock network delay (ideal)
+               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
+   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[2] (ramblock_4x_swrite_sread)
+   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[2].buf_inst0/y (xci2_buf)
+   0.058214    0.528704    2.223562   47.331825 ^ _2028_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162789   49.494614 ^ _2029_/y (xci2_ao21)
+               0.528725    0.000000   49.494614 ^ _2098_/d (xci2_dffc)
+                                      49.494614   data arrival time
+
+               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
+                           0.000000   84.000000   clock network delay (ideal)
+                           0.000000   84.000000   clock reconvergence pessimism
+                                      84.000000 ^ _2098_/clk (xci2_dffc)
+                          -0.859709   83.140297   library setup time
+                                      83.140297   data required time
+---------------------------------------------------------------------------------------
+                                      83.140297   data required time
+                                     -49.494614   data arrival time
+---------------------------------------------------------------------------------------
+                                      33.645679   slack (MET)
+
+
+Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
+            (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _2099_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
+                           0.000000   42.000000   clock network delay (ideal)
+               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
+   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[3] (ramblock_4x_swrite_sread)
+   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[3].buf_inst0/y (xci2_buf)
+   0.058214    0.528704    2.223562   47.331825 ^ _2031_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162789   49.494614 ^ _2032_/y (xci2_ao21)
+               0.528725    0.000000   49.494614 ^ _2099_/d (xci2_dffc)
+                                      49.494614   data arrival time
+
+               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
+                           0.000000   84.000000   clock network delay (ideal)
+                           0.000000   84.000000   clock reconvergence pessimism
+                                      84.000000 ^ _2099_/clk (xci2_dffc)
+                          -0.859709   83.140297   library setup time
+                                      83.140297   data required time
+---------------------------------------------------------------------------------------
+                                      83.140297   data required time
+                                     -49.494614   data arrival time
+---------------------------------------------------------------------------------------
+                                      33.645679   slack (MET)
+
+
+Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
+            (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _2100_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
+                           0.000000   42.000000   clock network delay (ideal)
+               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
+   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[4] (ramblock_4x_swrite_sread)
+   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[4].buf_inst0/y (xci2_buf)
+   0.058214    0.528704    2.223562   47.331825 ^ _2034_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162789   49.494614 ^ _2035_/y (xci2_ao21)
+               0.528725    0.000000   49.494614 ^ _2100_/d (xci2_dffc)
+                                      49.494614   data arrival time
+
+               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
+                           0.000000   84.000000   clock network delay (ideal)
+                           0.000000   84.000000   clock reconvergence pessimism
+                                      84.000000 ^ _2100_/clk (xci2_dffc)
+                          -0.859709   83.140297   library setup time
+                                      83.140297   data required time
+---------------------------------------------------------------------------------------
+                                      83.140297   data required time
+                                     -49.494614   data arrival time
+---------------------------------------------------------------------------------------
+                                      33.645679   slack (MET)
+
+
+Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
+            (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _2101_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
+                           0.000000   42.000000   clock network delay (ideal)
+               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
+   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[5] (ramblock_4x_swrite_sread)
+   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[5].buf_inst0/y (xci2_buf)
+   0.058214    0.528704    2.223562   47.331825 ^ _2037_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162789   49.494614 ^ _2038_/y (xci2_ao21)
+               0.528725    0.000000   49.494614 ^ _2101_/d (xci2_dffc)
+                                      49.494614   data arrival time
+
+               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
+                           0.000000   84.000000   clock network delay (ideal)
+                           0.000000   84.000000   clock reconvergence pessimism
+                                      84.000000 ^ _2101_/clk (xci2_dffc)
+                          -0.859709   83.140297   library setup time
+                                      83.140297   data required time
+---------------------------------------------------------------------------------------
+                                      83.140297   data required time
+                                     -49.494614   data arrival time
+---------------------------------------------------------------------------------------
+                                      33.645679   slack (MET)
+
+
+Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
+            (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _2102_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
+                           0.000000   42.000000   clock network delay (ideal)
+               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
+   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[6] (ramblock_4x_swrite_sread)
+   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[6].buf_inst0/y (xci2_buf)
+   0.058214    0.528704    2.223562   47.331825 ^ _2040_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162789   49.494614 ^ _2041_/y (xci2_ao21)
+               0.528725    0.000000   49.494614 ^ _2102_/d (xci2_dffc)
+                                      49.494614   data arrival time
+
+               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
+                           0.000000   84.000000   clock network delay (ideal)
+                           0.000000   84.000000   clock reconvergence pessimism
+                                      84.000000 ^ _2102_/clk (xci2_dffc)
+                          -0.859709   83.140297   library setup time
+                                      83.140297   data required time
+---------------------------------------------------------------------------------------
+                                      83.140297   data required time
+                                     -49.494614   data arrival time
+---------------------------------------------------------------------------------------
+                                      33.645679   slack (MET)
+
+

@@ -12,7 +12,7 @@ module adc045 (
     output reg         nRST,
     output reg         START,
     
-    input  wire        sync,           // сигнал синхронизации чтения данных
+    input  wire        sync,           // сигнал синхронизации чтения данных (30 Гц)
     input  wire [13:0] wreg_command,   // конфигурация АЦП (кроме битов отвечающих за номер канала)
     input  wire [1:0]  channel_choice, // номер канала. 0 и 3 - оба, 1 - первый, 2 - второй
     output reg         busy,           // сигнал активности модуля
@@ -95,7 +95,7 @@ always @(posedge clk or negedge rst_l) begin
     else begin
         if (strb) begin
         case (state)
-            IDLE: begin // по синхросигналу sync начинается работа
+            IDLE: begin // по синхронизирующему сигналу sync начинается работа
                     cnt <= 6'h0;
                     hard_wreg <= 1'b0;
                     A_MUX <= 2'b0;
@@ -162,7 +162,7 @@ always @(posedge clk or negedge rst_l) begin
                 START <= 1'b0;
             end
 
-            CH_START: begin // отправка команды START по DIN
+            CH_START: begin // отправка команды START по DIN (два способа, позже решу какой лучше)
 /*                if (cnt == 6'd23) begin
                     if (delay_done_reg) begin
                         if (DRDY) begin
@@ -258,7 +258,7 @@ always @(posedge clk or negedge rst_l) begin
                 end
             end
 
-            CH1_RESULT: begin
+            CH1_RESULT: begin // сохранения целого слова
                 case (channel_choice)
                     2'd0, 2'd2, 2'd3: state <= LOAD_WREG2;
                     2'd1: state <= WAIT_FOR_SYNC;
@@ -268,15 +268,15 @@ always @(posedge clk or negedge rst_l) begin
                 set_delay_start <= 1'b0;
             end
 
-            WAIT_FOR_SYNC: begin
-                start_capture <= 1'b0;
+            WAIT_FOR_SYNC: begin // ожидание следующего импульса Sync из верхнего модуля
+                start_capture <= 1'b0; 
                 if (sync) 
                     state <= WAIT_FOR_DRDY;
                 else
                     state <= WAIT_FOR_SYNC;
             end
 
-            WAIT_FOR_DRDY: begin
+            WAIT_FOR_DRDY: begin  // ожидание сигнала DRDY от АЦП
                 if (DRDY) begin
                     state <= CH_TX;
                 end
@@ -336,7 +336,7 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
-always @(posedge clk or negedge rst_l) begin
+always @(posedge clk or negedge rst_l) begin // автоматический сброс при включении ПЛИС
     if (!rst_l) begin
         nRST <= 1'b1;
         rst_cnt <= 4'h0;
@@ -364,7 +364,7 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
-always @(posedge SCLK or negedge rst_l) begin
+always @(posedge SCLK or negedge rst_l) begin // работа сдвигового регистра последовательного интерфейса
     if (!rst_l) begin
         shift_reg <= 0;
         captured_data <= 0;
@@ -401,6 +401,8 @@ end
 // формирование частоты (<5MHz) со скважностью 50% и строба длительностью в такт clk
 clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, 1, strb, SCLK);
 
+// данные модули обеспечивают необходимую по документации паузу 
+// после включения АЦП (первый) и для команды старт (второй) //
 delay #(
     .FREQ_MHZ(12),
     .DELAY_MS(1)
