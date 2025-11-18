@@ -1,234 +1,280 @@
-Startpoint: _399_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: RD_EN (output port)
-Path Group: path delay
+Startpoint: _443_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _420_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _399_/clk (xci2_dffcl)
-   0.058218    0.663508    2.346871    2.346871 ^ _399_/q (xci2_dffcl)
-   0.058037    0.538038    2.156443    4.503314 v _224_/y (xci2_and2ft)
-   5.000000    3.592304    6.566150   11.069464 v XC_BUF_RD_EN/x (xci2_ob)
-               3.592304    0.000000   11.069464 v RD_EN (out)
-                                      11.069464   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _443_/clk (xci2_dffcl)
+   0.058281    0.663782    2.347065 1344.347168 ^ _443_/q (xci2_dffcl)
+   0.058200    0.528132    2.270895 1346.618042 ^ _242_/y (xci2_mux2h)
+               0.528132    0.000000 1346.618042 ^ _420_/d (xci2_dffcl)
+                                    1346.618042   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _420_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -11.069464   data arrival time
+                                    1343.122192   data required time
+                                    -1346.618042   data arrival time
 ---------------------------------------------------------------------------------------
-                                      13.930535   slack (MET)
+                                      -3.495863   slack (VIOLATED)
 
 
-Startpoint: _398_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: RD_EN (output port)
-Path Group: path delay
+Startpoint: _442_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _419_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _398_/clk (xci2_dffcl)
-   0.058166    0.598182    2.050853    2.050853 v _398_/q (xci2_dffcl)
-   0.058037    0.538038    1.862333    3.913186 v _224_/y (xci2_and2ft)
-   5.000000    3.592304    6.566150   10.479336 v XC_BUF_RD_EN/x (xci2_ob)
-               3.592304    0.000000   10.479336 v RD_EN (out)
-                                      10.479336   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _442_/clk (xci2_dffcl)
+   0.058264    0.663709    2.347065 1344.347168 ^ _442_/q (xci2_dffcl)
+   0.058200    0.528132    2.270895 1346.618042 ^ _241_/y (xci2_mux2h)
+               0.528132    0.000000 1346.618042 ^ _419_/d (xci2_dffcl)
+                                    1346.618042   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _419_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -10.479336   data arrival time
+                                    1343.122192   data required time
+                                    -1346.618042   data arrival time
 ---------------------------------------------------------------------------------------
-                                      14.520663   slack (MET)
+                                      -3.495772   slack (VIOLATED)
 
 
-Startpoint: _399_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: RD_EN (output port)
-Path Group: path delay
+Startpoint: _444_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _421_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _399_/clk (xci2_dffcl)
-   0.058182    0.598245    2.050909    2.050909 v _399_/q (xci2_dffcl)
-   0.058363    0.589820    2.294780    4.345689 ^ _224_/y (xci2_and2ft)
-   5.000000    2.603000    5.697353   10.043042 ^ XC_BUF_RD_EN/x (xci2_ob)
-               2.603000    0.000000   10.043042 ^ RD_EN (out)
-                                      10.043042   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _444_/clk (xci2_dffcl)
+   0.058257    0.663677    2.347065 1344.347168 ^ _444_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617920 ^ _243_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617920 ^ _421_/d (xci2_dffcl)
+                                    1346.617920   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _421_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -10.043042   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617920   data arrival time
 ---------------------------------------------------------------------------------------
-                                      14.956957   slack (MET)
+                                      -3.495733   slack (VIOLATED)
 
 
-Startpoint: _398_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: RD_EN (output port)
-Path Group: path delay
+Startpoint: _467_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _403_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _398_/clk (xci2_dffcl)
-   0.058234    0.663577    2.346933    2.346933 ^ _398_/q (xci2_dffcl)
-   0.058363    0.589820    1.923878    4.270812 ^ _224_/y (xci2_and2ft)
-   5.000000    2.603000    5.697353    9.968164 ^ XC_BUF_RD_EN/x (xci2_ob)
-               2.603000    0.000000    9.968164 ^ RD_EN (out)
-                                       9.968164   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _467_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _467_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _225_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _403_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _403_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -9.968164   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      15.031834   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 
-Startpoint: _433_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: OP_MODE (output port)
-Path Group: path delay
+Startpoint: _468_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _404_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _433_/clk (xci2_dffcl)
-   0.058200    0.598314    2.050970    2.050970 v _433_/q (xci2_dffcl)
-   5.000000    3.592787    6.588573    8.639544 v XC_BUF_OP_MODE/x (xci2_ob)
-               3.592787    0.000000    8.639544 v OP_MODE (out)
-                                       8.639544   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _468_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _468_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _226_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _404_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _404_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -8.639544   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      16.360456   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 
-Startpoint: _419_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: CHANNEL[0] (output port)
-Path Group: path delay
+Startpoint: _469_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _405_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _419_/clk (xci2_dffcl)
-   0.058184    0.598249    2.050913    2.050913 v _419_/q (xci2_dffcl)
-   5.000000    3.592786    6.588548    8.639461 v XC_BUF_CHANNEL[0]/x (xci2_ob)
-               3.592786    0.000000    8.639461 v CHANNEL[0] (out)
-                                       8.639461   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _469_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _469_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _227_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _405_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _405_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -8.639461   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      16.360538   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 
-Startpoint: _420_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: CHANNEL[1] (output port)
-Path Group: path delay
+Startpoint: _470_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _406_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _420_/clk (xci2_dffcl)
-   0.058184    0.598249    2.050913    2.050913 v _420_/q (xci2_dffcl)
-   5.000000    3.592786    6.588548    8.639461 v XC_BUF_CHANNEL[1]/x (xci2_ob)
-               3.592786    0.000000    8.639461 v CHANNEL[1] (out)
-                                       8.639461   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _470_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _470_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _228_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _406_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _406_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -8.639461   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      16.360538   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 
-Startpoint: _421_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: CHANNEL[2] (output port)
-Path Group: path delay
+Startpoint: _471_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _407_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _421_/clk (xci2_dffcl)
-   0.058184    0.598249    2.050913    2.050913 v _421_/q (xci2_dffcl)
-   5.000000    3.592786    6.588548    8.639461 v XC_BUF_CHANNEL[2]/x (xci2_ob)
-               3.592786    0.000000    8.639461 v CHANNEL[2] (out)
-                                       8.639461   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _471_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _471_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _229_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _407_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _407_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -8.639461   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      16.360538   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 
-Startpoint: _403_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: DATA_O[0] (output port)
-Path Group: path delay
+Startpoint: _472_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _408_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _403_/clk (xci2_dffcl)
-   0.058184    0.598249    2.050913    2.050913 v _403_/q (xci2_dffcl)
-   5.000000    3.592786    6.588548    8.639461 v XC_BUF_DATA_O[0]/x (xci2_ob)
-               3.592786    0.000000    8.639461 v DATA_O[0] (out)
-                                       8.639461   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _472_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _472_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _230_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _408_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _408_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -8.639461   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      16.360538   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 
-Startpoint: _413_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: DATA_O[10] (output port)
-Path Group: path delay
+Startpoint: _473_ (rising edge-triggered flip-flop clocked by SCLK)
+Endpoint: _409_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _413_/clk (xci2_dffcl)
-   0.058184    0.598249    2.050913    2.050913 v _413_/q (xci2_dffcl)
-   5.000000    3.592786    6.588548    8.639461 v XC_BUF_DATA_O[10]/x (xci2_ob)
-               3.592786    0.000000    8.639461 v DATA_O[10] (out)
-                                       8.639461   data arrival time
+               0.000000 1342.000000 1342.000000   clock SCLK (rise edge)
+                           0.000000 1342.000000   clock network delay (ideal)
+               0.000000    0.000000 1342.000000 ^ _473_/clk (xci2_dffcl)
+   0.058183    0.663359    2.346724 1344.346802 ^ _473_/q (xci2_dffcl)
+   0.058200    0.528132    2.270781 1346.617554 ^ _231_/y (xci2_mux2h)
+               0.528132    0.000000 1346.617554 ^ _409_/d (xci2_dffcl)
+                                    1346.617554   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000 1344.000000 1344.000000   clock clk (rise edge)
+                           0.000000 1344.000000   clock network delay (ideal)
+                           0.000000 1344.000000   clock reconvergence pessimism
+                                    1344.000000 ^ _409_/clk (xci2_dffcl)
+                          -0.877822 1343.122192   library setup time
+                                    1343.122192   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                      -8.639461   data arrival time
+                                    1343.122192   data required time
+                                    -1346.617554   data arrival time
 ---------------------------------------------------------------------------------------
-                                      16.360538   slack (MET)
+                                      -3.495337   slack (VIOLATED)
 
 

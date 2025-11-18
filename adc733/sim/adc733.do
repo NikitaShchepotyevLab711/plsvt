@@ -9,9 +9,7 @@ vlog "../tb/tb_adc733.v"   \
      "../src/front_detector.v"\
      "../src/adc733.v"     
 
-
-vopt +acc tb_adc733 -o tb_opt
-vsim -debugDB -fsmdebug -gui tb_opt
+vsim -debugDB -fsmdebug -gui tb_adc733
 
 do {wave.do}
 
