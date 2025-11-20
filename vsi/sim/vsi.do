@@ -2,10 +2,10 @@ vlib work
 vmap work work
 
 vlog "../tb/vsi_suspi.v"\
- "../src/top.v"\
+ "../src/vsi.v"\
  "../src/strobe_gen.v"\
  "../src/slave_device.v"\
- "../src/codegen.v"\
+ "../src/vsi_codegen.v"\
  "../src/crc16.v"\
  "../src/mod_hi_speed_protocol_coder.v"\
  "../src/mod_hi_speed_protocol_decoder.v"\
@@ -16,7 +16,7 @@ vlog "../tb/vsi_suspi.v"\
  "../src/reset_sync.v"\
  "../src/rs_decoder_4.v"
 
-vsim -debugDB -gui work.vsi_suspi
+vsim -debugDB -fsmdebug -gui work.vsi_suspi
 
 do {wave.do}
 

@@ -1,240 +1,242 @@
-Startpoint: _501_ (rising edge-triggered flip-flop clocked by SCLK)
-Endpoint: DIN (output port clocked by clk)
-Path Group: clk
+Startpoint: _554_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _501_/clk (xci2_dff)
-   0.058233    0.506958    2.434000    2.434000 v _501_/q (xci2_dff)
-   5.000000    3.592056    6.554588    8.988588 v XC_BUF_DIN/x (xci2_ob)
-               3.592056    0.000000    8.988588 v DIN (out)
-                                       8.988588   data arrival time
+               0.000000    0.000000    0.000000 ^ _554_/clk (xci2_dffcl)
+   0.058133    0.598053    2.050737    2.050737 v _554_/q (xci2_dffcl)
+   0.058159    0.499204    2.361717    4.412455 v _464_/y (xci2_nand2ft)
+   0.058148    0.540017    1.813355    6.225810 v _465_/y (xci2_aoi21ftf)
+   5.000000    3.592320    6.566886   12.792696 v XC_BUF_SCLK/x (xci2_ob)
+               3.592320    0.000000   12.792696 v SCLK (out)
+                                      12.792696   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -8.988588   data arrival time
+                                      25.000000   data required time
+                                     -12.792696   data arrival time
 ---------------------------------------------------------------------------------------
-                                      13.011410   slack (MET)
+                                      12.207303   slack (MET)
 
 
-Startpoint: _458_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: nRST (output port clocked by clk)
-Path Group: clk
+Startpoint: _555_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _458_/clk (xci2_dffs)
-   0.058200    0.506785    2.433904    2.433904 v _458_/q (xci2_dffs)
+               0.000000    0.000000    0.000000 ^ _555_/clk (xci2_dffcl)
+   0.058271    0.663740    2.347081    2.347081 ^ _555_/q (xci2_dffcl)
+   0.058159    0.499204    1.993114    4.340194 v _464_/y (xci2_nand2ft)
+   0.058148    0.540017    1.813355    6.153549 v _465_/y (xci2_aoi21ftf)
+   5.000000    3.592320    6.566886   12.720436 v XC_BUF_SCLK/x (xci2_ob)
+               3.592320    0.000000   12.720436 v SCLK (out)
+                                      12.720436   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                     -12.720436   data arrival time
+---------------------------------------------------------------------------------------
+                                      12.279564   slack (MET)
+
+
+Startpoint: _554_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _554_/clk (xci2_dffcl)
+   0.058267    0.663720    2.347063    2.347063 ^ _554_/q (xci2_dffcl)
+   0.058241    0.528825    2.340559    4.687621 ^ _464_/y (xci2_nand2ft)
+   0.058252    0.589718    1.871219    6.558840 ^ _465_/y (xci2_aoi21ftf)
+   5.000000    2.603000    5.697326   12.256166 ^ XC_BUF_SCLK/x (xci2_ob)
+               2.603000    0.000000   12.256166 ^ SCLK (out)
+                                      12.256166   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                     -12.256166   data arrival time
+---------------------------------------------------------------------------------------
+                                      12.743833   slack (MET)
+
+
+Startpoint: _555_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _555_/clk (xci2_dffcl)
+   0.058129    0.598035    2.050721    2.050721 v _555_/q (xci2_dffcl)
+   0.058241    0.528825    2.049905    4.100626 ^ _464_/y (xci2_nand2ft)
+   0.058252    0.589718    1.871219    5.971846 ^ _465_/y (xci2_aoi21ftf)
+   5.000000    2.603000    5.697326   11.669171 ^ XC_BUF_SCLK/x (xci2_ob)
+               2.603000    0.000000   11.669171 ^ SCLK (out)
+                                      11.669171   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                     -11.669171   data arrival time
+---------------------------------------------------------------------------------------
+                                      13.330828   slack (MET)
+
+
+Startpoint: _557_ (falling edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 v _557_/clk (xci2_dfflcl)
+   0.058316    0.663923    2.449486    2.449486 ^ _557_/q (xci2_dfflcl)
+   0.058148    0.540017    2.071360    4.520846 v _465_/y (xci2_aoi21ftf)
+   5.000000    3.592320    6.566886   11.087732 v XC_BUF_SCLK/x (xci2_ob)
+               3.592320    0.000000   11.087732 v SCLK (out)
+                                      11.087732   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   24.999996   output external delay
+                                      24.999996   data required time
+---------------------------------------------------------------------------------------
+                                      24.999996   data required time
+                                     -11.087732   data arrival time
+---------------------------------------------------------------------------------------
+                                      13.912264   slack (MET)
+
+
+Startpoint: _556_ (falling edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 v _556_/clk (xci2_dfflcl)
+   0.058097    0.597904    2.158622    2.158622 v _556_/q (xci2_dfflcl)
+   0.058148    0.540017    2.242654    4.401276 v _465_/y (xci2_aoi21ftf)
+   5.000000    3.592320    6.566886   10.968162 v XC_BUF_SCLK/x (xci2_ob)
+               3.592320    0.000000   10.968162 v SCLK (out)
+                                      10.968162   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   24.999996   output external delay
+                                      24.999996   data required time
+---------------------------------------------------------------------------------------
+                                      24.999996   data required time
+                                     -10.968162   data arrival time
+---------------------------------------------------------------------------------------
+                                      14.031834   slack (MET)
+
+
+Startpoint: _556_ (falling edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 v _556_/clk (xci2_dfflcl)
+   0.058303    0.663866    2.449433    2.449433 ^ _556_/q (xci2_dfflcl)
+   0.058252    0.589718    2.346667    4.796100 ^ _465_/y (xci2_aoi21ftf)
+   5.000000    2.603000    5.697327   10.493427 ^ XC_BUF_SCLK/x (xci2_ob)
+               2.603000    0.000000   10.493427 ^ SCLK (out)
+                                      10.493427   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   24.999996   output external delay
+                                      24.999996   data required time
+---------------------------------------------------------------------------------------
+                                      24.999996   data required time
+                                     -10.493427   data arrival time
+---------------------------------------------------------------------------------------
+                                      14.506569   slack (MET)
+
+
+Startpoint: _557_ (falling edge-triggered flip-flop clocked by clk)
+Endpoint: SCLK (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 v _557_/clk (xci2_dfflcl)
+   0.058084    0.597853    2.158576    2.158576 v _557_/q (xci2_dfflcl)
+   0.058252    0.589718    2.184837    4.343413 ^ _465_/y (xci2_aoi21ftf)
+   5.000000    2.603000    5.697327   10.040740 ^ XC_BUF_SCLK/x (xci2_ob)
+               2.603000    0.000000   10.040740 ^ SCLK (out)
+                                      10.040740   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   24.999996   output external delay
+                                      24.999996   data required time
+---------------------------------------------------------------------------------------
+                                      24.999996   data required time
+                                     -10.040740   data arrival time
+---------------------------------------------------------------------------------------
+                                      14.959255   slack (MET)
+
+
+Startpoint: _523_ (rising edge-triggered flip-flop)
+Endpoint: DIN (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.589718    0.000000    0.000000 ^ _523_/clk (xci2_dff)
+   0.058170    0.506766    2.699974    2.699974 v _523_/q (xci2_dff)
+   5.000000    3.592054    6.554517    9.254491 v XC_BUF_DIN/x (xci2_ob)
+               3.592054    0.000000    9.254491 v DIN (out)
+                                       9.254491   data arrival time
+
+                          25.000000   25.000000   max_delay
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
+---------------------------------------------------------------------------------------
+                                      25.000000   data required time
+                                      -9.254491   data arrival time
+---------------------------------------------------------------------------------------
+                                      15.745508   slack (MET)
+
+
+Startpoint: _484_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: nRST (output port)
+Path Group: path delay
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+               0.000000    0.000000    0.000000 ^ _484_/clk (xci2_dffs)
+   0.058200    0.506785    2.433904    2.433904 v _484_/q (xci2_dffs)
    5.000000    3.592054    6.554524    8.988428 v XC_BUF_nRST/x (xci2_ob)
                3.592054    0.000000    8.988428 v nRST (out)
                                        8.988428   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      21.999998   data required time
+                                      25.000000   data required time
                                       -8.988428   data arrival time
 ---------------------------------------------------------------------------------------
-                                      13.011571   slack (MET)
-
-
-Startpoint: _460_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: START (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _460_/clk (xci2_dff)
-   0.058184    0.506762    2.433857    2.433857 v _460_/q (xci2_dff)
-   5.000000    3.592054    6.554516    8.988373 v XC_BUF_START/x (xci2_ob)
-               3.592054    0.000000    8.988373 v START (out)
-                                       8.988373   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -8.988373   data arrival time
----------------------------------------------------------------------------------------
-                                      13.011626   slack (MET)
-
-
-Startpoint: _457_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: RD_EN (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _457_/clk (xci2_dffcl)
-   0.058200    0.598314    2.050970    2.050970 v _457_/q (xci2_dffcl)
-   5.000000    3.592787    6.588573    8.639544 v XC_BUF_RD_EN/x (xci2_ob)
-               3.592787    0.000000    8.639544 v RD_EN (out)
-                                       8.639544   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -8.639544   data arrival time
----------------------------------------------------------------------------------------
-                                      13.360456   slack (MET)
-
-
-Startpoint: _457_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: RD_EN (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _457_/clk (xci2_dffcl)
-   0.058200    0.663432    2.346802    2.346802 ^ _457_/q (xci2_dffcl)
-   5.000000    2.603000    5.716492    8.063294 ^ XC_BUF_RD_EN/x (xci2_ob)
-               2.603000    0.000000    8.063294 ^ RD_EN (out)
-                                       8.063294   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -8.063294   data arrival time
----------------------------------------------------------------------------------------
-                                      13.936705   slack (MET)
-
-
-Startpoint: _458_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: nRST (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _458_/clk (xci2_dffs)
-   0.058200    0.533912    2.247211    2.247211 ^ _458_/q (xci2_dffs)
-   5.000000    2.603000    5.682817    7.930027 ^ XC_BUF_nRST/x (xci2_ob)
-               2.603000    0.000000    7.930027 ^ nRST (out)
-                                       7.930027   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -7.930027   data arrival time
----------------------------------------------------------------------------------------
-                                      14.069971   slack (MET)
-
-
-Startpoint: _460_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: START (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _460_/clk (xci2_dff)
-   0.058216    0.533804    2.247204    2.247204 ^ _460_/q (xci2_dff)
-   5.000000    2.603000    5.682789    7.929993 ^ XC_BUF_START/x (xci2_ob)
-               2.603000    0.000000    7.929993 ^ START (out)
-                                       7.929993   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -7.929993   data arrival time
----------------------------------------------------------------------------------------
-                                      14.070006   slack (MET)
-
-
-Startpoint: _501_ (rising edge-triggered flip-flop clocked by SCLK)
-Endpoint: DIN (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _501_/clk (xci2_dff)
-   0.058167    0.533592    2.247051    2.247051 ^ _501_/q (xci2_dff)
-   5.000000    2.603000    5.682734    7.929784 ^ XC_BUF_DIN/x (xci2_ob)
-               2.603000    0.000000    7.929784 ^ DIN (out)
-                                       7.929784   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -7.929784   data arrival time
----------------------------------------------------------------------------------------
-                                      14.070214   slack (MET)
-
-
-Startpoint: _452_/y (clock source 'SCLK')
-Endpoint: SCLK (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000   clock SCLK (fall edge)
-   0.058148    0.540017    0.000000    0.000000 v _452_/y (xci2_aoi21ftf)
-   5.000000    3.592320    6.566893    6.566893 v XC_BUF_SCLK/x (xci2_ob)
-               3.592320    0.000000    6.566893 v SCLK (out)
-                                       6.566893   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   22.000010   output external delay
-                                      22.000010   data required time
----------------------------------------------------------------------------------------
-                                      22.000010   data required time
-                                      -6.566893   data arrival time
----------------------------------------------------------------------------------------
-                                      15.433117   slack (MET)
-
-
-Startpoint: _452_/y (clock source 'SCLK')
-Endpoint: SCLK (output port clocked by clk)
-Path Group: clk
-Path Type: max
-
-        Cap        Slew       Delay        Time   Description
----------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000   clock SCLK (rise edge)
-   0.058252    0.589718    0.000000    0.000000 ^ _452_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697326    5.697326 ^ XC_BUF_SCLK/x (xci2_ob)
-               2.603000    0.000000    5.697326 ^ SCLK (out)
-                                       5.697326   data arrival time
-
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   clock reconvergence pessimism
-                          -3.000000   21.999998   output external delay
-                                      21.999998   data required time
----------------------------------------------------------------------------------------
-                                      21.999998   data required time
-                                      -5.697326   data arrival time
----------------------------------------------------------------------------------------
-                                      16.302671   slack (MET)
+                                      16.011572   slack (MET)
 
 

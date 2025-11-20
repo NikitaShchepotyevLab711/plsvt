@@ -90,189 +90,197 @@ Path Type: max
                                       17.069967   slack (MET)
 
 
-Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
-            (falling edge-triggered flip-flop clocked by bb_clk_in)
-Endpoint: _2097_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Startpoint: _2060_/q (clock source 'CLK_EN_RS_CODER')
+Endpoint: _2162_ (rising edge-triggered flip-flop clocked by bb_clk_in)
 Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
-                           0.000000   42.000000   clock network delay (ideal)
-               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
-   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[1] (ramblock_4x_swrite_sread)
-   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[1].buf_inst0/y (xci2_buf)
-   0.058214    0.528704    2.223562   47.331825 ^ _2025_/y (xci2_ao21ftf)
-   0.058209    0.528725    2.162789   49.494614 ^ _2026_/y (xci2_ao21)
-               0.528725    0.000000   49.494614 ^ _2097_/d (xci2_dffc)
-                                      49.494614   data arrival time
+               0.000000   42.000000   42.000000   clock CLK_EN_RS_CODER (fall edge)
+   0.057465    0.593740    0.000000   42.000000 v _2060_/q (xci2_dffc)
+   0.057934    0.537655    1.859679   43.859680 v _1226_/y (xci2_and2)
+   0.058164    0.538547    1.831090   45.690769 v _1227_/y (xci2_and3)
+   0.058251    0.528860    2.018883   47.709652 ^ _1228_/y (xci2_nand3)
+   0.058171    0.499237    1.934250   49.643902 v _1229_/y (xci2_nand3)
+   0.058164    0.538546    2.203198   51.847099 v _1238_/y (xci2_and3)
+   0.058344    0.529257    2.019164   53.866264 ^ _1239_/y (xci2_nand3)
+   0.058209    0.528725    2.198973   56.065239 ^ _1259_/y (xci2_ao21)
+   0.058209    0.528675    2.477101   58.542339 ^ _1260_/y (xci2_nand3fft)
+               0.528675    0.000000   58.542339 ^ _2162_/d (xci2_dffc)
+                                      58.542339   data arrival time
 
                0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
                            0.000000   84.000000   clock network delay (ideal)
                            0.000000   84.000000   clock reconvergence pessimism
-                                      84.000000 ^ _2097_/clk (xci2_dffc)
-                          -0.859709   83.140297   library setup time
-                                      83.140297   data required time
+                                      84.000000 ^ _2162_/clk (xci2_dffc)
+                          -0.859694   83.140312   library setup time
+                                      83.140312   data required time
 ---------------------------------------------------------------------------------------
-                                      83.140297   data required time
-                                     -49.494614   data arrival time
+                                      83.140312   data required time
+                                     -58.542339   data arrival time
 ---------------------------------------------------------------------------------------
-                                      33.645679   slack (MET)
+                                      24.597971   slack (MET)
 
 
-Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
-            (falling edge-triggered flip-flop clocked by bb_clk_in)
-Endpoint: _2098_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Startpoint: _2060_/q (clock source 'CLK_EN_RS_CODER')
+Endpoint: _2162_ (rising edge-triggered flip-flop clocked by bb_clk_in)
 Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
-                           0.000000   42.000000   clock network delay (ideal)
-               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
-   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[2] (ramblock_4x_swrite_sread)
-   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[2].buf_inst0/y (xci2_buf)
-   0.058214    0.528704    2.223562   47.331825 ^ _2028_/y (xci2_ao21ftf)
-   0.058209    0.528725    2.162789   49.494614 ^ _2029_/y (xci2_ao21)
-               0.528725    0.000000   49.494614 ^ _2098_/d (xci2_dffc)
-                                      49.494614   data arrival time
+               0.000000  126.000008  126.000008   clock CLK_EN_RS_CODER (rise edge)
+   0.058935    0.664696    0.000000  126.000008 ^ _2060_/q (xci2_dffc)
+   0.058466    0.590275    1.924732  127.924736 ^ _1226_/y (xci2_and2)
+   0.058236    0.589376    1.891394  129.816132 ^ _1227_/y (xci2_and3)
+   0.058149    0.499150    1.960643  131.776779 v _1228_/y (xci2_nand3)
+   0.058229    0.528762    1.998188  133.774963 ^ _1229_/y (xci2_nand3)
+   0.058236    0.589364    2.306507  136.081467 ^ _1238_/y (xci2_and3)
+   0.058056    0.498781    1.960387  138.041855 v _1239_/y (xci2_nand3)
+   0.058191    0.499237    2.201347  140.243210 v _1259_/y (xci2_ao21)
+   0.058191    0.499317    2.445262  142.688461 v _1260_/y (xci2_nand3fft)
+               0.499317    0.000000  142.688461 v _2162_/d (xci2_dffc)
+                                     142.688461   data arrival time
 
-               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
-                           0.000000   84.000000   clock network delay (ideal)
-                           0.000000   84.000000   clock reconvergence pessimism
-                                      84.000000 ^ _2098_/clk (xci2_dffc)
-                          -0.859709   83.140297   library setup time
-                                      83.140297   data required time
+               0.000000  168.000000  168.000000   clock bb_clk_in (rise edge)
+                           0.000000  168.000000   clock network delay (ideal)
+                           0.000000  168.000000   clock reconvergence pessimism
+                                     168.000000 ^ _2162_/clk (xci2_dffc)
+                          -0.611363  167.388641   library setup time
+                                     167.388641   data required time
 ---------------------------------------------------------------------------------------
-                                      83.140297   data required time
-                                     -49.494614   data arrival time
+                                     167.388641   data required time
+                                    -142.688461   data arrival time
 ---------------------------------------------------------------------------------------
-                                      33.645679   slack (MET)
+                                      24.700176   slack (MET)
 
 
-Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
-            (falling edge-triggered flip-flop clocked by bb_clk_in)
-Endpoint: _2099_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Startpoint: _2060_/q (clock source 'CLK_EN_RS_CODER')
+Endpoint: _2162_ (rising edge-triggered flip-flop clocked by bb_clk_in)
 Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
-                           0.000000   42.000000   clock network delay (ideal)
-               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
-   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[3] (ramblock_4x_swrite_sread)
-   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[3].buf_inst0/y (xci2_buf)
-   0.058214    0.528704    2.223562   47.331825 ^ _2031_/y (xci2_ao21ftf)
-   0.058209    0.528725    2.162789   49.494614 ^ _2032_/y (xci2_ao21)
-               0.528725    0.000000   49.494614 ^ _2099_/d (xci2_dffc)
-                                      49.494614   data arrival time
+               0.000000  126.000008  126.000008   clock CLK_EN_RS_CODER (rise edge)
+   0.058935    0.664696    0.000000  126.000008 ^ _2060_/q (xci2_dffc)
+   0.058169    0.499239    2.395041  128.395050 v _1085_/y (xci2_nand3ftt)
+   0.058172    0.499244    2.313456  130.708496 v _1224_/y (xci2_nand3fft)
+   0.058130    0.499077    2.121752  132.830261 v _1240_/y (xci2_or3fft)
+   0.058117    0.538356    1.810662  134.640915 v _1253_/y (xci2_and2)
+   0.058214    0.528692    2.018581  136.659500 ^ _1258_/y (xci2_ao21ftf)
+   0.058209    0.528725    2.162793  138.822296 ^ _1259_/y (xci2_ao21)
+   0.058209    0.528675    2.477094  141.299393 ^ _1260_/y (xci2_nand3fft)
+               0.528675    0.000000  141.299393 ^ _2162_/d (xci2_dffc)
+                                     141.299393   data arrival time
 
-               0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
-                           0.000000   84.000000   clock network delay (ideal)
-                           0.000000   84.000000   clock reconvergence pessimism
-                                      84.000000 ^ _2099_/clk (xci2_dffc)
-                          -0.859709   83.140297   library setup time
-                                      83.140297   data required time
+               0.000000  168.000000  168.000000   clock bb_clk_in (rise edge)
+                           0.000000  168.000000   clock network delay (ideal)
+                           0.000000  168.000000   clock reconvergence pessimism
+                                     168.000000 ^ _2162_/clk (xci2_dffc)
+                          -0.859694  167.140320   library setup time
+                                     167.140320   data required time
 ---------------------------------------------------------------------------------------
-                                      83.140297   data required time
-                                     -49.494614   data arrival time
+                                     167.140320   data required time
+                                    -141.299393   data arrival time
 ---------------------------------------------------------------------------------------
-                                      33.645679   slack (MET)
+                                      25.840927   slack (MET)
 
 
-Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
-            (falling edge-triggered flip-flop clocked by bb_clk_in)
-Endpoint: _2100_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Startpoint: _2060_/q (clock source 'CLK_EN_RS_CODER')
+Endpoint: _2162_ (rising edge-triggered flip-flop clocked by bb_clk_in)
 Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
-                           0.000000   42.000000   clock network delay (ideal)
-               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
-   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[4] (ramblock_4x_swrite_sread)
-   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[4].buf_inst0/y (xci2_buf)
-   0.058214    0.528704    2.223562   47.331825 ^ _2034_/y (xci2_ao21ftf)
-   0.058209    0.528725    2.162789   49.494614 ^ _2035_/y (xci2_ao21)
-               0.528725    0.000000   49.494614 ^ _2100_/d (xci2_dffc)
-                                      49.494614   data arrival time
+               0.000000   42.000000   42.000000   clock CLK_EN_RS_CODER (fall edge)
+   0.057465    0.593740    0.000000   42.000000 v _2060_/q (xci2_dffc)
+   0.058231    0.528777    2.452403   44.452404 ^ _1085_/y (xci2_nand3ftt)
+   0.058228    0.528759    2.287468   46.739872 ^ _1224_/y (xci2_nand3fft)
+   0.058270    0.528982    2.163073   48.902946 ^ _1240_/y (xci2_or3fft)
+   0.058283    0.589511    1.864695   50.767639 ^ _1253_/y (xci2_and2)
+   0.058186    0.499310    1.966804   52.734444 v _1258_/y (xci2_ao21ftf)
+   0.058191    0.499237    2.127194   54.861637 v _1259_/y (xci2_ao21)
+   0.058191    0.499317    2.445265   57.306904 v _1260_/y (xci2_nand3fft)
+               0.499317    0.000000   57.306904 v _2162_/d (xci2_dffc)
+                                      57.306904   data arrival time
 
                0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
                            0.000000   84.000000   clock network delay (ideal)
                            0.000000   84.000000   clock reconvergence pessimism
-                                      84.000000 ^ _2100_/clk (xci2_dffc)
-                          -0.859709   83.140297   library setup time
-                                      83.140297   data required time
+                                      84.000000 ^ _2162_/clk (xci2_dffc)
+                          -0.611363   83.388634   library setup time
+                                      83.388634   data required time
 ---------------------------------------------------------------------------------------
-                                      83.140297   data required time
-                                     -49.494614   data arrival time
+                                      83.388634   data required time
+                                     -57.306904   data arrival time
 ---------------------------------------------------------------------------------------
-                                      33.645679   slack (MET)
+                                      26.081734   slack (MET)
 
 
-Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
-            (falling edge-triggered flip-flop clocked by bb_clk_in)
-Endpoint: _2101_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Startpoint: _2060_/q (clock source 'CLK_EN_RS_CODER')
+Endpoint: _2160_ (rising edge-triggered flip-flop clocked by bb_clk_in)
 Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
-                           0.000000   42.000000   clock network delay (ideal)
-               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
-   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[5] (ramblock_4x_swrite_sread)
-   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[5].buf_inst0/y (xci2_buf)
-   0.058214    0.528704    2.223562   47.331825 ^ _2037_/y (xci2_ao21ftf)
-   0.058209    0.528725    2.162789   49.494614 ^ _2038_/y (xci2_ao21)
-               0.528725    0.000000   49.494614 ^ _2101_/d (xci2_dffc)
-                                      49.494614   data arrival time
+               0.000000   42.000000   42.000000   clock CLK_EN_RS_CODER (fall edge)
+   0.057465    0.593740    0.000000   42.000000 v _2060_/q (xci2_dffc)
+   0.057934    0.537655    1.859679   43.859680 v _1226_/y (xci2_and2)
+   0.058164    0.538547    1.831090   45.690769 v _1227_/y (xci2_and3)
+   0.058251    0.528860    2.018883   47.709652 ^ _1228_/y (xci2_nand3)
+   0.058171    0.499237    1.934250   49.643902 v _1229_/y (xci2_nand3)
+   0.058164    0.538546    2.203198   51.847099 v _1238_/y (xci2_and3)
+   0.058344    0.529257    2.019164   53.866264 ^ _1239_/y (xci2_nand3)
+   0.058209    0.528725    2.198970   56.065235 ^ _1243_/y (xci2_ao21)
+               0.528725    0.000000   56.065235 ^ _2160_/d (xci2_dffc)
+                                      56.065235   data arrival time
 
                0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
                            0.000000   84.000000   clock network delay (ideal)
                            0.000000   84.000000   clock reconvergence pessimism
-                                      84.000000 ^ _2101_/clk (xci2_dffc)
+                                      84.000000 ^ _2160_/clk (xci2_dffc)
                           -0.859709   83.140297   library setup time
                                       83.140297   data required time
 ---------------------------------------------------------------------------------------
                                       83.140297   data required time
-                                     -49.494614   data arrival time
+                                     -56.065235   data arrival time
 ---------------------------------------------------------------------------------------
-                                      33.645679   slack (MET)
+                                      27.075062   slack (MET)
 
 
-Startpoint: slave_device_inst.ramblock_4x_swrite_sread_instance
-            (falling edge-triggered flip-flop clocked by bb_clk_in)
-Endpoint: _2102_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Startpoint: _2060_/q (clock source 'CLK_EN_RS_CODER')
+Endpoint: _2161_ (rising edge-triggered flip-flop clocked by bb_clk_in)
 Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000   42.000000   42.000000   clock bb_clk_in (fall edge)
-                           0.000000   42.000000   clock network delay (ideal)
-               0.000000    0.000000   42.000000 v slave_device_inst.ramblock_4x_swrite_sread_instance/RCLKS (ramblock_4x_swrite_sread)
-   0.058227    0.444403    0.833005   42.833008 ^ slave_device_inst.ramblock_4x_swrite_sread_instance/DO1[6] (ramblock_4x_swrite_sread)
-   0.058248    0.589369    2.275257   45.108265 ^ slave_device_inst.data_buf_gen[6].buf_inst0/y (xci2_buf)
-   0.058214    0.528704    2.223562   47.331825 ^ _2040_/y (xci2_ao21ftf)
-   0.058209    0.528725    2.162789   49.494614 ^ _2041_/y (xci2_ao21)
-               0.528725    0.000000   49.494614 ^ _2102_/d (xci2_dffc)
-                                      49.494614   data arrival time
+               0.000000   42.000000   42.000000   clock CLK_EN_RS_CODER (fall edge)
+   0.057465    0.593740    0.000000   42.000000 v _2060_/q (xci2_dffc)
+   0.057934    0.537655    1.859679   43.859680 v _1226_/y (xci2_and2)
+   0.058164    0.538547    1.831090   45.690769 v _1227_/y (xci2_and3)
+   0.058251    0.528860    2.018883   47.709652 ^ _1228_/y (xci2_nand3)
+   0.058171    0.499237    1.934250   49.643902 v _1229_/y (xci2_nand3)
+   0.058164    0.538546    2.203198   51.847099 v _1238_/y (xci2_and3)
+   0.058344    0.529257    2.019164   53.866264 ^ _1239_/y (xci2_nand3)
+   0.058209    0.528725    2.198970   56.065235 ^ _1256_/y (xci2_ao21)
+               0.528725    0.000000   56.065235 ^ _2161_/d (xci2_dffc)
+                                      56.065235   data arrival time
 
                0.000000   84.000000   84.000000   clock bb_clk_in (rise edge)
                            0.000000   84.000000   clock network delay (ideal)
                            0.000000   84.000000   clock reconvergence pessimism
-                                      84.000000 ^ _2102_/clk (xci2_dffc)
+                                      84.000000 ^ _2161_/clk (xci2_dffc)
                           -0.859709   83.140297   library setup time
                                       83.140297   data required time
 ---------------------------------------------------------------------------------------
                                       83.140297   data required time
-                                     -49.494614   data arrival time
+                                     -56.065235   data arrival time
 ---------------------------------------------------------------------------------------
-                                      33.645679   slack (MET)
+                                      27.075062   slack (MET)
 
 

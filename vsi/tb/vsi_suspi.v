@@ -22,9 +22,9 @@ reg [15:0] crc_table [0:255];
 reg [15:0] current_crc;
 integer i, j;
 
-top dut (
+vsi dut (
     .bb_clk_in(bb_clk_in),
-    .rst_h(rst_h),
+    .rst_l(!rst_h),
     .DATA1(DATA1),
     .DATA2(DATA2),
     .COM1(COM1),
