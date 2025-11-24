@@ -3,7 +3,7 @@ vmap work work
 
 vlog "../tb/tb_adc_8ch_045.v"\
      "../src/adc_8ch_045.v"  \
-     "../src/clk_divider3.v" \
+     "../src/clk_divider2.v" \
      "../src/front_detector.v"\
      "../src/sync2.v"
 
