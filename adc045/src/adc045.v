@@ -66,7 +66,7 @@ wire delay_active   = (cnt == 6'd5);
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        data_o <= 1'b0;
+        data_o <= 24'b0;
         rd_en  <= 1'b0;        
     end
     else begin
@@ -89,7 +89,6 @@ always @(posedge clk or negedge rst_l) begin
         start_capture <= 1'b0;  
         load <= 1'b1;  
         busy <= 1'b0;
-        data_o <= 24'b0;
         channel <= 1'b0;
         set_delay <= 1'b0;
         delay_done_reg <= 1'b0;
@@ -319,7 +318,6 @@ always @(posedge clk or negedge rst_l) begin
                 state <= IDLE;   
                 load <= 1'b0;
                 channel <= 1'b0;
-                data_o <= 1'b0;
                 busy <= 1'b0;
                 set_delay_start <= 1'b0;
             end
