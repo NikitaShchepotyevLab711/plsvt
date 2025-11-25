@@ -89,7 +89,7 @@ initial begin
         begin
             #6000;
             mode = 1;
-            fixed_value = 16'hffff;
+            fixed_value = 16'haaaa;
         end
     join
 
