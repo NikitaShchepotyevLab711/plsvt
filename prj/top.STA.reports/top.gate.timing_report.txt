@@ -1,252 +1,319 @@
-Startpoint: _3590_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: _3592_ (rising edge-triggered flip-flop clocked by adc733_sclk)
-Path Group: adc733_sclk
+Startpoint: _3176_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3106_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000 3780.000244 3780.000244   clock clk (rise edge)
-                           0.000000 3780.000244   clock network delay (ideal)
-               0.000000    0.000000 3780.000244 ^ _3590_/clk (xci2_dffcl)
-   0.058227    0.663549    2.346951 3782.347168 ^ _3590_/q (xci2_dffcl)
-               0.663549    0.000000 3782.347168 ^ _3592_/d (xci2_dffcl)
-                                    3782.347168   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3176_/clk (xci2_dfflcl)
+   0.058316    0.663922    2.449486   33.449486 ^ _3176_/q (xci2_dfflcl)
+   0.057842    0.537252    2.156444   35.605930 v _1552_/y (xci2_nor2)
+   0.058166    0.538557    2.218663   37.824593 v _1577_/y (xci2_and3)
+   0.058070    0.538175    1.831200   39.655792 v _1578_/y (xci2_and2)
+   0.058241    0.528816    2.402203   42.057995 ^ _1604_/y (xci2_nand3)
+   0.058200    0.589476    1.871044   43.929039 ^ _1605_/y (xci2_oa21)
+               0.589476    0.000000   43.929039 ^ _3106_/d (xci2_dffcl)
+                                      43.929039   data arrival time
 
-               0.000000 3782.000244 3782.000244   clock adc733_sclk (rise edge)
-                           0.000000 3782.000244   clock network delay (ideal)
-                           0.000000 3782.000244   clock reconvergence pessimism
-                                    3782.000244 ^ _3592_/clk (xci2_dffcl)
-                          -0.918150 3781.082031   library setup time
-                                    3781.082031   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3106_/clk (xci2_dffcl)
+                          -0.896090   61.103905   library setup time
+                                      61.103905   data required time
 ---------------------------------------------------------------------------------------
-                                    3781.082031   data required time
-                                    -3782.347168   data arrival time
+                                      61.103905   data required time
+                                     -43.929039   data arrival time
 ---------------------------------------------------------------------------------------
-                                      -1.264958   slack (VIOLATED)
+                                      17.174866   slack (MET)
 
 
-Startpoint: _3590_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: _3592_ (rising edge-triggered flip-flop clocked by adc733_sclk)
-Path Group: adc733_sclk
+Startpoint: _3176_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3104_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000 3780.000244 3780.000244   clock clk (rise edge)
-                           0.000000 3780.000244   clock network delay (ideal)
-               0.000000    0.000000 3780.000244 ^ _3590_/clk (xci2_dffcl)
-   0.058173    0.598208    2.050911 3782.051025 v _3590_/q (xci2_dffcl)
-               0.598208    0.000000 3782.051025 v _3592_/d (xci2_dffcl)
-                                    3782.051025   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3176_/clk (xci2_dfflcl)
+   0.058316    0.663922    2.449486   33.449486 ^ _3176_/q (xci2_dfflcl)
+   0.057842    0.537252    2.156444   35.605930 v _1552_/y (xci2_nor2)
+   0.058166    0.538557    2.218663   37.824593 v _1577_/y (xci2_and3)
+   0.058070    0.538175    1.831200   39.655792 v _1578_/y (xci2_and2)
+   0.058248    0.528839    2.018588   41.674381 ^ _1585_/y (xci2_ao21ftf)
+   0.058200    0.528679    2.198775   43.873154 ^ _1590_/y (xci2_ao21)
+               0.528679    0.000000   43.873154 ^ _3104_/d (xci2_dffcl)
+                                      43.873154   data arrival time
 
-               0.000000 3782.000244 3782.000244   clock adc733_sclk (rise edge)
-                           0.000000 3782.000244   clock network delay (ideal)
-                           0.000000 3782.000244   clock reconvergence pessimism
-                                    3782.000244 ^ _3592_/clk (xci2_dffcl)
-                          -0.630266 3781.370117   library setup time
-                                    3781.370117   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3104_/clk (xci2_dffcl)
+                          -0.877984   61.122017   library setup time
+                                      61.122017   data required time
 ---------------------------------------------------------------------------------------
-                                    3781.370117   data required time
-                                    -3782.051025   data arrival time
+                                      61.122017   data required time
+                                     -43.873154   data arrival time
 ---------------------------------------------------------------------------------------
-                                      -0.681042   slack (VIOLATED)
+                                      17.248863   slack (MET)
 
 
-Startpoint: _3512_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3175_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3106_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _3512_/clk (xci2_dffcl)
-   0.058279    0.663773    2.347110    2.347110 ^ _3512_/q (xci2_dffcl)
-   0.058159    0.540059    2.071335    4.418445 v _3100_/y (xci2_aoi21ftf)
-   0.058200    0.540215    1.834920    6.253365 v _3104_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566959   12.820325 v XC_BUF_dac045a_sck/x (xci2_ob)
-               3.592322    0.000000   12.820325 v dac045a_sck (out)
-                                      12.820325   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3175_/clk (xci2_dfflcl)
+   0.058309    0.663894    2.449458   33.449459 ^ _3175_/q (xci2_dfflcl)
+   0.057842    0.537252    2.019181   35.468639 v _1552_/y (xci2_nor2)
+   0.058166    0.538557    2.218663   37.687302 v _1577_/y (xci2_and3)
+   0.058070    0.538175    1.831200   39.518501 v _1578_/y (xci2_and2)
+   0.058241    0.528816    2.402203   41.920704 ^ _1604_/y (xci2_nand3)
+   0.058200    0.589476    1.871044   43.791748 ^ _1605_/y (xci2_oa21)
+               0.589476    0.000000   43.791748 ^ _3106_/d (xci2_dffcl)
+                                      43.791748   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3106_/clk (xci2_dffcl)
+                          -0.896090   61.103905   library setup time
+                                      61.103905   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -12.820325   data arrival time
+                                      61.103905   data required time
+                                     -43.791748   data arrival time
 ---------------------------------------------------------------------------------------
-                                      12.179674   slack (MET)
+                                      17.312157   slack (MET)
 
 
-Startpoint: _3511_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3176_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3104_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _3511_/clk (xci2_dffcl)
-   0.058114    0.597976    2.050669    2.050669 v _3511_/q (xci2_dffcl)
-   0.058159    0.540059    2.242720    4.293389 v _3100_/y (xci2_aoi21ftf)
-   0.058200    0.540215    1.834921    6.128310 v _3104_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566959   12.695270 v XC_BUF_dac045a_sck/x (xci2_ob)
-               3.592322    0.000000   12.695270 v dac045a_sck (out)
-                                      12.695270   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3176_/clk (xci2_dfflcl)
+   0.058084    0.597853    2.158576   33.158577 v _3176_/q (xci2_dfflcl)
+   0.058558    0.590624    2.295249   35.453823 ^ _1552_/y (xci2_nor2)
+   0.058234    0.589353    2.324885   37.778709 ^ _1577_/y (xci2_and3)
+   0.058330    0.589709    1.891280   39.669991 ^ _1578_/y (xci2_and2)
+   0.058214    0.589549    1.897767   41.567757 ^ _1589_/y (xci2_aoi21ftf)
+   0.058200    0.528679    2.183441   43.751198 ^ _1590_/y (xci2_ao21)
+               0.528679    0.000000   43.751198 ^ _3104_/d (xci2_dffcl)
+                                      43.751198   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3104_/clk (xci2_dffcl)
+                          -0.877984   61.122017   library setup time
+                                      61.122017   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -12.695270   data arrival time
+                                      61.122017   data required time
+                                     -43.751198   data arrival time
 ---------------------------------------------------------------------------------------
-                                      12.304730   slack (MET)
+                                      17.370819   slack (MET)
 
 
-Startpoint: _3501_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3175_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3104_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _3501_/clk (xci2_dffcl)
-   0.058004    0.597546    2.050286    2.050286 v _3501_/q (xci2_dffcl)
-   0.058159    0.540059    1.864902    3.915187 v _3100_/y (xci2_aoi21ftf)
-   0.058200    0.540215    1.834921    5.750108 v _3104_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566960   12.317069 v XC_BUF_dac045a_sck/x (xci2_ob)
-               3.592322    0.000000   12.317069 v dac045a_sck (out)
-                                      12.317069   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3175_/clk (xci2_dfflcl)
+   0.058309    0.663894    2.449458   33.449459 ^ _3175_/q (xci2_dfflcl)
+   0.057842    0.537252    2.019181   35.468639 v _1552_/y (xci2_nor2)
+   0.058166    0.538557    2.218663   37.687302 v _1577_/y (xci2_and3)
+   0.058070    0.538175    1.831200   39.518501 v _1578_/y (xci2_and2)
+   0.058248    0.528839    2.018588   41.537090 ^ _1585_/y (xci2_ao21ftf)
+   0.058200    0.528679    2.198775   43.735863 ^ _1590_/y (xci2_ao21)
+               0.528679    0.000000   43.735863 ^ _3104_/d (xci2_dffcl)
+                                      43.735863   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3104_/clk (xci2_dffcl)
+                          -0.877984   61.122017   library setup time
+                                      61.122017   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -12.317069   data arrival time
+                                      61.122017   data required time
+                                     -43.735863   data arrival time
 ---------------------------------------------------------------------------------------
-                                      12.682931   slack (MET)
+                                      17.386154   slack (MET)
 
 
-Startpoint: _3511_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3176_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3172_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _3511_/clk (xci2_dffcl)
-   0.058286    0.663805    2.347139    2.347139 ^ _3511_/q (xci2_dffcl)
-   0.058241    0.589671    2.346611    4.693750 ^ _3100_/y (xci2_aoi21ftf)
-   0.058200    0.589500    1.897704    6.591455 ^ _3104_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697269   12.288724 ^ XC_BUF_dac045a_sck/x (xci2_ob)
-               2.603000    0.000000   12.288724 ^ dac045a_sck (out)
-                                      12.288724   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3176_/clk (xci2_dfflcl)
+   0.058316    0.663922    2.449486   33.449486 ^ _3176_/q (xci2_dfflcl)
+   0.057842    0.537252    2.156444   35.605930 v _1552_/y (xci2_nor2)
+   0.058082    0.539769    1.833101   37.439030 v _1751_/y (xci2_oa21)
+   0.058151    0.538501    1.832159   39.271191 v _1761_/y (xci2_and3)
+   0.058289    0.589836    2.155343   41.426533 ^ _1762_/y (xci2_aoi21)
+   0.058200    0.528679    2.223683   43.650215 ^ _1765_/y (xci2_ao21)
+               0.528679    0.000000   43.650215 ^ _3172_/d (xci2_dffcl)
+                                      43.650215   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3172_/clk (xci2_dffcl)
+                          -0.877984   61.122017   library setup time
+                                      61.122017   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -12.288724   data arrival time
+                                      61.122017   data required time
+                                     -43.650215   data arrival time
 ---------------------------------------------------------------------------------------
-                                      12.711275   slack (MET)
+                                      17.471802   slack (MET)
 
 
-Startpoint: _3501_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3176_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3106_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _3501_/clk (xci2_dffcl)
-   0.058396    0.664280    2.347568    2.347568 ^ _3501_/q (xci2_dffcl)
-   0.058241    0.589671    1.930544    4.278111 ^ _3100_/y (xci2_aoi21ftf)
-   0.058200    0.589500    1.897704    6.175816 ^ _3104_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697269   11.873085 ^ XC_BUF_dac045a_sck/x (xci2_ob)
-               2.603000    0.000000   11.873085 ^ dac045a_sck (out)
-                                      11.873085   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3176_/clk (xci2_dfflcl)
+   0.058084    0.597853    2.158576   33.158577 v _3176_/q (xci2_dfflcl)
+   0.058558    0.590624    2.295249   35.453823 ^ _1552_/y (xci2_nor2)
+   0.058234    0.589353    2.324885   37.778709 ^ _1577_/y (xci2_and3)
+   0.058330    0.589709    1.891280   39.669991 ^ _1578_/y (xci2_and2)
+   0.058159    0.499191    2.391996   42.061985 v _1604_/y (xci2_nand3)
+   0.058200    0.540217    1.813532   43.875519 v _1605_/y (xci2_oa21)
+               0.540217    0.000000   43.875519 v _3106_/d (xci2_dffcl)
+                                      43.875519   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3106_/clk (xci2_dffcl)
+                          -0.606798   61.393204   library setup time
+                                      61.393204   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -11.873085   data arrival time
+                                      61.393204   data required time
+                                     -43.875519   data arrival time
 ---------------------------------------------------------------------------------------
-                                      13.126914   slack (MET)
+                                      17.517685   slack (MET)
 
 
-Startpoint: _3512_ (rising edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3175_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3104_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _3512_/clk (xci2_dffcl)
-   0.058121    0.598005    2.050694    2.050694 v _3512_/q (xci2_dffcl)
-   0.058241    0.589671    2.184875    4.235569 ^ _3100_/y (xci2_aoi21ftf)
-   0.058200    0.589500    1.897704    6.133274 ^ _3104_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697269   11.830544 ^ XC_BUF_dac045a_sck/x (xci2_ob)
-               2.603000    0.000000   11.830544 ^ dac045a_sck (out)
-                                      11.830544   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3175_/clk (xci2_dfflcl)
+   0.058091    0.597879    2.158601   33.158600 v _3175_/q (xci2_dfflcl)
+   0.058558    0.590624    2.096044   35.254646 ^ _1552_/y (xci2_nor2)
+   0.058234    0.589353    2.324885   37.579529 ^ _1577_/y (xci2_and3)
+   0.058330    0.589709    1.891280   39.470810 ^ _1578_/y (xci2_and2)
+   0.058214    0.589549    1.897767   41.368576 ^ _1589_/y (xci2_aoi21ftf)
+   0.058200    0.528679    2.183441   43.552017 ^ _1590_/y (xci2_ao21)
+               0.528679    0.000000   43.552017 ^ _3104_/d (xci2_dffcl)
+                                      43.552017   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3104_/clk (xci2_dffcl)
+                          -0.877984   61.122017   library setup time
+                                      61.122017   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -11.830544   data arrival time
+                                      61.122017   data required time
+                                     -43.552017   data arrival time
 ---------------------------------------------------------------------------------------
-                                      13.169456   slack (MET)
+                                      17.570000   slack (MET)
 
 
-Startpoint: _3514_ (falling edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _3176_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Endpoint: _3104_ (rising edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 v _3514_/clk (xci2_dfflcl)
-   0.058280    0.663768    2.449344    2.449344 ^ _3514_/q (xci2_dfflcl)
-   0.058200    0.540215    2.071460    4.520803 v _3104_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566960   11.087764 v XC_BUF_dac045a_sck/x (xci2_ob)
-               3.592322    0.000000   11.087764 v dac045a_sck (out)
-                                      11.087764   data arrival time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+               0.000000    0.000000   31.000000 v _3176_/clk (xci2_dfflcl)
+   0.058084    0.597853    2.158576   33.158577 v _3176_/q (xci2_dfflcl)
+   0.058558    0.590624    2.295249   35.453823 ^ _1552_/y (xci2_nor2)
+   0.058234    0.589353    2.324885   37.778709 ^ _1577_/y (xci2_and3)
+   0.058330    0.589709    1.891280   39.669991 ^ _1578_/y (xci2_and2)
+   0.058152    0.499174    1.966793   41.636784 v _1585_/y (xci2_ao21ftf)
+   0.058200    0.499285    2.201581   43.838364 v _1590_/y (xci2_ao21)
+               0.499285    0.000000   43.838364 v _3104_/d (xci2_dffcl)
+                                      43.838364   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000002   output external delay
-                                      25.000002   data required time
+               0.000000   62.000000   62.000000   clock bb_clk_in (rise edge)
+                           0.000000   62.000000   clock network delay (ideal)
+                           0.000000   62.000000   clock reconvergence pessimism
+                                      62.000000 ^ _3104_/clk (xci2_dffcl)
+                          -0.590173   61.409828   library setup time
+                                      61.409828   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000002   data required time
-                                     -11.087764   data arrival time
+                                      61.409828   data required time
+                                     -43.838364   data arrival time
 ---------------------------------------------------------------------------------------
-                                      13.912239   slack (MET)
+                                      17.571466   slack (MET)
 
 
-Startpoint: _3513_ (falling edge-triggered flip-flop clocked by clk)
-Endpoint: dac045a_sck (output port)
-Path Group: path delay
+Startpoint: _1766_/y (clock source 'adc8ch_sclk')
+Endpoint: _3514_ (falling edge-triggered flip-flop clocked by bb_clk_in)
+Path Group: bb_clk_in
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 v _3513_/clk (xci2_dfflcl)
-   0.058121    0.597997    2.158704    2.158704 v _3513_/q (xci2_dfflcl)
-   0.058200    0.540215    2.242853    4.401556 v _3104_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566960   10.968517 v XC_BUF_dac045a_sck/x (xci2_ob)
-               3.592322    0.000000   10.968517 v dac045a_sck (out)
-                                      10.968517   data arrival time
+               0.000000    0.000000    0.000000   clock adc8ch_sclk (rise edge)
+   0.058309    0.589619    0.000000    0.000000 ^ _1766_/y (xci2_and2)
+   0.058249    0.589158    2.324652    2.324652 ^ _1795_/y (xci2_nor2ft)
+   0.058303    0.589585    1.891103    4.215755 ^ _2796_/y (xci2_and2ft)
+   0.058159    0.538457    1.994919    6.210674 v _2800_/y (xci2_and3fft)
+   0.058343    0.529255    2.425068    8.635742 ^ _2803_/y (xci2_nand3)
+   0.058164    0.539987    2.016432   10.652174 v _2812_/y (xci2_aoi21)
+   0.058200    0.528658    2.019397   12.671571 ^ _2813_/y (xci2_nand2)
+               0.528658    0.000000   12.671571 ^ _3514_/d (xci2_dfflcl)
+                                      12.671571   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000002   output external delay
-                                      25.000002   data required time
+               0.000000   31.000000   31.000000   clock bb_clk_in (fall edge)
+                           0.000000   31.000000   clock network delay (ideal)
+                           0.000000   31.000000   clock reconvergence pessimism
+                                      31.000000 v _3514_/clk (xci2_dfflcl)
+                          -0.727211   30.272787   library setup time
+                                      30.272787   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000002   data required time
-                                     -10.968517   data arrival time
+                                      30.272787   data required time
+                                     -12.671571   data arrival time
 ---------------------------------------------------------------------------------------
-                                      14.031486   slack (MET)
+                                      17.601217   slack (MET)
 
 

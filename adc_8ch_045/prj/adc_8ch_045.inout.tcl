@@ -1,7 +1,7 @@
 ############################################################
 ###                                                         
 ###   Generated     X-Place v2.48.61                             
-###   Date/Time     12.11.2025 / 13:11:50                                 
+###   Date/Time     26.11.2025 / 23:00:52                                 
 ###                                                         
 ############################################################
 ###                                                         
@@ -32,10 +32,10 @@ set xc(inout) {
 	{ DATA_O[2] IO_GCLK[172] }
 	{ DATA_O[1] IO[171] }
 	{ DATA_O[0] IO[170] }
-	{ clk IO[169] }
-	{ rst_l IO[168] }
-	{ DOUT IO[167] }
-	{ SYNC IO_GCLK[166] }
+	{ clk IO[0] }
+	{ rst_l IO[1] }
+	{ DOUT IO[2] }
+	{ SYNC IO[3] }
 }
 set xc(inout_type) {
 	{ SCLK xci2_ob x }

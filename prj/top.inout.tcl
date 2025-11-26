@@ -1,7 +1,7 @@
 ############################################################
 ###                                                         
 ###   Generated     X-Place v2.48.61                             
-###   Date/Time     26.11.2025 / 21:31:39                                 
+###   Date/Time     26.11.2025 / 21:38:17                                 
 ###                                                         
 ############################################################
 ###                                                         
@@ -12,35 +12,35 @@
 
 set xc(inout) {
 	{ bb_clk_in bb_clk_in }
-	{ adc045_cs IO_GCLK[154] }
-	{ adc045_din IO_GCLK[153] }
-	{ adc045_sclk IO_GCLK[152] }
-	{ adc045_nrst IO_GCLK[151] }
-	{ adc045_start IO_GCLK[150] }
-	{ adc733_sdifs IO_GCLK[149] }
-	{ adc733_sdi IO_GCLK[148] }
-	{ adc733_se IO_GCLK[147] }
-	{ adc8ch_sclk IO_GCLK[146] }
-	{ adc8ch_cs_adc IO_GCLK[145] }
-	{ adc8ch_cd_mux IO_GCLK[144] }
-	{ adc8ch_din IO[143] }
-	{ dac045a_sdo IO[142] }
-	{ dac045a_sck IO[141] }
-	{ dac045a_clrn IO[140] }
-	{ dac045a_ldac IO[139] }
-	{ dac045a_csn IO[138] }
-	{ vsi_data1 IO[137] }
-	{ vsi_data2 IO[136] }
-	{ vsi_com2 IO[128] }
-	{ rst_l IO[129] }
-	{ adc045_drdy IO[130] }
-	{ adc045_dout IO[131] }
-	{ adc733_sclk IO[132] }
-	{ adc733_sdofs IO[133] }
-	{ adc733_sdo IO[134] }
-	{ adc8ch_dout IO[135] }
-	{ dac045a_sdi IO[126] }
-	{ vsi_com1 IO[127] }
+	{ adc045_cs IO[190] }
+	{ adc045_din IO[189] }
+	{ adc045_sclk IO[188] }
+	{ adc045_nrst IO[187] }
+	{ adc045_start IO[186] }
+	{ adc733_sdifs IO[185] }
+	{ adc733_sdi IO[184] }
+	{ adc733_se IO[183] }
+	{ adc8ch_sclk IO[182] }
+	{ adc8ch_cs_adc IO[181] }
+	{ adc8ch_cd_mux IO[180] }
+	{ adc8ch_din IO[179] }
+	{ dac045a_sdo IO[178] }
+	{ dac045a_sck IO[177] }
+	{ dac045a_clrn IO[176] }
+	{ dac045a_ldac IO_GCLK[175] }
+	{ dac045a_csn IO_GCLK[174] }
+	{ vsi_data1 IO_GCLK[173] }
+	{ vsi_data2 IO_GCLK[172] }
+	{ vsi_com1 IO[8] }
+	{ vsi_com2 IO[9] }
+	{ rst_l IO[0] }
+	{ adc045_drdy IO[1] }
+	{ adc045_dout IO[2] }
+	{ adc733_sclk IO[3] }
+	{ adc733_sdofs IO[4] }
+	{ adc733_sdo IO[5] }
+	{ adc8ch_dout IO[6] }
+	{ dac045a_sdi IO[7] }
 }
 set xc(inout_type) {
 	{ bb_clk_in cpu_clk_in a }
@@ -63,6 +63,7 @@ set xc(inout_type) {
 	{ dac045a_csn xci2_ob x }
 	{ vsi_data1 xci2_ob x }
 	{ vsi_data2 xci2_ob x }
+	{ vsi_com1 xci2_ib a }
 	{ vsi_com2 xci2_ib a }
 	{ rst_l xci2_ib a }
 	{ adc045_drdy xci2_ib a }
@@ -72,6 +73,5 @@ set xc(inout_type) {
 	{ adc733_sdo xci2_ib a }
 	{ adc8ch_dout xci2_ib a }
 	{ dac045a_sdi xci2_ib a }
-	{ vsi_com1 xci2_ib a }
 }
 ###END

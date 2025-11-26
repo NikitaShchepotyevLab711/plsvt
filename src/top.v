@@ -1,5 +1,5 @@
 module top (
-    input wire clk,
+    input wire bb_clk_in,
     input wire rst_l,
 
     // adc045 //
@@ -42,7 +42,7 @@ module top (
 );
 
 adc045_wrap adc_045_inst (
-    .clk     (clk),
+    .clk     (bb_clk_in),
     .rst_l   (rst_l),
 
     // interface to adc//
@@ -61,7 +61,7 @@ adc045_wrap adc_045_inst (
 );
 
 adc733_wrap adc_733_inst (
-    .clk    (clk),
+    .clk    (bb_clk_in),
     .rst_l  (rst_l),
 
     // serial port //
@@ -80,7 +80,7 @@ adc733_wrap adc_733_inst (
 );
 
 adc_8ch_045 adc_8ch_045_inst (
-    .clk    (clk),
+    .clk    (bb_clk_in),
     .rst_l  (rst_l),
 
     // serial interface //
@@ -98,7 +98,7 @@ adc_8ch_045 adc_8ch_045_inst (
 );
 
 dac045a dac_045_inst (
-    .clk        (clk),
+    .clk        (bb_clk_in),
     .rst_l      (rst_l),
 
     .sync_300Hz (),  // строб с частотой 300 Гц - частота обновления ЦАП
@@ -116,7 +116,7 @@ dac045a dac_045_inst (
 );
 
 vsi vsi_inst (
-    .bb_clk_in    (clk),
+    .bb_clk_in    (bb_clk_in),
     .rst_l        (rst_l),
 
     // линия передачи 1
