@@ -9,7 +9,7 @@
 module uart_rx #(
 	parameter BIT_RATE = 9600,
 	parameter CLK_HZ  = 12_000_000,
-	parameter PAYLOAD_BITS    = 12,
+	parameter PAYLOAD_BITS    = 8,
 	parameter STOP_BITS       = 1
 	)(
 	input  wire       clk          , // Системный тактовый сигнал

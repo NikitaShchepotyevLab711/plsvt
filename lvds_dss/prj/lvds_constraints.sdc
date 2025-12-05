@@ -1,0 +1,6 @@
+create_clock -name bb_clk_inst -period 62 -waveform {0 31} [get_ports bb_clk_in]
+set_false_path -from [get_ports rst_l] -to [all_outputs]
+set_false_path -from [get_ports rst_l] -to [all_registers]
+set_max_delay 31 -from [all_inputs] -to [all_outputs]
+set_max_delay 31 -from [all_inputs] -to [all_registers]
+set_max_delay 31 -from [all_registers] -to [all_outputs]

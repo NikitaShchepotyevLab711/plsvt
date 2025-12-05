@@ -6,7 +6,7 @@ reg rst_l;
 reg uart_rxd;
 reg sync;
 
-lvds_dss dut (
+lvds_wrapper dut (
     .clk       (clk),
     .rst_l     (rst_l),
     .sync      (sync),
@@ -14,9 +14,9 @@ lvds_dss dut (
     .RE        (),
     .DI        (),
     .DE        (),
-    .data_o    (),
-    .val_num   (),
-    .uart_ready()
+    .data12b   (),
+    .word_num  (),
+    .data_rdy  ()
 );
 
 localparam CLOCK_FREQ = 12_000_000; 
@@ -31,54 +31,61 @@ end
 
 initial begin
     rst_l = 1;
+    uart_rxd = 1;
     sync = 0;
 
     #100;
     rst_l = 0;
     #100;
-    rst_l = 1; 
+    rst_l = 1;
 
-    begin
-        forever begin  
-            #1000000;
+    fork 
+        begin
+            #100000; 
             @(posedge clk);
             sync = 1;
             @(posedge clk);
-            sync = 0;     
+            sync = 0;      
         end
-    end
+
+        begin
+            @(posedge dut.byte_sent);
+            send_5_values();
+        end
+    join
 end
 
-initial begin
-    for (integer data = 0; data < 256; data = data + 1) begin
-        send_uart_byte(data);
-        #10000;
-    end
-end
+reg [11:0] first_dataword = 12'hffd;
+reg [11:0] second_dataword = 12'hffe;
+reg [11:0] third_dataword = 12'hfff;
 
-reg startbit, stopbit;
+task automatic send_5_values();
+    byte data_bytes[5];
+    data_bytes [0] = first_dataword[7:0];
+    data_bytes [1] = {second_dataword[3:0], first_dataword[11:8]};
+    data_bytes [2] = {second_dataword[11:4]};
+    data_bytes [3] = third_dataword[7:0];
+    data_bytes [4] = {4'b0, third_dataword[11:8]};
+
+    for (int j = 0; j < 5; j = j + 1) begin
+        send_uart_byte(data_bytes[j]);
+    end
+endtask 
 
 task send_uart_byte;
     input [7:0] byte_data;
     integer bit_time;
     begin
-		stopbit = 0;
         bit_time = 1_000_000_000 / BAUD_RATE; 
-		startbit = 1;
         uart_rxd = 0;
         #bit_time;
-		startbit = 0;
         for (integer i = 0; i < 8; i = i + 1) begin
             uart_rxd = byte_data[i];
             #bit_time;
-            stopbit = 0;
-            startbit = 0;
         end
-
         uart_rxd = 1;
-        stopbit = 1;
         #bit_time;
     end
 endtask
-    
+
 endmodule

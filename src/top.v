@@ -1,4 +1,9 @@
-module top (
+module top #(
+    parameter UART_BIT_RATE     = 9600, // bit per second
+    parameter UART_CLK_HZ       = 12_000_000, // Hz
+    parameter UART_PAYLOAD_BITS = 8,
+    parameter UART_STOP_BITS    = 1
+)  (
     input wire bb_clk_in,
     input wire rst_l,
 
@@ -38,7 +43,13 @@ module top (
     output wire        vsi_data1,
     output wire        vsi_data2,
     input  wire        vsi_com1,
-    input  wire        vsi_com2
+    input  wire        vsi_com2,
+
+    // lvds dss //
+    input  wire        lvds_ro,
+    output wire        lvds_re,
+    output wire        lvds_di,
+    output wire        lvds_de
 );
 
 adc045_wrap adc_045_inst (
@@ -127,6 +138,26 @@ vsi vsi_inst (
     .COM1         (vsi_com1),
     // линия приема 2
     .COM2         (vsi_com2)
+);
+
+lvds_wrapper  #(
+    .BIT_RATE    (UART_BIT_RATE), // bit per second
+    .CLK_HZ      (UART_CLK_HZ), // Hz
+    .PAYLOAD_BITS(UART_PAYLOAD_BITS),
+    .STOP_BITS   (UART_STOP_BITS)
+) lvds_wrapper_inst (
+    .clk        (bb_clk_in),
+    .rst_l      (rst_l),
+    .sync       (),
+
+    .RO         (lvds_ro),
+    .RE         (lvds_re),
+    .DI         (lvds_di),
+    .DE         (lvds_de),
+
+    .data12b   (),
+    .word_num  (),
+    .data_rdy  ()
 );
 
 endmodule

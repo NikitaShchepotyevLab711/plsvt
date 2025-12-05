@@ -1,0 +1,280 @@
+Startpoint: sync (input port)
+Endpoint: _752_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ sync (in)
+   0.058236    0.365321    3.468071    3.468071 ^ XC_BUF_sync/x (xci2_ib)
+   0.058088    0.498873    1.857678    5.325749 v _644_/y (xci2_nand3fft)
+   0.057962    0.539308    1.812598    7.138347 v _648_/y (xci2_aoi21ftf)
+   0.058230    0.528770    2.019219    9.157566 ^ _664_/y (xci2_nand3)
+   0.058170    0.499255    2.373770   11.531335 v _666_/y (xci2_nand2)
+               0.499255    0.000000   11.531335 v _752_/d (xci2_dff)
+                                      11.531335   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.789099   30.210899   library setup time
+                                      30.210899   data required time
+---------------------------------------------------------------------------------------
+                                      30.210899   data required time
+                                     -11.531335   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.679565   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _752_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v sync (in)
+   0.058164    0.346810    3.550804    3.550804 v XC_BUF_sync/x (xci2_ib)
+   0.058312    0.529135    1.917805    5.468609 ^ _644_/y (xci2_nand3fft)
+   0.058438    0.590487    1.871999    7.340608 ^ _648_/y (xci2_aoi21ftf)
+   0.058170    0.499233    1.961200    9.301807 v _664_/y (xci2_nand3)
+   0.058230    0.528781    2.385914   11.687721 ^ _666_/y (xci2_nand2)
+               0.528781    0.000000   11.687721 ^ _752_/d (xci2_dff)
+                                      11.687721   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.490624   30.509377   library setup time
+                                      30.509377   data required time
+---------------------------------------------------------------------------------------
+                                      30.509377   data required time
+                                     -11.687721   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.821655   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _747_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v sync (in)
+   0.058164    0.346810    3.550804    3.550804 v XC_BUF_sync/x (xci2_ib)
+   0.058312    0.529135    1.917805    5.468609 ^ _644_/y (xci2_nand3fft)
+   0.058438    0.590487    1.871999    7.340608 ^ _648_/y (xci2_aoi21ftf)
+   0.058230    0.589289    1.891430    9.232038 ^ _649_/y (xci2_and2)
+   0.058230    0.589613    2.324413   11.556450 ^ _651_/y (xci2_aoi21ftf)
+               0.589613    0.000000   11.556450 ^ _747_/d (xci2_dff)
+                                      11.556450   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.513989   30.486012   library setup time
+                                      30.486012   data required time
+---------------------------------------------------------------------------------------
+                                      30.486012   data required time
+                                     -11.556450   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.929562   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _748_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v sync (in)
+   0.058164    0.346810    3.550804    3.550804 v XC_BUF_sync/x (xci2_ib)
+   0.058312    0.529135    1.917805    5.468609 ^ _644_/y (xci2_nand3fft)
+   0.058438    0.590487    1.871999    7.340608 ^ _648_/y (xci2_aoi21ftf)
+   0.058230    0.589289    1.891430    9.232038 ^ _652_/y (xci2_and2)
+   0.058230    0.589613    2.324413   11.556450 ^ _654_/y (xci2_aoi21ftf)
+               0.589613    0.000000   11.556450 ^ _748_/d (xci2_dff)
+                                      11.556450   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.513989   30.486012   library setup time
+                                      30.486012   data required time
+---------------------------------------------------------------------------------------
+                                      30.486012   data required time
+                                     -11.556450   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.929562   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _749_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v sync (in)
+   0.058164    0.346810    3.550804    3.550804 v XC_BUF_sync/x (xci2_ib)
+   0.058312    0.529135    1.917805    5.468609 ^ _644_/y (xci2_nand3fft)
+   0.058438    0.590487    1.871999    7.340608 ^ _648_/y (xci2_aoi21ftf)
+   0.058230    0.589289    1.891430    9.232038 ^ _655_/y (xci2_and2)
+   0.058230    0.589613    2.324413   11.556450 ^ _657_/y (xci2_aoi21ftf)
+               0.589613    0.000000   11.556450 ^ _749_/d (xci2_dff)
+                                      11.556450   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.513989   30.486012   library setup time
+                                      30.486012   data required time
+---------------------------------------------------------------------------------------
+                                      30.486012   data required time
+                                     -11.556450   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.929562   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _750_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v sync (in)
+   0.058164    0.346810    3.550804    3.550804 v XC_BUF_sync/x (xci2_ib)
+   0.058312    0.529135    1.917805    5.468609 ^ _644_/y (xci2_nand3fft)
+   0.058438    0.590487    1.871999    7.340608 ^ _648_/y (xci2_aoi21ftf)
+   0.058230    0.589289    1.891430    9.232038 ^ _658_/y (xci2_and2)
+   0.058230    0.589613    2.324413   11.556450 ^ _660_/y (xci2_aoi21ftf)
+               0.589613    0.000000   11.556450 ^ _750_/d (xci2_dff)
+                                      11.556450   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.513989   30.486012   library setup time
+                                      30.486012   data required time
+---------------------------------------------------------------------------------------
+                                      30.486012   data required time
+                                     -11.556450   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.929562   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _751_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v sync (in)
+   0.058164    0.346810    3.550804    3.550804 v XC_BUF_sync/x (xci2_ib)
+   0.058312    0.529135    1.917805    5.468609 ^ _644_/y (xci2_nand3fft)
+   0.058438    0.590487    1.871999    7.340608 ^ _648_/y (xci2_aoi21ftf)
+   0.058230    0.589289    1.891430    9.232038 ^ _661_/y (xci2_and2)
+   0.058230    0.589613    2.324413   11.556450 ^ _663_/y (xci2_aoi21ftf)
+               0.589613    0.000000   11.556450 ^ _751_/d (xci2_dff)
+                                      11.556450   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.513989   30.486012   library setup time
+                                      30.486012   data required time
+---------------------------------------------------------------------------------------
+                                      30.486012   data required time
+                                     -11.556450   data arrival time
+---------------------------------------------------------------------------------------
+                                      18.929562   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _747_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ sync (in)
+   0.058236    0.365321    3.468071    3.468071 ^ XC_BUF_sync/x (xci2_ib)
+   0.058088    0.498873    1.857678    5.325749 v _644_/y (xci2_nand3fft)
+   0.057962    0.539308    1.812598    7.138347 v _648_/y (xci2_aoi21ftf)
+   0.058170    0.538559    1.831908    8.970254 v _649_/y (xci2_and2)
+   0.058170    0.540138    2.218695   11.188949 v _651_/y (xci2_aoi21ftf)
+               0.540138    0.000000   11.188949 v _747_/d (xci2_dff)
+                                      11.188949   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.809106   30.190895   library setup time
+                                      30.190895   data required time
+---------------------------------------------------------------------------------------
+                                      30.190895   data required time
+                                     -11.188949   data arrival time
+---------------------------------------------------------------------------------------
+                                      19.001945   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _748_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ sync (in)
+   0.058236    0.365321    3.468071    3.468071 ^ XC_BUF_sync/x (xci2_ib)
+   0.058088    0.498873    1.857678    5.325749 v _644_/y (xci2_nand3fft)
+   0.057962    0.539308    1.812598    7.138347 v _648_/y (xci2_aoi21ftf)
+   0.058170    0.538559    1.831908    8.970254 v _652_/y (xci2_and2)
+   0.058170    0.540138    2.218695   11.188949 v _654_/y (xci2_aoi21ftf)
+               0.540138    0.000000   11.188949 v _748_/d (xci2_dff)
+                                      11.188949   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.809106   30.190895   library setup time
+                                      30.190895   data required time
+---------------------------------------------------------------------------------------
+                                      30.190895   data required time
+                                     -11.188949   data arrival time
+---------------------------------------------------------------------------------------
+                                      19.001945   slack (MET)
+
+
+Startpoint: sync (input port)
+Endpoint: _749_ (rising edge-triggered flip-flop clocked by bb_clk_inst)
+Path Group: bb_clk_inst
+Path Type: max
+
+        Cap        Slew       Delay        Time   Description
+---------------------------------------------------------------------------------------
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ sync (in)
+   0.058236    0.365321    3.468071    3.468071 ^ XC_BUF_sync/x (xci2_ib)
+   0.058088    0.498873    1.857678    5.325749 v _644_/y (xci2_nand3fft)
+   0.057962    0.539308    1.812598    7.138347 v _648_/y (xci2_aoi21ftf)
+   0.058170    0.538559    1.831908    8.970254 v _655_/y (xci2_and2)
+   0.058170    0.540138    2.218695   11.188949 v _657_/y (xci2_aoi21ftf)
+               0.540138    0.000000   11.188949 v _749_/d (xci2_dff)
+                                      11.188949   data arrival time
+
+                          31.000000   31.000000   max_delay
+                           0.000000   31.000000   clock reconvergence pessimism
+                          -0.809106   30.190895   library setup time
+                                      30.190895   data required time
+---------------------------------------------------------------------------------------
+                                      30.190895   data required time
+                                     -11.188949   data arrival time
+---------------------------------------------------------------------------------------
+                                      19.001945   slack (MET)
+
+
