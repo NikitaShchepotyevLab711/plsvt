@@ -7,14 +7,59 @@ module top #(
     input wire bb_clk_in,
     input wire rst_l,
 
-    // adc045 //
-    input  wire        adc045_drdy,           
-    input  wire        adc045_dout,    
-    output wire        adc045_cs,       
-    output wire        adc045_din,           
-    output wire        adc045_sclk,
-    output wire        adc045_nrst,
-    output wire        adc045_start,
+    //  1 adc045 //
+    input  wire        adc045_drdy_1,           
+    input  wire        adc045_dout_1,    
+    output wire        adc045_cs_1,       
+    output wire        adc045_din_1,           
+    output wire        adc045_sclk_1,
+    output wire        adc045_nrst_1,
+    output wire        adc045_start_1,
+
+    //  2 adc045 //
+    input  wire        adc045_drdy_2,           
+    input  wire        adc045_dout_2,    
+    output wire        adc045_cs_2,       
+    output wire        adc045_din_2,           
+    output wire        adc045_sclk_2,
+    output wire        adc045_nrst_2,
+    output wire        adc045_start_2,
+
+    //  3 adc045 //
+    input  wire        adc045_drdy_3,           
+    input  wire        adc045_dout_3,    
+    output wire        adc045_cs_3,       
+    output wire        adc045_din_3,           
+    output wire        adc045_sclk_3,
+    output wire        adc045_nrst_3,
+    output wire        adc045_start_3,
+
+    //  4 adc045 //
+    input  wire        adc045_drdy_4,           
+    input  wire        adc045_dout_4,    
+    output wire        adc045_cs_4,       
+    output wire        adc045_din_4,           
+    output wire        adc045_sclk_4,
+    output wire        adc045_nrst_4,
+    output wire        adc045_start_4,
+
+    //  5 adc045 //
+    input  wire        adc045_drdy_5,           
+    input  wire        adc045_dout_5,    
+    output wire        adc045_cs_5,       
+    output wire        adc045_din_5,           
+    output wire        adc045_sclk_5,
+    output wire        adc045_nrst_5,
+    output wire        adc045_start_5,
+
+    //  6 adc045 //
+    input  wire        adc045_drdy_6,           
+    input  wire        adc045_dout_6,    
+    output wire        adc045_cs_6,       
+    output wire        adc045_din_6,           
+    output wire        adc045_sclk_6,
+    output wire        adc045_nrst_6,
+    output wire        adc045_start_6,
 
     // adc733 serial port //
     input  wire        adc733_sclk,
@@ -24,20 +69,75 @@ module top #(
     output wire        adc733_sdi,
     output wire        adc733_se,
 
-    // adc_8ch_045 serial interface //
-    input  wire        adc8ch_dout,
-    output wire        adc8ch_sclk,
-    output wire        adc8ch_cs_adc,
-    output wire        adc8ch_cd_mux,
-    output wire        adc8ch_din,
+    // 1 adc_8ch_045 serial interface //
+    input  wire        adc8ch_dout_1,
+    output wire        adc8ch_sclk_1,
+    output wire        adc8ch_cs_adc_1,
+    output wire        adc8ch_cd_mux_1,
+    output wire        adc8ch_din_1,
 
-    // dac045a spi //
-    output wire        dac045a_sdo,
-    input  wire        dac045a_sdi,
-    output wire        dac045a_sck,
-    output wire        dac045a_clrn,
-    output wire        dac045a_ldac,
-    output wire        dac045a_csn,
+    // 2 adc_8ch_045 serial interface //
+    input  wire        adc8ch_dout_2,
+    output wire        adc8ch_sclk_2,
+    output wire        adc8ch_cs_adc_2,
+    output wire        adc8ch_cd_mux_2,
+    output wire        adc8ch_din_2,
+
+    // 3 adc_8ch_045 serial interface //
+    input  wire        adc8ch_dout_3,
+    output wire        adc8ch_sclk_3,
+    output wire        adc8ch_cs_adc_3,
+    output wire        adc8ch_cd_mux_3,
+    output wire        adc8ch_din_3,
+
+
+    // 1 dac045a spi //
+    output wire        dac045a_sdo_1,
+    input  wire        dac045a_sdi_1,
+    output wire        dac045a_sck_1,
+    output wire        dac045a_clrn_1,
+    output wire        dac045a_ldac_1,
+    output wire        dac045a_csn_1,
+
+    // 2 dac045a spi //
+    output wire        dac045a_sdo_2,
+    input  wire        dac045a_sdi_2,
+    output wire        dac045a_sck_2,
+    output wire        dac045a_clrn_2,
+    output wire        dac045a_ldac_2,
+    output wire        dac045a_csn_2,
+
+    // 3 dac045a spi //
+    output wire        dac045a_sdo_3,
+    input  wire        dac045a_sdi_3,
+    output wire        dac045a_sck_3,
+    output wire        dac045a_clrn_3,
+    output wire        dac045a_ldac_3,
+    output wire        dac045a_csn_3,
+
+    // 4 dac045a spi //
+    output wire        dac045a_sdo_4,
+    input  wire        dac045a_sdi_4,
+    output wire        dac045a_sck_4,
+    output wire        dac045a_clrn_4,
+    output wire        dac045a_ldac_4,
+    output wire        dac045a_csn_4,
+
+    // 5 dac045a spi //
+    output wire        dac045a_sdo_5,
+    input  wire        dac045a_sdi_5,
+    output wire        dac045a_sck_5,
+    output wire        dac045a_clrn_5,
+    output wire        dac045a_ldac_5,
+    output wire        dac045a_csn_5,
+
+    // 6 dac045a spi //
+    output wire        dac045a_sdo_6,
+    input  wire        dac045a_sdi_6,
+    output wire        dac045a_sck_6,
+    output wire        dac045a_clrn_6,
+    output wire        dac045a_ldac_6,
+    output wire        dac045a_csn_6,
 
     // vsi interface //
     output wire        vsi_data1,
@@ -56,14 +156,59 @@ adc045_wrap adc_045_inst (
     .clk     (bb_clk_in),
     .rst_l   (rst_l),
 
-    // interface to adc//
-    .DRDY    (adc045_drdy),           
-    .DOUT    (adc045_dout),    
-    .CS      (adc045_cs),       
-    .DIN     (adc045_din),           
-    .SCLK    (adc045_sclk),
-    .nRST    (adc045_nrst),
-    .START   (adc045_start),
+    // interface to  1 adc//
+    .DRDY_1    (adc045_drdy_1),           
+    .DOUT_1    (adc045_dout_1),    
+    .CS_1      (adc045_cs_1),       
+    .DIN_1     (adc045_din_1),           
+    .SCLK_1    (adc045_sclk_1),
+    .nRST_1    (adc045_nrst_1),
+    .START_1   (adc045_start_1),
+
+    // interface to  2 adc//
+    .DRDY_2    (adc045_drdy_2),           
+    .DOUT_2    (adc045_dout_2),    
+    .CS_2      (adc045_cs_2),       
+    .DIN_2     (adc045_din_2),           
+    .SCLK_2    (adc045_sclk_2),
+    .nRST_2    (adc045_nrst_2),
+    .START_2   (adc045_start_2),
+
+    // interface to  3 adc//
+    .DRDY_3    (adc045_drdy_3),           
+    .DOUT_3    (adc045_dout_3),    
+    .CS_3      (adc045_cs_3),       
+    .DIN_3     (adc045_din_3),           
+    .SCLK_3    (adc045_sclk_3),
+    .nRST_3    (adc045_nrst_3),
+    .START_3   (adc045_start_3),
+
+    // interface to  4 adc//
+    .DRDY_4    (adc045_drdy_4),           
+    .DOUT_4    (adc045_dout_4),    
+    .CS_4      (adc045_cs_4),       
+    .DIN_4     (adc045_din_4),           
+    .SCLK_4    (adc045_sclk_4),
+    .nRST_4    (adc045_nrst_4),
+    .START_4   (adc045_start_4),
+
+    // interface to  5 adc//
+    .DRDY_5    (adc045_drdy_5),           
+    .DOUT_5    (adc045_dout_5),    
+    .CS_5      (adc045_cs_5),       
+    .DIN_5     (adc045_din_5),           
+    .SCLK_5    (adc045_sclk_5),
+    .nRST_5    (adc045_nrst_5),
+    .START_5   (adc045_start_5),
+
+    // interface to  6 adc//
+    .DRDY_6    (adc045_drdy_6),           
+    .DOUT_6    (adc045_dout_6),    
+    .CS_6      (adc045_cs_6),       
+    .DIN_6     (adc045_din_6),           
+    .SCLK_6    (adc045_sclk_6),
+    .nRST_6    (adc045_nrst_6),
+    .START_6   (adc045_start_6),
 
     // others //
     .sync    (), 
@@ -95,11 +240,11 @@ adc_8ch_045 adc_8ch_045_inst (
     .rst_l  (rst_l),
 
     // serial interface //
-    .DOUT   (adc8ch_dout),
-    .SCLK   (adc8ch_sclk),
-    .CS_ADC (adc8ch_cs_adc),
-    .CD_MUX (adc8ch_cd_mux),
-    .DIN    (adc8ch_din),
+    .DOUT   (adc8ch_dout_1),
+    .SCLK   (adc8ch_sclk_1),
+    .CS_ADC (adc8ch_cs_adc_1),
+    .CD_MUX (adc8ch_cd_mux_1),
+    .DIN    (adc8ch_din_1),
     
     .SYNC   (),
     .RD_EN  (),
@@ -118,12 +263,12 @@ dac045a dac_045_inst (
     .cs         (),
     // добавить сигнал busy
     // spi //
-    .SDO        (dac045a_sdo),
-    .SDI        (dac045a_sdi),
-    .SCK        (dac045a_sck),
-    .CLRn       (dac045a_clrn),
-    .LDAc       (dac045a_ldac),
-    .CSn        (dac045a_csn)
+    .SDO        (dac045a_sdo_1),
+    .SDI        (dac045a_sdi_1),
+    .SCK        (dac045a_sck_1),
+    .CLRn       (dac045a_clrn_1),
+    .LDAc       (dac045a_ldac_1),
+    .CSn        (dac045a_csn_1)
 );
 
 vsi vsi_inst (

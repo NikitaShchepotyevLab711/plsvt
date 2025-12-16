@@ -41,7 +41,8 @@ vsi_codegen #(.DATA_WIDTH(8)) vsi_codegen_inst (
 	.clk(clk),
 	.rst_l(rst_l),
 	.data(data_inf),
-	.start(1'b1)
+	.start(1'b1),
+	.ready(ready_inf)
 );
 
 reg [15:0] rd_addr_reg;

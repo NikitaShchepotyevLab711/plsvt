@@ -42,7 +42,7 @@ generate
         assign strb = clk_o;
     end else if (DIV == 3) begin
         assign clk_o = enable ? ((pos_cnt != 2'd2) && (neg_cnt != 2'd2)) : 1'b0;
-        assign strb = enable ? (neg_cnt == {CNT_WIDTH{1'b0}}) : 1'b0;
+        assign strb = enable ? (pos_cnt == {CNT_WIDTH{1'b0}}) : 1'b0;
     end
 endgenerate
 

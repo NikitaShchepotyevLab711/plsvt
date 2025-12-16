@@ -10,7 +10,7 @@ module counter (
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
         cnt <= 6'h0;
-    end else if (strb) begin
+    end else begin
         if (cnt_rst) begin
             cnt <= 6'h0;
         end else if (cnt_en) begin

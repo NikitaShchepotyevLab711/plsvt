@@ -48,7 +48,9 @@ wire delay_done;
 reg delay_done_reg;
 
 reg hard_wreg;
-reg start_capture, start_command;
+//reg start_capture; 
+reg start_command;
+wire start_capture = (state == CH_TX);
 wire strb;
 reg load;
 wire delay_start_done;
@@ -60,8 +62,8 @@ reg cnt_rst;
 assign CS = 1'b0;
 assign full_wreg = {A_MUX, wreg_command};
 
-wire wreg_done  = (cnt == 6'd23);
-wire dat_rcv_done = (cnt == 6'd24);
+wire wreg_done  = state == WREG ? (cnt == 6'd23) : 1'b0;
+wire dat_rcv_done = state == CH_TX ? (cnt == 6'd23) : 1'b0;
 wire delay_active   = (cnt == 6'd5);
 
 always @(posedge clk or negedge rst_l) begin
@@ -80,13 +82,12 @@ always @(posedge clk or negedge rst_l) begin
     end    
 end
 
-always @(posedge clk or negedge rst_l) begin
+always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         hard_wreg <= 1'b0;
         A_MUX <= 2'b0;
         state <= IDLE;
         start_command <= 1'b0;
-        start_capture <= 1'b0;  
         load <= 1'b1;  
         busy <= 1'b0;
         channel <= 1'b0;
@@ -95,14 +96,13 @@ always @(posedge clk or negedge rst_l) begin
         set_delay_start <= 1'b0;
     end
     else begin
-        if (strb) begin
+//        if (strb) begin
         case (state)
             IDLE: begin // по синхронизирующему сигналу sync начинается работа
                     hard_wreg <= 1'b0;
                     A_MUX <= 2'b0;
                     load <= 1'b0;
                     start_command <= 1'b0;
-                    start_capture <= 1'b0; 
                     channel <= 1'b0;
                     busy <= 1'b0;
                     set_delay_start <= 1'b0;
@@ -121,7 +121,6 @@ always @(posedge clk or negedge rst_l) begin
                 load <= 1'b1;
                 hard_wreg <= 1'b1;
                 start_command <= 1'b0;
-                start_capture <= 1'b0;  
                 channel <= 1'b0;
                 busy <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -131,17 +130,16 @@ always @(posedge clk or negedge rst_l) begin
             WREG: begin
                 if (wreg_done) begin
                     state <= LOAD_DATA;
-                    cnt_rst = 1'b1;
-                    cnt_en = 1'b0;
+                    cnt_rst <= 1'b1;
+                    cnt_en <= 1'b0;
                 end
                 else begin
                     state <= WREG;
-                    cnt_en = 1'b1;
-                    cnt_rst = 1'b0;                    
+                    cnt_en <= 1'b1;
+                    cnt_rst <= 1'b0;                    
                 end  
                 hard_wreg <= 1'b1;
-                start_command <= 1'b0;
-                start_capture <= 1'b0;    
+                start_command <= 1'b0;  
                 load <= 1'b0;
                 busy <= 1'b1; 
                 set_delay_start <= 1'b0;
@@ -151,8 +149,7 @@ always @(posedge clk or negedge rst_l) begin
             LOAD_DATA: begin // загрузка команды START в сдвиговый регистр
                 state <= CH_START;
                 hard_wreg <= 1'b0;
-                start_command <= 1'b1;
-                start_capture <= 1'b0;   
+                start_command <= 1'b1; 
                 load <= 1'b1;
                 busy <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -201,8 +198,7 @@ always @(posedge clk or negedge rst_l) begin
                     START <= 1'b1;
                     state <= CH_START;
                     hard_wreg <= 1'b0;
-                    start_command <= 1'b0;
-                    start_capture <= 1'b0;   
+                    start_command <= 1'b0;  
                     load <= 1'b0; 
                     busy <= 1'b1;
                 end
@@ -239,15 +235,14 @@ always @(posedge clk or negedge rst_l) begin
             CH_TX: begin // получение значения из первого канала
                 if (dat_rcv_done) begin
                     state <= channel ? CH2_RESULT : CH1_RESULT;
-                    cnt_rst = 1'b1;
-                    cnt_en = 1'b0;
+                    cnt_rst <= 1'b1;
+                    cnt_en <= 1'b0;
                 end
                 else begin
                     cnt_en = 1'b1;
                     cnt_rst = 1'b0;
                     hard_wreg <= 1'b0;
-                    start_command <= 1'b0;
-                    start_capture <= 1'b1;    
+                    start_command <= 1'b0; 
                     load <= 1'b0; 
                     busy <= 1'b1;
                     START <= 1'b0;
@@ -266,7 +261,6 @@ always @(posedge clk or negedge rst_l) begin
             end
 
             WAIT_FOR_SYNC: begin // ожидание следующего импульса Sync из верхнего модуля
-                start_capture <= 1'b0; 
                 if (sync) 
                     state <= WAIT_FOR_DRDY;
                 else
@@ -281,8 +275,7 @@ always @(posedge clk or negedge rst_l) begin
                     state <= WAIT_FOR_DRDY;
 
                 hard_wreg <= 1'b0;
-                start_command <= 1'b0;
-                start_capture <= 1'b0;    
+                start_command <= 1'b0;  
                 load <= 1'b0; 
                 busy <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -292,7 +285,6 @@ always @(posedge clk or negedge rst_l) begin
                 state <= WREG;
                 hard_wreg <= 1'b1;
                 start_command <= 1'b0;
-                start_capture <= 1'b0;   
                 A_MUX <= 2'b1;
                 load <= 1'b1;
                 channel <= 1'b1;
@@ -312,7 +304,6 @@ always @(posedge clk or negedge rst_l) begin
 
             default: begin
                 start_command <= 1'b0;
-                start_capture <= 1'b0;
                 hard_wreg <= 1'b0;
                 A_MUX <= 2'b0;
                 state <= IDLE;   
@@ -322,7 +313,7 @@ always @(posedge clk or negedge rst_l) begin
                 set_delay_start <= 1'b0;
             end
         endcase
-        end
+//        end
     end
 end
 
@@ -385,11 +376,13 @@ always @(posedge SCLK or negedge rst_l) begin // работа сдвиговог
             else
                 shift_reg <= {shift_reg[22:0], DOUT};   
         end
+        else
+            shift_reg <= 24'b0;
     end
 end
 
 counter cnt_inst (
-    .clk(clk),
+    .clk(SCLK),
     .rst_l(rst_l),
     .cnt_en(cnt_en),
     .cnt_rst(cnt_rst),

@@ -1,8 +1,8 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 module adc_reader_tb();
 
-localparam CLK_PERIOD = 100; 
+localparam CLK_PERIOD = 84; 
 localparam ADC_SAMPLE_RATE = 100000;
 localparam SIGNAL_FREQ = 300; // 5kHz
 localparam ADC_PERIOD = 1000000000/ADC_SAMPLE_RATE;  // Период DRDY 256 kHz (3906.25 нс)
@@ -46,13 +46,13 @@ adc045_wrap uut (
     .rst_l(reset),
 
     // interface to adc//
-    .DRDY(drdy),           
-    .DOUT(dout),    
-    .CS(),       
-    .DIN(din),           
-    .SCLK(sclk),
-    .nRST(nRST),
-    .START(),
+    .DRDY_1(drdy),           
+    .DOUT_1(dout),    
+    .CS_1(),       
+    .DIN_1(din),           
+    .SCLK_1(sclk),
+    .nRST_1(nRST),
+    .START_1(),
     
     .sync(sync), 
     .DATA_OUT(),
@@ -133,7 +133,7 @@ initial begin
             
             #100;
             reset = 1'b0;
-            #100;
+            #150;
             reset = 1'b1;
             cs = 0;
             #1000;

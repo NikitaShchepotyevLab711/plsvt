@@ -7,37 +7,38 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /adc_reader_tb/uut/adc_inst/dl_start/COUNTER_MAX
 add wave -noupdate /adc_reader_tb/uut/clk
 add wave -noupdate /adc_reader_tb/adc_clk
+add wave -noupdate /adc_reader_tb/uut/DRDY_1
+add wave -noupdate /adc_reader_tb/uut/DOUT_1
+add wave -noupdate /adc_reader_tb/uut/DIN_1
 add wave -noupdate /adc_reader_tb/uut/rst_l
-add wave -noupdate /adc_reader_tb/uut/DRDY
 add wave -noupdate /adc_reader_tb/sclk
 add wave -noupdate /adc_reader_tb/uut/adc_inst/strb
 add wave -noupdate /adc_reader_tb/send_adc_data/i
-add wave -noupdate /adc_reader_tb/uut/DOUT
-add wave -noupdate /adc_reader_tb/uut/CS
-add wave -noupdate /adc_reader_tb/uut/DIN
-add wave -noupdate /adc_reader_tb/uut/START
 add wave -noupdate /adc_reader_tb/uut/sync
-add wave -noupdate -format Analog-Step -height 150 -max 16408400.0 -radix hexadecimal /adc_reader_tb/ch1_sample
+add wave -noupdate -format Analog-Step -height 150 -max 16408400.0 -radix binary /adc_reader_tb/ch1_sample
 add wave -noupdate /adc_reader_tb/uut/adc_inst/busy
 add wave -noupdate /adc_reader_tb/uut/adc_inst/rd_en
 add wave -noupdate /adc_reader_tb/uut/adc_inst/channel
-add wave -noupdate /adc_reader_tb/uut/adc_inst/captured_data
-add wave -noupdate /adc_reader_tb/uut/adc_inst/data_o
+add wave -noupdate -radix binary /adc_reader_tb/uut/adc_inst/captured_data
+add wave -noupdate -radix binary /adc_reader_tb/uut/adc_inst/data_o
 add wave -noupdate /adc_reader_tb/uut/wreg_command
 add wave -noupdate /adc_reader_tb/uut/channel_choice
 add wave -noupdate /adc_reader_tb/uut/adc_inst/state
-add wave -noupdate /adc_reader_tb/uut/adc_inst/wreg_done_reg
-add wave -noupdate /adc_reader_tb/uut/adc_inst/dat_rcv_done_reg
-add wave -noupdate /adc_reader_tb/uut/adc_inst/delay_active_reg
 add wave -noupdate /adc_reader_tb/uut/adc_inst/wreg_done
 add wave -noupdate /adc_reader_tb/uut/adc_inst/dat_rcv_done
 add wave -noupdate /adc_reader_tb/uut/adc_inst/delay_active
-add wave -noupdate /adc_reader_tb/uut/adc_inst/cnt
+add wave -noupdate -radix unsigned /adc_reader_tb/uut/adc_inst/cnt
+add wave -noupdate /adc_reader_tb/uut/adc_inst/hard_wreg
+add wave -noupdate /adc_reader_tb/uut/adc_inst/start_capture
+add wave -noupdate /adc_reader_tb/uut/adc_inst/start_command
+add wave -noupdate -radix binary /adc_reader_tb/uut/adc_inst/shift_reg
+add wave -noupdate /adc_reader_tb/uut/adc_inst/load
+add wave -noupdate /adc_reader_tb/uut/adc_inst/START
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {6314350000 ps} 0} {{Cursor 2} {10668921 ps} 0}
+WaveRestoreCursors {{Cursor 2} {5411900 ns} 0} {{Cursor 3} {247 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 305
-configure wave -valuecolwidth 112
+configure wave -namecolwidth 271
+configure wave -valuecolwidth 179
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
 configure wave -snapdistance 10
@@ -50,4 +51,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {6493676295 ps} {6500332827 ps}
+WaveRestoreZoom {6484943 ns} {6500793 ns}
