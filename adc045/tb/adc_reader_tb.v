@@ -53,6 +53,46 @@ adc045_wrap uut (
     .SCLK_1(sclk),
     .nRST_1(nRST),
     .START_1(),
+
+    .DRDY_2(drdy),           
+    .DOUT_2(dout),    
+    .CS_2(),       
+    .DIN_2(din),           
+    .SCLK_2(sclk),
+    .nRST_2(nRST),
+    .START_2(),
+
+    .DRDY_3(drdy),           
+    .DOUT_3(dout),    
+    .CS_3(),       
+    .DIN_3(din),           
+    .SCLK_3(sclk),
+    .nRST_3(nRST),
+    .START_3(),
+
+    .DRDY_4(drdy),           
+    .DOUT_4(dout),    
+    .CS_4(),       
+    .DIN_4(din),           
+    .SCLK_4(sclk),
+    .nRST_4(nRST),
+    .START_4(),
+
+    .DRDY_5(drdy),           
+    .DOUT_5(dout),    
+    .CS_5(),       
+    .DIN_5(din),           
+    .SCLK_5(sclk),
+    .nRST_5(nRST),
+    .START_5(),
+
+    .DRDY_6(drdy),           
+    .DOUT_6(dout),    
+    .CS_6(),       
+    .DIN_6(din),           
+    .SCLK_6(sclk),
+    .nRST_6(nRST),
+    .START_6(),
     
     .sync(sync), 
     .DATA_OUT(),
@@ -147,7 +187,7 @@ initial begin
         begin
         sync = 0;
         forever begin  
-            #150000;
+            #1000000;
             @(posedge clk);
             sync = 1;
             @(posedge clk);

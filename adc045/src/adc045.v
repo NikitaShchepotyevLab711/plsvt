@@ -12,13 +12,14 @@ module adc045 (
     output reg         nRST,
     output reg         START,
     
+    input  wire        enable,
     input  wire        sync,           // сигнал синхронизации чтения данных (30 Гц)
     input  wire [13:0] wreg_command,   // конфигурация АЦП (кроме битов отвечающих за номер канала)
     input  wire [1:0]  channel_choice, // номер канала. 0 и 3 - оба, 1 - первый, 2 - второй
-    output reg         busy,           // сигнал активности модуля
+    output wire        busy,           // сигнал активности модуля
     output reg  [23:0] data_o,         // данные
-    output reg         channel,        // сигнал об активном канале
-    output reg         rd_en           // сигнал готовности
+    output wire        ch_num,        // сигнал об активном канале
+    output wire        rd_en           // сигнал готовности
 );
 
 localparam IDLE          = 4'd0;
@@ -46,10 +47,11 @@ reg [23:0] captured_data;
 reg  set_delay;
 wire delay_done;
 reg delay_done_reg;
+reg channel;
+reg busy_reg;
 
 reg hard_wreg;
-//reg start_capture; 
-reg start_command;
+wire start_command = (state == LOAD_DATA);
 wire start_capture = (state == CH_TX);
 wire strb;
 reg load;
@@ -58,6 +60,8 @@ reg set_delay_start;
 reg delay_start_done_reg;
 reg cnt_en;
 reg cnt_rst;
+reg ready;
+wire rd_load_data_o;
 
 assign CS = 1'b0;
 assign full_wreg = {A_MUX, wreg_command};
@@ -67,33 +71,29 @@ wire dat_rcv_done = state == CH_TX ? (cnt == 6'd23) : 1'b0;
 wire delay_active   = (cnt == 6'd5);
 
 always @(posedge clk or negedge rst_l) begin
-    if (!rst_l) begin
+    if (!rst_l)
         data_o <= 24'b0;
-        rd_en  <= 1'b0;        
-    end
-    else begin
-        if ((strb)&&(dat_rcv_done)) begin
-            data_o <= captured_data;
-            rd_en <= 1'b1;
-        end 
-        else begin
-            rd_en <= 1'b0;
-        end
-    end    
+    else if (rd_load_data_o)
+        data_o <= captured_data;   
 end
+
+front_detector adc_733_front_detector_rden   (clk, rst_l, ready, rd_load_data_o); // 3 триггера и детектор перепада уровня
+sync2 i_sync2_channel (clk, rst_l, channel, ch_num); // 2 триггера
+sync2 i_sync2_ready   (clk, rst_l, rd_load_data_o, rd_en); // 2 триггера
+sync2 i_sync2_busy   (clk, rst_l, busy_reg, busy); // 2 триггера
 
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         hard_wreg <= 1'b0;
         A_MUX <= 2'b0;
         state <= IDLE;
-        start_command <= 1'b0;
         load <= 1'b1;  
-        busy <= 1'b0;
+        busy_reg <= 1'b0;
         channel <= 1'b0;
         set_delay <= 1'b0;
         delay_done_reg <= 1'b0;
         set_delay_start <= 1'b0;
+        ready <= 1'b0;
     end
     else begin
 //        if (strb) begin
@@ -102,11 +102,11 @@ always @(posedge SCLK or negedge rst_l) begin
                     hard_wreg <= 1'b0;
                     A_MUX <= 2'b0;
                     load <= 1'b0;
-                    start_command <= 1'b0;
                     channel <= 1'b0;
-                    busy <= 1'b0;
+                    busy_reg <= 1'b0;
                     set_delay_start <= 1'b0;
                     START <= 1'b0;
+                    ready <= 1'b0;
                     if (sync) begin
                         if (channel_choice == 2'b10)
                             state <= LOAD_WREG2;
@@ -116,13 +116,13 @@ always @(posedge SCLK or negedge rst_l) begin
             end
 
             LOAD_WREG1: begin // загрузка конфигурационных данных АЦП (чтение из 1ого канала) в сдвиговый регистр
+                ready <= 1'b0;
                 state <= WREG;
                 A_MUX <= 2'b0;
                 load <= 1'b1;
                 hard_wreg <= 1'b1;
-                start_command <= 1'b0;
                 channel <= 1'b0;
-                busy <= 1'b1;
+                busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
                 START <= 1'b0;
             end
@@ -138,20 +138,20 @@ always @(posedge SCLK or negedge rst_l) begin
                     cnt_en <= 1'b1;
                     cnt_rst <= 1'b0;                    
                 end  
+                ready <= 1'b0;
                 hard_wreg <= 1'b1;
-                start_command <= 1'b0;  
                 load <= 1'b0;
-                busy <= 1'b1; 
+                busy_reg <= 1'b1; 
                 set_delay_start <= 1'b0;
                 START <= 1'b0;                
             end
 
             LOAD_DATA: begin // загрузка команды START в сдвиговый регистр
+                ready <= 1'b0;
                 state <= CH_START;
                 hard_wreg <= 1'b0;
-                start_command <= 1'b1; 
                 load <= 1'b1;
-                busy <= 1'b1;
+                busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
                 START <= 1'b0;
             end
@@ -178,12 +178,12 @@ always @(posedge SCLK or negedge rst_l) begin
                     start_capture <= 1'b0;   
                     load <= 1'b0; 
                     channel <= 1'b0;
-                    busy <= 1'b1;
+                    busy_reg <= 1'b1;
                     word_received <= 1'b0;
                     A_MUX <= 2'b0;
                 end       
                 */
-
+                ready <= 1'b0;
                 if (delay_start_done) begin
                     if (delay_done_reg) begin
                             if (DRDY)
@@ -197,16 +197,16 @@ always @(posedge SCLK or negedge rst_l) begin
                 else begin
                     START <= 1'b1;
                     state <= CH_START;
-                    hard_wreg <= 1'b0;
-                    start_command <= 1'b0;  
+                    hard_wreg <= 1'b0; 
                     load <= 1'b0; 
-                    busy <= 1'b1;
+                    busy_reg <= 1'b1;
                 end
 
                 set_delay_start <= 1'b1;
             end
 
             DELAY: begin
+                ready <= 1'b0;
                 START <= 1'b0;
                 set_delay <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -233,6 +233,7 @@ always @(posedge SCLK or negedge rst_l) begin
             end
 
             CH_TX: begin // получение значения из первого канала
+                ready <= 1'b0;
                 if (dat_rcv_done) begin
                     state <= channel ? CH2_RESULT : CH1_RESULT;
                     cnt_rst <= 1'b1;
@@ -242,9 +243,8 @@ always @(posedge SCLK or negedge rst_l) begin
                     cnt_en = 1'b1;
                     cnt_rst = 1'b0;
                     hard_wreg <= 1'b0;
-                    start_command <= 1'b0; 
                     load <= 1'b0; 
-                    busy <= 1'b1;
+                    busy_reg <= 1'b1;
                     START <= 1'b0;
                     set_delay_start <= 1'b0;
                 end
@@ -256,6 +256,7 @@ always @(posedge SCLK or negedge rst_l) begin
                     2'd1: state <= WAIT_FOR_SYNC;
                     default: state <= CH1_RESULT;
                 endcase
+                ready <= 1'b1;
                 set_delay_start <= 1'b0;
                 cnt_rst = 1'b1;
             end
@@ -275,21 +276,21 @@ always @(posedge SCLK or negedge rst_l) begin
                     state <= WAIT_FOR_DRDY;
 
                 hard_wreg <= 1'b0;
-                start_command <= 1'b0;  
                 load <= 1'b0; 
-                busy <= 1'b1;
+                busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
+                ready <= 1'b0;
             end
 
             LOAD_WREG2: begin // загрузка конфигурационных данных АЦП (чтение из 2ого канала) в сдвиговый регистр
                 state <= WREG;
                 hard_wreg <= 1'b1;
-                start_command <= 1'b0;
                 A_MUX <= 2'b1;
                 load <= 1'b1;
                 channel <= 1'b1;
-                busy <= 1'b1;
+                busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
+                ready <= 1'b0;
             end
 
             CH2_RESULT: begin
@@ -299,18 +300,19 @@ always @(posedge SCLK or negedge rst_l) begin
                     default: state <= CH2_RESULT;
                 endcase
                 set_delay_start <= 1'b0;
+                ready <= 1'b1;
                 START <= 1'b0;
             end
 
             default: begin
-                start_command <= 1'b0;
                 hard_wreg <= 1'b0;
                 A_MUX <= 2'b0;
                 state <= IDLE;   
                 load <= 1'b0;
                 channel <= 1'b0;
-                busy <= 1'b0;
+                busy_reg <= 1'b0;
                 set_delay_start <= 1'b0;
+                ready <= 1'b0;
             end
         endcase
 //        end
@@ -391,13 +393,13 @@ counter cnt_inst (
 );
 
 // формирование частоты (<5MHz) со скважностью 50% и строба длительностью в такт clk
-clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, 1, strb, SCLK);
+clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, enable, strb, SCLK);
 
 // данные модули обеспечивают необходимую по документации паузу 
 // после включения АЦП (первый) и для команды старт (второй) //
 delay #(
     .FREQ_MHZ(12),
-    .DELAY_MS(5)
+    .DELAY_MS(1)
 ) delay_inst (
     .clk(clk),
     .rst_l(rst_l),
