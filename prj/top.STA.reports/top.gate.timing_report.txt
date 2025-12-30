@@ -1,250 +1,290 @@
-Startpoint: _3585_ (falling edge-triggered flip-flop)
-Endpoint: adc8ch_sclk_1 (output port)
+Startpoint: adc045_drdy_2 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3585_/clk (xci2_dffl)
-   0.058153    0.505959    3.660536    3.660536 v _3585_/q (xci2_dffl)
-   0.058260    0.528922    2.388791    6.049326 ^ _1710_/y (xci2_nand2)
-   0.058066    0.498581    2.373495    8.422822 v _1711_/y (xci2_inv)
-   5.000000    3.592028    6.551559   14.974381 v XC_BUF_adc8ch_sclk_1/x (xci2_ob)
-               3.592028    0.000000   14.974381 v adc8ch_sclk_1 (out)
-                                      14.974381   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ adc045_drdy_2 (in)
+   0.058234    0.365312    3.468065    3.468065 ^ XC_BUF_adc045_drdy_2/x (xci2_ib)
+   0.058214    0.589307    1.788087    5.256152 ^ _1846_/y (xci2_and3ftt)
+   0.058184    0.540064    1.997363    7.253514 v _1848_/y (xci2_aoi21)
+   0.058214    0.589524    2.265808    9.519322 ^ _1851_/y (xci2_aoi21)
+   0.058076    0.539654    1.997099   11.516422 v _1852_/y (xci2_aoi21)
+   0.058119    0.499047    2.333062   13.849483 v _1875_/y (xci2_nand2ft)
+   0.058200    0.528640    2.404882   16.254366 ^ _1881_/y (xci2_nand3)
+               0.528640    0.000000   16.254366 ^ _3441_/d (xci2_dffcl)
+                                      16.254366   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.622159   30.377842   library setup time
+                                      30.377842   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -14.974381   data arrival time
+                                      30.377842   data required time
+                                     -16.254366   data arrival time
 ---------------------------------------------------------------------------------------
-                                      10.025618   slack (MET)
+                                      14.123476   slack (MET)
 
 
-Startpoint: _3408_ (falling edge-triggered flip-flop)
-Endpoint: adc8ch_sclk_1 (output port)
+Startpoint: adc045_drdy_2 (input port)
+Endpoint: _3442_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3408_/clk (xci2_dfflcl)
-   0.058054    0.597755    3.279607    3.279607 v _3408_/q (xci2_dfflcl)
-   0.058260    0.528922    2.049819    5.329427 ^ _1710_/y (xci2_nand2)
-   0.058066    0.498581    2.373495    7.702922 v _1711_/y (xci2_inv)
-   5.000000    3.592028    6.551560   14.254482 v XC_BUF_adc8ch_sclk_1/x (xci2_ob)
-               3.592028    0.000000   14.254482 v adc8ch_sclk_1 (out)
-                                      14.254482   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ adc045_drdy_2 (in)
+   0.058234    0.365312    3.468065    3.468065 ^ XC_BUF_adc045_drdy_2/x (xci2_ib)
+   0.058214    0.589307    1.788087    5.256152 ^ _1846_/y (xci2_and3ftt)
+   0.058184    0.540064    1.997363    7.253514 v _1848_/y (xci2_aoi21)
+   0.058214    0.589524    2.265808    9.519322 ^ _1851_/y (xci2_aoi21)
+   0.058076    0.539654    1.997099   11.516422 v _1852_/y (xci2_aoi21)
+   0.058119    0.499047    2.333062   13.849483 v _1875_/y (xci2_nand2ft)
+   0.058200    0.528640    2.404882   16.254366 ^ _1888_/y (xci2_nand3)
+               0.528640    0.000000   16.254366 ^ _3442_/d (xci2_dffcl)
+                                      16.254366   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.622159   30.377842   library setup time
+                                      30.377842   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -14.254482   data arrival time
+                                      30.377842   data required time
+                                     -16.254366   data arrival time
 ---------------------------------------------------------------------------------------
-                                      10.745517   slack (MET)
+                                      14.123476   slack (MET)
 
 
-Startpoint: _3376_ (falling edge-triggered flip-flop)
-Endpoint: dac045a_sck_1 (output port)
+Startpoint: adc045_drdy_4 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3376_/clk (xci2_dfflcl)
-   0.058280    0.664930    3.570436    3.570436 ^ _3376_/q (xci2_dfflcl)
-   0.058159    0.540059    2.071807    5.642243 v _3181_/y (xci2_aoi21ftf)
-   0.058200    0.540215    1.834920    7.477163 v _3184_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566959   14.044123 v XC_BUF_dac045a_sck_1/x (xci2_ob)
-               3.592322    0.000000   14.044123 v dac045a_sck_1 (out)
-                                      14.044123   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ adc045_drdy_4 (in)
+   0.058234    0.365312    3.468065    3.468065 ^ XC_BUF_adc045_drdy_4/x (xci2_ib)
+   0.058214    0.589282    1.788087    5.256152 ^ _1849_/y (xci2_and3)
+   0.058153    0.539946    1.997257    7.253409 v _1850_/y (xci2_aoi21)
+   0.058214    0.589524    2.155804    9.409213 ^ _1851_/y (xci2_aoi21)
+   0.058076    0.539654    1.997099   11.406313 v _1852_/y (xci2_aoi21)
+   0.058119    0.499047    2.333062   13.739374 v _1875_/y (xci2_nand2ft)
+   0.058200    0.528640    2.404882   16.144257 ^ _1881_/y (xci2_nand3)
+               0.528640    0.000000   16.144257 ^ _3441_/d (xci2_dffcl)
+                                      16.144257   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.622159   30.377842   library setup time
+                                      30.377842   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -14.044123   data arrival time
+                                      30.377842   data required time
+                                     -16.144257   data arrival time
 ---------------------------------------------------------------------------------------
-                                      10.955876   slack (MET)
+                                      14.233585   slack (MET)
 
 
-Startpoint: _3375_ (falling edge-triggered flip-flop)
-Endpoint: dac045a_sck_1 (output port)
+Startpoint: adc045_drdy_4 (input port)
+Endpoint: _3442_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3375_/clk (xci2_dfflcl)
-   0.058121    0.598017    3.279841    3.279841 v _3375_/q (xci2_dfflcl)
-   0.058159    0.540059    2.242737    5.522578 v _3181_/y (xci2_aoi21ftf)
-   0.058200    0.540215    1.834921    7.357499 v _3184_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566959   13.924459 v XC_BUF_dac045a_sck_1/x (xci2_ob)
-               3.592322    0.000000   13.924459 v dac045a_sck_1 (out)
-                                      13.924459   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ adc045_drdy_4 (in)
+   0.058234    0.365312    3.468065    3.468065 ^ XC_BUF_adc045_drdy_4/x (xci2_ib)
+   0.058214    0.589282    1.788087    5.256152 ^ _1849_/y (xci2_and3)
+   0.058153    0.539946    1.997257    7.253409 v _1850_/y (xci2_aoi21)
+   0.058214    0.589524    2.155804    9.409213 ^ _1851_/y (xci2_aoi21)
+   0.058076    0.539654    1.997099   11.406313 v _1852_/y (xci2_aoi21)
+   0.058119    0.499047    2.333062   13.739374 v _1875_/y (xci2_nand2ft)
+   0.058200    0.528640    2.404882   16.144257 ^ _1888_/y (xci2_nand3)
+               0.528640    0.000000   16.144257 ^ _3442_/d (xci2_dffcl)
+                                      16.144257   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.622159   30.377842   library setup time
+                                      30.377842   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -13.924459   data arrival time
+                                      30.377842   data required time
+                                     -16.144257   data arrival time
 ---------------------------------------------------------------------------------------
-                                      11.075541   slack (MET)
+                                      14.233585   slack (MET)
 
 
-Startpoint: _3585_ (falling edge-triggered flip-flop)
-Endpoint: adc8ch_sclk_1 (output port)
+Startpoint: adc045_drdy_2 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3585_/clk (xci2_dffl)
-   0.058247    0.534192    3.480084    3.480084 ^ _3585_/q (xci2_dffl)
-   0.058140    0.499139    2.375297    5.855381 v _1710_/y (xci2_nand2)
-   0.058334    0.528750    2.386076    8.241458 ^ _1711_/y (xci2_inv)
-   5.000000    2.603000    5.681475   13.922933 ^ XC_BUF_adc8ch_sclk_1/x (xci2_ob)
-               2.603000    0.000000   13.922933 ^ adc8ch_sclk_1 (out)
-                                      13.922933   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ adc045_drdy_2 (in)
+   0.058234    0.365312    3.468065    3.468065 ^ XC_BUF_adc045_drdy_2/x (xci2_ib)
+   0.058214    0.589307    1.788087    5.256152 ^ _1846_/y (xci2_and3ftt)
+   0.058184    0.540064    1.997363    7.253514 v _1848_/y (xci2_aoi21)
+   0.058214    0.589524    2.265808    9.519322 ^ _1851_/y (xci2_aoi21)
+   0.058076    0.539654    1.997099   11.516422 v _1852_/y (xci2_aoi21)
+   0.058171    0.499272    2.221747   13.738170 v _1874_/y (xci2_ao21ftf)
+   0.058200    0.528640    2.386265   16.124434 ^ _1881_/y (xci2_nand3)
+               0.528640    0.000000   16.124434 ^ _3441_/d (xci2_dffcl)
+                                      16.124434   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.622159   30.377842   library setup time
+                                      30.377842   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -13.922933   data arrival time
+                                      30.377842   data required time
+                                     -16.124434   data arrival time
 ---------------------------------------------------------------------------------------
-                                      11.077066   slack (MET)
+                                      14.253407   slack (MET)
 
 
-Startpoint: _3408_ (falling edge-triggered flip-flop)
-Endpoint: adc8ch_sclk_1 (output port)
+Startpoint: adc045_drdy_4 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3408_/clk (xci2_dfflcl)
-   0.058346    0.665218    3.570692    3.570692 ^ _3408_/q (xci2_dfflcl)
-   0.058140    0.499139    1.993700    5.564393 v _1710_/y (xci2_nand2)
-   0.058334    0.528750    2.386076    7.950469 ^ _1711_/y (xci2_inv)
-   5.000000    2.603000    5.681475   13.631944 ^ XC_BUF_adc8ch_sclk_1/x (xci2_ob)
-               2.603000    0.000000   13.631944 ^ adc8ch_sclk_1 (out)
-                                      13.631944   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ adc045_drdy_4 (in)
+   0.058234    0.365312    3.468065    3.468065 ^ XC_BUF_adc045_drdy_4/x (xci2_ib)
+   0.058214    0.589282    1.788087    5.256152 ^ _1849_/y (xci2_and3)
+   0.058153    0.539946    1.997257    7.253409 v _1850_/y (xci2_aoi21)
+   0.058214    0.589524    2.155804    9.409213 ^ _1851_/y (xci2_aoi21)
+   0.058076    0.539654    1.997099   11.406313 v _1852_/y (xci2_aoi21)
+   0.058171    0.499272    2.221747   13.628060 v _1874_/y (xci2_ao21ftf)
+   0.058200    0.528640    2.386265   16.014324 ^ _1881_/y (xci2_nand3)
+               0.528640    0.000000   16.014324 ^ _3441_/d (xci2_dffcl)
+                                      16.014324   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.622159   30.377842   library setup time
+                                      30.377842   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -13.631944   data arrival time
+                                      30.377842   data required time
+                                     -16.014324   data arrival time
 ---------------------------------------------------------------------------------------
-                                      11.368055   slack (MET)
+                                      14.363517   slack (MET)
 
 
-Startpoint: _3375_ (falling edge-triggered flip-flop)
-Endpoint: dac045a_sck_1 (output port)
+Startpoint: adc045_drdy_2 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3375_/clk (xci2_dfflcl)
-   0.058279    0.664926    3.570431    3.570431 ^ _3375_/q (xci2_dfflcl)
-   0.058241    0.589671    2.346945    5.917376 ^ _3181_/y (xci2_aoi21ftf)
-   0.058200    0.589500    1.897704    7.815080 ^ _3184_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697269   13.512349 ^ XC_BUF_dac045a_sck_1/x (xci2_ob)
-               2.603000    0.000000   13.512349 ^ dac045a_sck_1 (out)
-                                      13.512349   data arrival time
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v adc045_drdy_2 (in)
+   0.058166    0.346819    3.550809    3.550809 v XC_BUF_adc045_drdy_2/x (xci2_ib)
+   0.058186    0.538627    1.730391    5.281199 v _1846_/y (xci2_and3ftt)
+   0.058216    0.589534    2.074410    7.355610 ^ _1848_/y (xci2_aoi21)
+   0.058186    0.540078    2.127560    9.483171 v _1851_/y (xci2_aoi21)
+   0.058324    0.589983    2.075427   11.558597 ^ _1852_/y (xci2_aoi21)
+   0.058281    0.529000    2.311472   13.870070 ^ _1875_/y (xci2_nand2ft)
+   0.058200    0.499353    2.339653   16.209723 v _1881_/y (xci2_nand3)
+               0.499353    0.000000   16.209723 v _3441_/d (xci2_dffcl)
+                                      16.209723   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.326775   30.673225   library setup time
+                                      30.673225   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -13.512349   data arrival time
+                                      30.673225   data required time
+                                     -16.209723   data arrival time
 ---------------------------------------------------------------------------------------
-                                      11.487650   slack (MET)
+                                      14.463503   slack (MET)
 
 
-Startpoint: _3363_ (rising edge-triggered flip-flop)
-Endpoint: dac045a_sck_1 (output port)
+Startpoint: adc045_drdy_2 (input port)
+Endpoint: _3442_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 ^ _3363_/clk (xci2_dffcl)
-   0.057998    0.597586    3.113480    3.113480 v _3363_/q (xci2_dffcl)
-   0.058159    0.540059    1.864923    4.978403 v _3181_/y (xci2_aoi21ftf)
-   0.058200    0.540215    1.834921    6.813323 v _3184_/y (xci2_aoi21ftf)
-   5.000000    3.592322    6.566960   13.380284 v XC_BUF_dac045a_sck_1/x (xci2_ob)
-               3.592322    0.000000   13.380284 v dac045a_sck_1 (out)
-                                      13.380284   data arrival time
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v adc045_drdy_2 (in)
+   0.058166    0.346819    3.550809    3.550809 v XC_BUF_adc045_drdy_2/x (xci2_ib)
+   0.058186    0.538627    1.730391    5.281199 v _1846_/y (xci2_and3ftt)
+   0.058216    0.589534    2.074410    7.355610 ^ _1848_/y (xci2_aoi21)
+   0.058186    0.540078    2.127560    9.483171 v _1851_/y (xci2_aoi21)
+   0.058324    0.589983    2.075427   11.558597 ^ _1852_/y (xci2_aoi21)
+   0.058281    0.529000    2.311472   13.870070 ^ _1875_/y (xci2_nand2ft)
+   0.058200    0.499353    2.339653   16.209723 v _1888_/y (xci2_nand3)
+               0.499353    0.000000   16.209723 v _3442_/d (xci2_dffcl)
+                                      16.209723   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.326775   30.673225   library setup time
+                                      30.673225   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -13.380284   data arrival time
+                                      30.673225   data required time
+                                     -16.209723   data arrival time
 ---------------------------------------------------------------------------------------
-                                      11.619716   slack (MET)
+                                      14.463503   slack (MET)
 
 
-Startpoint: _3376_ (falling edge-triggered flip-flop)
-Endpoint: dac045a_sck_1 (output port)
+Startpoint: adc045_drdy_2 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 v _3376_/clk (xci2_dfflcl)
-   0.058120    0.598013    3.279839    3.279839 v _3376_/q (xci2_dfflcl)
-   0.058241    0.589671    2.184879    5.464718 ^ _3181_/y (xci2_aoi21ftf)
-   0.058200    0.589500    1.897704    7.362422 ^ _3184_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697269   13.059691 ^ XC_BUF_dac045a_sck_1/x (xci2_ob)
-               2.603000    0.000000   13.059691 ^ dac045a_sck_1 (out)
-                                      13.059691   data arrival time
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v adc045_drdy_2 (in)
+   0.058166    0.346819    3.550809    3.550809 v XC_BUF_adc045_drdy_2/x (xci2_ib)
+   0.058186    0.538627    1.730391    5.281199 v _1846_/y (xci2_and3ftt)
+   0.058216    0.589534    2.074410    7.355610 ^ _1848_/y (xci2_aoi21)
+   0.058186    0.540078    2.127560    9.483171 v _1851_/y (xci2_aoi21)
+   0.058324    0.589983    2.075427   11.558597 ^ _1852_/y (xci2_aoi21)
+   0.058229    0.528769    2.223857   13.782454 ^ _1874_/y (xci2_ao21ftf)
+   0.058200    0.499353    2.374015   16.156469 v _1881_/y (xci2_nand3)
+               0.499353    0.000000   16.156469 v _3441_/d (xci2_dffcl)
+                                      16.156469   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.326775   30.673225   library setup time
+                                      30.673225   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -13.059691   data arrival time
+                                      30.673225   data required time
+                                     -16.156469   data arrival time
 ---------------------------------------------------------------------------------------
-                                      11.940308   slack (MET)
+                                      14.516756   slack (MET)
 
 
-Startpoint: _3363_ (rising edge-triggered flip-flop)
-Endpoint: dac045a_sck_1 (output port)
+Startpoint: adc045_drdy_4 (input port)
+Endpoint: _3441_ (rising edge-triggered flip-flop)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               2.800000    0.000000    0.000000 ^ _3363_/clk (xci2_dffcl)
-   0.058402    0.664998    3.410920    3.410920 ^ _3363_/q (xci2_dffcl)
-   0.058241    0.589671    1.930858    5.341778 ^ _3181_/y (xci2_aoi21ftf)
-   0.058200    0.589500    1.897704    7.239482 ^ _3184_/y (xci2_aoi21ftf)
-   5.000000    2.603000    5.697269   12.936751 ^ XC_BUF_dac045a_sck_1/x (xci2_ob)
-               2.603000    0.000000   12.936751 ^ dac045a_sck_1 (out)
-                                      12.936751   data arrival time
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v adc045_drdy_4 (in)
+   0.058166    0.346819    3.550809    3.550809 v XC_BUF_adc045_drdy_4/x (xci2_ib)
+   0.058186    0.538628    1.730391    5.281199 v _1849_/y (xci2_and3)
+   0.058247    0.589663    2.074518    7.355718 ^ _1850_/y (xci2_aoi21)
+   0.058186    0.540078    2.041164    9.396882 v _1851_/y (xci2_aoi21)
+   0.058324    0.589983    2.075427   11.472309 ^ _1852_/y (xci2_aoi21)
+   0.058281    0.529000    2.311472   13.783781 ^ _1875_/y (xci2_nand2ft)
+   0.058200    0.499353    2.339653   16.123434 v _1881_/y (xci2_nand3)
+               0.499353    0.000000   16.123434 v _3441_/d (xci2_dffcl)
+                                      16.123434   data arrival time
 
-                          25.000000   25.000000   max_delay
-                           0.000000   25.000000   output external delay
-                                      25.000000   data required time
+                          31.000000   31.000000   max_delay
+                          -0.326775   30.673225   library setup time
+                                      30.673225   data required time
 ---------------------------------------------------------------------------------------
-                                      25.000000   data required time
-                                     -12.936751   data arrival time
+                                      30.673225   data required time
+                                     -16.123434   data arrival time
 ---------------------------------------------------------------------------------------
-                                      12.063248   slack (MET)
+                                      14.549791   slack (MET)
 
 

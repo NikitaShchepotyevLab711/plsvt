@@ -7,33 +7,15 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /adc_reader_tb/uut/adc_inst/dl_start/COUNTER_MAX
 add wave -noupdate /adc_reader_tb/uut/clk
 add wave -noupdate /adc_reader_tb/adc_clk
-add wave -noupdate /adc_reader_tb/uut/SCLK_1
-add wave -noupdate /adc_reader_tb/uut/SCLK_2
-add wave -noupdate /adc_reader_tb/uut/SCLK_3
-add wave -noupdate /adc_reader_tb/uut/SCLK_4
-add wave -noupdate /adc_reader_tb/uut/SCLK_5
-add wave -noupdate /adc_reader_tb/uut/SCLK_6
-add wave -noupdate /adc_reader_tb/uut/DRDY_1
-add wave -noupdate /adc_reader_tb/uut/DOUT_1
-add wave -noupdate /adc_reader_tb/uut/DIN_1
-add wave -noupdate /adc_reader_tb/uut/DIN_2
-add wave -noupdate /adc_reader_tb/uut/DIN_3
-add wave -noupdate /adc_reader_tb/uut/DIN_4
-add wave -noupdate /adc_reader_tb/uut/DIN_5
-add wave -noupdate /adc_reader_tb/uut/DIN_6
-add wave -noupdate /adc_reader_tb/uut/DOUT_2
-add wave -noupdate /adc_reader_tb/uut/DOUT_3
-add wave -noupdate /adc_reader_tb/uut/DOUT_4
-add wave -noupdate /adc_reader_tb/uut/DOUT_5
-add wave -noupdate /adc_reader_tb/uut/DOUT_6
-add wave -noupdate /adc_reader_tb/uut/DRDY_2
-add wave -noupdate /adc_reader_tb/uut/DRDY_3
-add wave -noupdate /adc_reader_tb/uut/DRDY_4
-add wave -noupdate /adc_reader_tb/uut/DRDY_5
-add wave -noupdate /adc_reader_tb/uut/DRDY_6
+add wave -noupdate /adc_reader_tb/drdy
 add wave -noupdate /adc_reader_tb/uut/rst_l
 add wave -noupdate /adc_reader_tb/uut/adc_inst/strb
 add wave -noupdate /adc_reader_tb/send_adc_data/i
+add wave -noupdate -expand /adc_reader_tb/uut/SCLK
+add wave -noupdate /adc_reader_tb/uut/DIN
+add wave -noupdate -expand /adc_reader_tb/uut/DRDY
+add wave -noupdate /adc_reader_tb/uut/adc_inst/DRDY
+add wave -noupdate -expand /adc_reader_tb/uut/DOUT
 add wave -noupdate /adc_reader_tb/uut/sync
 add wave -noupdate /adc_reader_tb/uut/adc_inst/sync
 add wave -noupdate /adc_reader_tb/uut/all_channels_done
@@ -47,9 +29,14 @@ add wave -noupdate -radix hexadecimal /adc_reader_tb/uut/adc_inst/data_o
 add wave -noupdate /adc_reader_tb/uut/busy_pulse
 add wave -noupdate /adc_reader_tb/uut/adc_counter
 add wave -noupdate /adc_reader_tb/uut/work_frame
+add wave -noupdate /adc_reader_tb/uut/adc_inst/set_delay
+add wave -noupdate /adc_reader_tb/uut/adc_inst/delay_done
+add wave -noupdate /adc_reader_tb/uut/adc_inst/delay_active
+add wave -noupdate /adc_reader_tb/uut/adc_enable
+add wave -noupdate /adc_reader_tb/uut/delay_status
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {6496632 ns} 0} {{Cursor 3} {2031582 ns} 0}
-quietly wave cursor active 1
+WaveRestoreCursors {{Cursor 2} {6495000 ns} 0} {{Cursor 3} {2003610 ns} 0}
+quietly wave cursor active 2
 configure wave -namecolwidth 271
 configure wave -valuecolwidth 107
 configure wave -justifyvalue left
@@ -64,4 +51,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {4362489 ns} {6612501 ns}
+WaveRestoreZoom {6437627 ns} {6503283 ns}

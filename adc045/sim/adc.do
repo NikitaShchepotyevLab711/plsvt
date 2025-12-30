@@ -10,7 +10,8 @@ vlog "../tb/adc_reader_tb.v"         \
      "../src/sync2_toggle_to_pulse.v"\
      "../src/sync2.v"                \
      "../src/counter.v"              \
-     "../src/pulse_to_toggle.v"          \
+     "../src/pulse_to_toggle.v"      \
+     "../src/pulse_extender.v"       \
      "../src/adc045_wrap.v"
 
 vsim -debugDB -fsmdebug -gui work.adc_reader_tb

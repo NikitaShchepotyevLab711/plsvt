@@ -157,58 +157,13 @@ adc045_wrap adc_045_inst (
     .rst_l   (rst_l),
 
     // interface to  1 adc//
-    .DRDY_1    (adc045_drdy_1),           
-    .DOUT_1    (adc045_dout_1),    
-    .CS_1      (adc045_cs_1),       
-    .DIN_1     (adc045_din_1),           
-    .SCLK_1    (adc045_sclk_1),
-    .nRST_1    (adc045_nrst_1),
-    .START_1   (adc045_start_1),
-
-    // interface to  2 adc//
-    .DRDY_2    (adc045_drdy_2),           
-    .DOUT_2    (adc045_dout_2),    
-    .CS_2      (adc045_cs_2),       
-    .DIN_2     (adc045_din_2),           
-    .SCLK_2    (adc045_sclk_2),
-    .nRST_2    (adc045_nrst_2),
-    .START_2   (adc045_start_2),
-
-    // interface to  3 adc//
-    .DRDY_3    (adc045_drdy_3),           
-    .DOUT_3    (adc045_dout_3),    
-    .CS_3      (adc045_cs_3),       
-    .DIN_3     (adc045_din_3),           
-    .SCLK_3    (adc045_sclk_3),
-    .nRST_3    (adc045_nrst_3),
-    .START_3   (adc045_start_3),
-
-    // interface to  4 adc//
-    .DRDY_4    (adc045_drdy_4),           
-    .DOUT_4    (adc045_dout_4),    
-    .CS_4      (adc045_cs_4),       
-    .DIN_4     (adc045_din_4),           
-    .SCLK_4    (adc045_sclk_4),
-    .nRST_4    (adc045_nrst_4),
-    .START_4   (adc045_start_4),
-
-    // interface to  5 adc//
-    .DRDY_5    (adc045_drdy_5),           
-    .DOUT_5    (adc045_dout_5),    
-    .CS_5      (adc045_cs_5),       
-    .DIN_5     (adc045_din_5),           
-    .SCLK_5    (adc045_sclk_5),
-    .nRST_5    (adc045_nrst_5),
-    .START_5   (adc045_start_5),
-
-    // interface to  6 adc//
-    .DRDY_6    (adc045_drdy_6),           
-    .DOUT_6    (adc045_dout_6),    
-    .CS_6      (adc045_cs_6),       
-    .DIN_6     (adc045_din_6),           
-    .SCLK_6    (adc045_sclk_6),
-    .nRST_6    (adc045_nrst_6),
-    .START_6   (adc045_start_6),
+    .DRDY    ({adc045_drdy_5, adc045_drdy_4, adc045_drdy_3, adc045_drdy_2, adc045_drdy_1}),           
+    .DOUT    ({adc045_dout_5, adc045_dout_4, adc045_dout_3, adc045_dout_2, adc045_dout_1}),    
+    .CS      ({adc045_cs_5, adc045_cs_4, adc045_cs_3, adc045_cs_2, adc045_cs_1}),      
+    .DIN     ({adc045_din_5, adc045_din_4, adc045_din_3, adc045_din_2, adc045_din_1}),           
+    .SCLK    ({adc045_sclk_5, adc045_sclk_4, adc045_sclk_3, adc045_sclk_2, adc045_sclk_1}),
+    .nRST    ({adc045_nrst_5, adc045_nrst_4, adc045_nrst_3, adc045_nrst_2, adc045_nrst_1}),
+    .START   ({adc045_start_5, adc045_start_4, adc045_start_3, adc045_start_2, adc045_start_1}),
 
     // others //
     .sync    (), 

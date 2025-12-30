@@ -12,12 +12,14 @@ reg         clk;
 reg         reset;
 
 // interface to adc//
-reg         drdy;           
-reg         dout;    
-reg         cs;       
-wire        din;           
-wire        sclk;
-wire        nRST;
+reg  drdy;           
+reg  dout;    
+reg  [5:0] cs;       
+wire [5:0] din;           
+reg  [5:0] sclk;
+wire [5:0] nRST;
+
+wire [5:0] SCLK;
 
 // signals from above //
 reg         hard_start;
@@ -41,63 +43,65 @@ reg [23:0] cos_signal;
 reg adc_clk;
 integer bit_counter;
 
+reg [5:0] DOUT;
+reg [5:0] DRDY;
+
 adc045_wrap uut (
     .clk(clk),
     .rst_l(reset),
 
     // interface to adc//
-    .DRDY_1(drdy),           
-    .DOUT_1(dout),    
-    .CS_1(),       
-    .DIN_1(din),           
-    .SCLK_1(sclk),
-    .nRST_1(nRST),
-    .START_1(),
-
-    .DRDY_2(drdy),           
-    .DOUT_2(dout),    
-    .CS_2(),       
-    .DIN_2(din),           
-    .SCLK_2(sclk),
-    .nRST_2(nRST),
-    .START_2(),
-
-    .DRDY_3(drdy),           
-    .DOUT_3(dout),    
-    .CS_3(),       
-    .DIN_3(din),           
-    .SCLK_3(sclk),
-    .nRST_3(nRST),
-    .START_3(),
-
-    .DRDY_4(drdy),           
-    .DOUT_4(dout),    
-    .CS_4(),       
-    .DIN_4(din),           
-    .SCLK_4(sclk),
-    .nRST_4(nRST),
-    .START_4(),
-
-    .DRDY_5(drdy),           
-    .DOUT_5(dout),    
-    .CS_5(),       
-    .DIN_5(din),           
-    .SCLK_5(sclk),
-    .nRST_5(nRST),
-    .START_5(),
-
-    .DRDY_6(drdy),           
-    .DOUT_6(dout),    
-    .CS_6(),       
-    .DIN_6(din),           
-    .SCLK_6(sclk),
-    .nRST_6(nRST),
-    .START_6(),
+    .DRDY({6{drdy}}),           
+    .DOUT(DOUT),    
+    .CS(),       
+    .DIN(),           
+    .SCLK(SCLK),
+    .nRST(nRST),
+    .START(),
     
     .sync(sync), 
     .DATA_OUT(),
     .RD_EN()
 );
+
+//assign DRDY = {6{drdy}};
+
+always @(*) begin
+    case (uut.adc_counter)
+        3'd0: begin
+            DOUT[0] = dout;
+            sclk = SCLK[0];
+        end
+
+        3'd1: begin
+            DOUT[1] = dout;
+            sclk = SCLK[1];       
+        end
+
+        3'd2: begin
+            DOUT[2] = dout;
+            sclk = SCLK[2];     
+        end
+
+        3'd3: begin
+            DOUT[3] = dout;
+            sclk = SCLK[3];   
+        end
+
+        3'd4: begin
+            DOUT[4] = dout;
+            sclk = SCLK[4];       
+        end
+
+        3'd5: begin
+            DOUT[5] = dout;
+            sclk = SCLK[5];          
+        end
+        default: begin
+             
+        end
+    endcase
+end
 
 initial begin
     clk = 0;
@@ -179,8 +183,6 @@ initial begin
             #1000;
             sync = 1;
             @(posedge clk);
-            @(posedge clk);
-            @(posedge clk);
             sync = 0;
         end
 
@@ -190,8 +192,6 @@ initial begin
             #1000000;
             @(posedge clk);
             sync = 1;
-            @(posedge clk);
-            @(posedge clk);
             @(posedge clk);
             sync = 0;     
         end            

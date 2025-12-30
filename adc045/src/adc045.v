@@ -18,8 +18,9 @@ module adc045 (
     input  wire [1:0]  channel_choice, // номер канала. 0 и 3 - оба, 1 - первый, 2 - второй
     output wire        busy,           // сигнал активности модуля
     output reg  [23:0] data_o,         // данные
-    output wire        ch_num,        // сигнал об активном канале
-    output wire        rd_en           // сигнал готовности
+    output wire        ch_num,         // сигнал об активном канале
+    output wire        rd_en,           // сигнал готовности
+    output wire        dly
 );
 
 localparam IDLE          = 4'd0;
@@ -233,6 +234,7 @@ always @(posedge SCLK or negedge rst_l) begin
             end
 
             CH_TX: begin // получение значения из первого канала
+                set_delay <= 1'b0;
                 ready <= 1'b0;
                 if (dat_rcv_done) begin
                     state <= channel ? CH2_RESULT : CH1_RESULT;
@@ -382,6 +384,8 @@ always @(posedge SCLK or negedge rst_l) begin // работа сдвиговог
             shift_reg <= 24'b0;
     end
 end
+
+assign dly = set_delay;
 
 counter cnt_inst (
     .clk(SCLK),
