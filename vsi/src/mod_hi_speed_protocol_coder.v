@@ -92,7 +92,6 @@ output 			CODING;
 // выходная линия
 output 			OUT;
 
-
 output [31:0] test;
 ///////////////////////////////////////////////////////////////////
 //
@@ -190,6 +189,7 @@ crc16 crc16_coder(
 .d			(coder_data_in[7:0]),	// [7:0] 
 .data_out	(crc16_coder_data_out[15:0])  // [15:0]
 );
+
 
 assign test[31:0] = {4'b0, CLK, CLK_EN_RS & coder_wr_in & crc_en, RESET, CODING, coder_data_in[7:0], crc16_coder_data_out[15:0]};
 

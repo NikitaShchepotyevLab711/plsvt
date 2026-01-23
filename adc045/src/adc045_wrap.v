@@ -60,6 +60,7 @@ wire [1:0] Tech2 = 2'b01; // technical bits
 wire [13:0] wreg_command;
 assign wreg_command =  {POL, GAIN, REF, MODE, DR, Tech1, SCALE, BUF_DIS, Tech2};
 
+// сигналы к модулю захвата данных //
 reg  drdy;
 reg  dout;
 wire cs;
@@ -67,14 +68,19 @@ wire din;
 wire sclk;
 wire nrst;
 wire start;
-wire busy_pulse;
-reg [2:0] adc_counter;
 
-wire work_frame;
-wire delay_status;
+wire busy_pulse; // строб, сигнализирующий окончания цикла работы с отдельным ацп
+reg [2:0] adc_counter; // счетчик для смены каждого из ацп
+
+wire work_frame; // сигнал активен, пока идет захват данных с шести ацп (от начала приема с первого до конца приема с шестого)
+wire delay_status; // сигнал акт
 wire sync_i;
 wire sync_extended;
 wire adc_enable;
+
+wire end_delay_pulse;
+wire end_delay_toggle;
+reg first_launch;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
@@ -99,7 +105,6 @@ always @(*) begin
     dout = DOUT[adc_counter];
 end
 
-// Тактированный процесс для выходов - убирает комбинаторные пути
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
         CS   <= 6'b000000;
@@ -109,7 +114,7 @@ always @(posedge clk or negedge rst_l) begin
         START <= 6'b000000;
     end
     else begin
-        if (delay_status) begin
+        if (!end_delay_toggle) begin
             CS <= {6{cs}};
             DIN <= {6{din}};
             SCLK <= {6{sclk}};
@@ -126,14 +131,28 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
-
 assign sync_i = (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ;
 
-sync2_toggle_to_pulse toggle_to_pulse_inst (
+sync2_toggle_to_pulse busy_toggle_to_pulse_inst (
     .clk(clk),
     .rst(rst_l),
     .toggle(ADC_BUSY),
     .pulse(busy_pulse)
+);
+
+sync2_toggle_to_pulse delay_toggle_to_pulse_inst (
+    .clk(clk),
+    .rst(rst_l),
+    .toggle(delay_status),
+    .pulse(end_delay_pulse)
+);
+
+pulse_to_toggle delay_pulse_to_toggle_inst (
+    .clk(clk),
+    .rst(rst_l),
+    .pulse(end_delay_pulse),
+    .reset_toggle(1'b0),
+    .toggle(end_delay_toggle)
 );
 
 pulse_to_toggle pulse_to_toggle_inst (
@@ -144,7 +163,7 @@ pulse_to_toggle pulse_to_toggle_inst (
     .toggle(work_frame)
 );
 
-assign adc_enable = delay_status ? adc_enable : work_frame;
+assign adc_enable = delay_status ? delay_status : work_frame;
 
 sync2 i_sync2_busy   (clk, rst_l, busy_pulse, busy_delayed_pulse); 
 

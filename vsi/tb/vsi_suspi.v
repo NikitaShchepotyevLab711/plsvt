@@ -123,8 +123,8 @@ initial begin
     RX_RAM_RDY_WR = 0;
 
     // Сброс
-    #50 rst_h = 1;
-    #50 rst_h = 0;
+    #150 rst_h = 1;
+    #150 rst_h = 0;
   
 end
 
@@ -321,6 +321,10 @@ endtask
 task receive_data_packet;
     integer i;
     begin
+
+        packet_crc_low = 0;
+        packet_crc_high = 0;
+
         // Ожидание начала приема
         wait(dut.DECODING);
         

@@ -17,8 +17,6 @@ module vsi (
     input  wire COM1,
     // линия приема 2
     input  wire COM2
-
-//    output wire data_mem_out
 );
 
 // прием //
@@ -72,7 +70,7 @@ reset_sync res_sync_inst (
     .asyncrst_n(!rst_h)
 );*/
 
-strobe_generator #(.STROBE_PERIOD(2)) strobegen_1mhz (
+strobe_generator #(.STROBE_PERIOD(12)) strobegen_1mhz (
     .clk(clk),
     .rst_l(rst_l),
     .strobe(strobe_1mhz)

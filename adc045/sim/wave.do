@@ -11,9 +11,9 @@ add wave -noupdate /adc_reader_tb/drdy
 add wave -noupdate /adc_reader_tb/uut/rst_l
 add wave -noupdate /adc_reader_tb/uut/adc_inst/strb
 add wave -noupdate /adc_reader_tb/send_adc_data/i
-add wave -noupdate -expand /adc_reader_tb/uut/SCLK
+add wave -noupdate /adc_reader_tb/uut/SCLK
 add wave -noupdate /adc_reader_tb/uut/DIN
-add wave -noupdate -expand /adc_reader_tb/uut/DRDY
+add wave -noupdate /adc_reader_tb/uut/DRDY
 add wave -noupdate /adc_reader_tb/uut/adc_inst/DRDY
 add wave -noupdate -expand /adc_reader_tb/uut/DOUT
 add wave -noupdate /adc_reader_tb/uut/sync
@@ -35,7 +35,7 @@ add wave -noupdate /adc_reader_tb/uut/adc_inst/delay_active
 add wave -noupdate /adc_reader_tb/uut/adc_enable
 add wave -noupdate /adc_reader_tb/uut/delay_status
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {6495000 ns} 0} {{Cursor 3} {2003610 ns} 0}
+WaveRestoreCursors {{Cursor 2} {6453902 ns} 0} {{Cursor 3} {339 ns} 0}
 quietly wave cursor active 2
 configure wave -namecolwidth 271
 configure wave -valuecolwidth 107
@@ -51,4 +51,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {6437627 ns} {6503283 ns}
+WaveRestoreZoom {6490709 ns} {6500489 ns}

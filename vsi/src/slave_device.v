@@ -21,19 +21,16 @@ reg [15:0] data_h;
 wire [8:0] DOut1;
 reg RDB;
 reg [7:0] raddr;
+wire [7:0] raddr_buf;
+wire [7:0]data_inf_buf;
 
 // специальные сигналы FIFO блока //
 wire        fifo_read_clk; 
 wire 	    fifo_write_clk;
 
-wire 	    full1;
-wire	    empty1;
-wire 	    eqth1;
-wire	    geqt1;
-wire 	    full2;
-wire	    empty2;
-wire 	    eqth2;
-wire 	    geqth2;
+wire DC_in0;
+wire DC_in1;
+wire DC_in2;
 
 wire RDB_buf, WRB_buf;
 
@@ -116,6 +113,21 @@ xci2_buf buf8 (
 	.y(fifo_read_clk)
 );
 
+xci2_buf bufdc1 (
+	.a(1'b0),
+	.y(DC_in0)
+);
+
+xci2_buf bufdc2 (
+	.a(1'b0),
+	.y(DC_in1)
+);
+
+xci2_buf bufdc3 (
+	.a(1'b0),
+	.y(DC_in2)
+);
+
 genvar i;
 generate
     for (i = 0; i < 8; i = i + 1) begin : data_buf_gen
@@ -126,10 +138,30 @@ generate
     end
 endgenerate
 
+genvar j;
+generate
+    for (j = 0; j < 8; j = j + 1) begin : raddr_buf_gen
+            xci2_buf buf_inst1 (
+                .a(raddr[j]),       
+                .y(raddr_buf[j])     
+            );
+    end
+endgenerate
+
+genvar k;
+generate
+    for (k = 0; k < 8; k = k + 1) begin : data_inf_buf_buf_gen
+            xci2_buf buf_inst2 (
+                .a(data_inf[k]),       
+                .y(data_inf_buf[k])     
+            );
+    end
+endgenerate
+
 `ifdef DEBUG_MODE
 	psevdo_ram_block ram0 (
 	.DIn({1'b0,data_inf}),
-	.RADDR(raddr),
+	.RADDR(raddr_buf),
 	.WADDR(data_inf),
 	.RDB(RDB_buf),
 	.WRB(WRB_buf),
@@ -143,16 +175,16 @@ endgenerate
 	);
 `else
 ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
-	.DIn({1'b0,data_inf}),
-	.RADDR(raddr),
-	.WADDR(data_inf),
+	.DIn({1'b0,data_inf_buf}),
+	.RADDR(raddr_buf),
+	.WADDR(data_inf_buf),
 	.RDB(RDB_buf),
 	.WRB(WRB_buf),
 	.RCLKS(fifo_read_clk),
 	.WCLKS(fifo_write_clk),
-	.DC_in0(0),
-	.DC_in1(0),
-	.DC_in2(0),
+	.DC_in0(DC_in0),
+	.DC_in1(DC_in1),
+	.DC_in2(DC_in2),
 	.DO1(DOut1),
 	.DO2()
 );

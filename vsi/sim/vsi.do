@@ -14,6 +14,7 @@ vlog "../tb/vsi_suspi.v"\
  "../src/xci2_buf.v"\
  "../src/rs_coder.v"\
  "../src/reset_sync.v"\
+ "../src/uart_rx.v"\
  "../src/rs_decoder_4.v"
 
 vsim -debugDB -fsmdebug -gui work.vsi_suspi

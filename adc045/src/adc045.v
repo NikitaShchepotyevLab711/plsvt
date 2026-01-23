@@ -71,6 +71,9 @@ wire wreg_done  = state == WREG ? (cnt == 6'd23) : 1'b0;
 wire dat_rcv_done = state == CH_TX ? (cnt == 6'd23) : 1'b0;
 wire delay_active   = (cnt == 6'd5);
 
+wire end_delay_pulse;
+wire end_delay_toggle;
+
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l)
         data_o <= 24'b0;
@@ -108,11 +111,15 @@ always @(posedge SCLK or negedge rst_l) begin
                     set_delay_start <= 1'b0;
                     START <= 1'b0;
                     ready <= 1'b0;
-                    if (sync) begin
-                        if (channel_choice == 2'b10)
-                            state <= LOAD_WREG2;
-                        else
-                            state <= LOAD_WREG1;
+                    if (dly)
+                        state <= LOAD_WREG1;
+                    else begin
+                        if (sync) begin
+                            if (channel_choice == 2'b10)
+                                state <= LOAD_WREG2;
+                            else
+                                state <= LOAD_WREG1;
+                        end
                     end
             end
 
@@ -385,8 +392,6 @@ always @(posedge SCLK or negedge rst_l) begin // работа сдвиговог
     end
 end
 
-assign dly = set_delay;
-
 counter cnt_inst (
     .clk(SCLK),
     .rst_l(rst_l),
@@ -395,6 +400,23 @@ counter cnt_inst (
     .strb(strb),
     .cnt(cnt)
 );
+
+sync2_toggle_to_pulse delay_toggle_to_pulse_inst (
+    .clk(clk),
+    .rst(rst_l),
+    .toggle(set_delay),
+    .pulse(end_delay_pulse)
+);
+
+pulse_to_toggle delay_pulse_to_toggle_inst (
+    .clk(clk),
+    .rst(rst_l),
+    .pulse(end_delay_pulse),
+    .reset_toggle(1'b0),
+    .toggle(end_delay_toggle)
+);
+
+assign dly = !end_delay_toggle;
 
 // формирование частоты (<5MHz) со скважностью 50% и строба длительностью в такт clk
 clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, enable, strb, SCLK);
