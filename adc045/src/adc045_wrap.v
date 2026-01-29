@@ -19,7 +19,7 @@ module adc045_wrap (
     output reg         all_channels_done
 );
 
-wire [1:0] channel_choice = 2'b10; // 1&2 ch
+wire [1:0] channel_choice = 2'b11; // 1&2 ch
 //wire channel_choice = 2'b01; // 1 ch
 //wire channel_choice = 2'b10; // 2 ch
 //wire channel_choice = 2'b11; // 1&2 ch

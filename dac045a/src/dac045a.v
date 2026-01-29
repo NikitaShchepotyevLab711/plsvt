@@ -8,12 +8,12 @@ module dac045a (
     input  wire        cs,
     // добавить сигнал busy
     // spi //
-    input  wire        SDO,
-    output wire        SDI,
-    output wire        SCK,
-    output wire        CLRn,
-    output wire        LDAc,
-    output wire        CSn
+    input  wire [5:0]  SDO,
+    output wire [5:0]  SDI,
+    output wire [5:0]  SCK,
+    output wire [5:0]  CLRn,
+    output wire [5:0]  LDAc,
+    output wire [5:0]  CSn
 );
     
 wire [15:0] data_to_dac;

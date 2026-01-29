@@ -30,10 +30,11 @@ localparam LOAD_DATA     = 4'd3;
 localparam CH_START      = 4'd4;
 localparam DELAY         = 4'd5;
 localparam CH_TX         = 4'd6;
-localparam CH_RESULT     = 4'd7;
+localparam CH1_RESULT    = 4'd7;
 localparam WAIT_FOR_SYNC = 4'd8;
 localparam WAIT_FOR_DRDY = 4'd9;
 localparam LOAD_WREG2    = 4'd10;
+localparam CH2_RESULT    = 4'd11;
 
 reg [23:0] shift_reg;
 reg [23:0] ch1_acc;
@@ -69,9 +70,6 @@ assign full_wreg = {A_MUX, wreg_command};
 wire wreg_done  = state == WREG ? (cnt == 6'd23) : 1'b0;
 wire dat_rcv_done = state == CH_TX ? (cnt == 6'd23) : 1'b0;
 wire delay_active   = (cnt == 6'd5);
-
-wire end_delay_pulse;
-wire end_delay_toggle;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l)
@@ -221,16 +219,15 @@ always @(posedge SCLK or negedge rst_l) begin
                 cnt_rst = 1'b1;
                     if (delay_done) begin
                         delay_done_reg <= 1'b1;
-                        if (DRDY)
-                            state <= CH_TX;
-                    end               
+                        state <= WAIT_FOR_DRDY;    
+                    end          
             end
 
             CH_TX: begin // получение значения из первого канала
                 set_delay <= 1'b0;
                 ready <= 1'b0;
                 if (dat_rcv_done) begin
-                    state <= CH_RESULT;
+                    state <= channel ? CH2_RESULT : CH1_RESULT;
                     cnt_rst <= 1'b1;
                     cnt_en <= 1'b0;
                 end
@@ -245,11 +242,11 @@ always @(posedge SCLK or negedge rst_l) begin
                 end
             end
 
-            CH_RESULT: begin // сохранения целого слова
+            CH1_RESULT: begin // сохранения целого слова
                 case (channel_choice)
-                    2'd0, 2'd3: state <= LOAD_WREG2;
-                    2'd1, 2'd2: state <= IDLE;
-                    default: state <= CH_RESULT;
+                    2'd0, 2'd2, 2'd3: state <= LOAD_WREG2;
+                    2'd1: state <= IDLE;
+                    default: state <= CH1_RESULT;
                 endcase
                 ready <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -275,6 +272,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
                 ready <= 1'b0;
+                set_delay <= 1'b0;
             end
 
             LOAD_WREG2: begin // загрузка конфигурационных данных АЦП (чтение из 2ого канала) в сдвиговый регистр
@@ -286,6 +284,17 @@ always @(posedge SCLK or negedge rst_l) begin
                 busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
                 ready <= 1'b0;
+            end
+
+            CH2_RESULT: begin
+                case (channel_choice)
+                    2'd0, 2'd1, 2'd3: state <= IDLE;
+                    2'd2: state <= WAIT_FOR_SYNC;
+                    default: state <= CH2_RESULT;
+                endcase
+                set_delay_start <= 1'b0;
+                ready <= 1'b1;
+                START <= 1'b0;
             end
 
             default: begin
@@ -376,22 +385,8 @@ counter cnt_inst (
     .cnt(cnt)
 );
 
-sync2_toggle_to_pulse delay_toggle_to_pulse_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .toggle(set_delay),
-    .pulse(end_delay_pulse)
-);
 
-pulse_to_toggle delay_pulse_to_toggle_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .pulse(end_delay_pulse),
-    .reset_toggle(1'b0),
-    .toggle(end_delay_toggle)
-);
-
-assign dly = !end_delay_toggle;
+assign dly = !delay_done;
 
 // формирование частоты (<5MHz) со скважностью 50% и строба длительностью в такт clk
 clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, enable, strb, SCLK);
@@ -400,7 +395,7 @@ clk_divider3 #(.DIV(3)) clkdiv_adc045_inst (clk, rst_l, enable, strb, SCLK);
 // после включения АЦП (первый) и для команды старт (второй) //
 delay #(
     .FREQ_MHZ(12),
-    .DELAY_MS(1)
+    .DELAY_MS(2)
 ) delay_inst (
     .clk(clk),
     .rst_l(rst_l),

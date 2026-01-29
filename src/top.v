@@ -61,36 +61,6 @@ module top #(
     output wire        adc045_nrst_6,
     output wire        adc045_start_6,
 
-    // adc733 serial port //
-    input  wire        adc733_sclk,
-    input  wire        adc733_sdofs,
-    input  wire        adc733_sdo,
-    output wire        adc733_sdifs,
-    output wire        adc733_sdi,
-    output wire        adc733_se,
-
-    // 1 adc_8ch_045 serial interface //
-    input  wire        adc8ch_dout_1,
-    output wire        adc8ch_sclk_1,
-    output wire        adc8ch_cs_adc_1,
-    output wire        adc8ch_cd_mux_1,
-    output wire        adc8ch_din_1,
-
-    // 2 adc_8ch_045 serial interface //
-    input  wire        adc8ch_dout_2,
-    output wire        adc8ch_sclk_2,
-    output wire        adc8ch_cs_adc_2,
-    output wire        adc8ch_cd_mux_2,
-    output wire        adc8ch_din_2,
-
-    // 3 adc_8ch_045 serial interface //
-    input  wire        adc8ch_dout_3,
-    output wire        adc8ch_sclk_3,
-    output wire        adc8ch_cs_adc_3,
-    output wire        adc8ch_cd_mux_3,
-    output wire        adc8ch_din_3,
-
-
     // 1 dac045a spi //
     output wire        dac045a_sdo_1,
     input  wire        dac045a_sdi_1,
@@ -139,6 +109,35 @@ module top #(
     output wire        dac045a_ldac_6,
     output wire        dac045a_csn_6,
 
+    // adc733 serial port //
+    input  wire        adc733_sclk,
+    input  wire        adc733_sdofs,
+    input  wire        adc733_sdo,
+    output wire        adc733_sdifs,
+    output wire        adc733_sdi,
+    output wire        adc733_se,
+
+    // 1 adc_8ch_045 serial interface //
+    input  wire        adc8ch_dout_1,
+    output wire        adc8ch_sclk_1,
+    output wire        adc8ch_cs_adc_1,
+    output wire        adc8ch_cd_mux_1,
+    output wire        adc8ch_din_1,
+
+    // 2 adc_8ch_045 serial interface //
+    input  wire        adc8ch_dout_2,
+    output wire        adc8ch_sclk_2,
+    output wire        adc8ch_cs_adc_2,
+    output wire        adc8ch_cd_mux_2,
+    output wire        adc8ch_din_2,
+
+    // 3 adc_8ch_045 serial interface //
+    input  wire        adc8ch_dout_3,
+    output wire        adc8ch_sclk_3,
+    output wire        adc8ch_cs_adc_3,
+    output wire        adc8ch_cd_mux_3,
+    output wire        adc8ch_din_3,
+
     // vsi interface //
     output wire        vsi_data1,
     output wire        vsi_data2,
@@ -157,18 +156,36 @@ adc045_wrap adc_045_inst (
     .rst_l   (rst_l),
 
     // interface to  1 adc//
-    .DRDY    ({adc045_drdy_5, adc045_drdy_4, adc045_drdy_3, adc045_drdy_2, adc045_drdy_1}),           
-    .DOUT    ({adc045_dout_5, adc045_dout_4, adc045_dout_3, adc045_dout_2, adc045_dout_1}),    
-    .CS      ({adc045_cs_5, adc045_cs_4, adc045_cs_3, adc045_cs_2, adc045_cs_1}),      
-    .DIN     ({adc045_din_5, adc045_din_4, adc045_din_3, adc045_din_2, adc045_din_1}),           
-    .SCLK    ({adc045_sclk_5, adc045_sclk_4, adc045_sclk_3, adc045_sclk_2, adc045_sclk_1}),
-    .nRST    ({adc045_nrst_5, adc045_nrst_4, adc045_nrst_3, adc045_nrst_2, adc045_nrst_1}),
-    .START   ({adc045_start_5, adc045_start_4, adc045_start_3, adc045_start_2, adc045_start_1}),
+    .DRDY    ({adc045_drdy_6, adc045_drdy_5, adc045_drdy_4, adc045_drdy_3, adc045_drdy_2, adc045_drdy_1}),           
+    .DOUT    ({adc045_dout_6, adc045_dout_5, adc045_dout_4, adc045_dout_3, adc045_dout_2, adc045_dout_1}),    
+    .CS      ({adc045_cs_6, adc045_cs_5, adc045_cs_4, adc045_cs_3, adc045_cs_2, adc045_cs_1}),      
+    .DIN     ({adc045_din_6, adc045_din_5, adc045_din_4, adc045_din_3, adc045_din_2, adc045_din_1}),           
+    .SCLK    ({adc045_sclk_6, adc045_sclk_5, adc045_sclk_4, adc045_sclk_3, adc045_sclk_2, adc045_sclk_1}),
+    .nRST    ({adc045_nrst_6, adc045_nrst_5, adc045_nrst_4, adc045_nrst_3, adc045_nrst_2, adc045_nrst_1}),
+    .START   ({adc045_start_6, adc045_start_5, adc045_start_4, adc045_start_3, adc045_start_2, adc045_start_1}),
 
     // others //
     .sync    (), 
     .DATA_OUT(),
     .RD_EN   ()
+);
+
+dac045a dac_045_inst (
+    .clk        (bb_clk_in),
+    .rst_l      (rst_l),
+
+    .sync_300Hz (),  // строб с частотой 300 Гц - частота обновления ЦАП
+    .mode       (),        // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
+    .fixed_value(), // порог, равный по умолчанию 0хffff
+    .cs         (),
+    // добавить сигнал busy
+    // spi //
+    .SDO        ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2, dac045a_sdo_1}),
+    .SDI        ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2,  dac045a_sdi_1}),
+    .SCK        ({dac045a_sck_6, dac045a_sck_5, dac045a_sck_4, dac045a_sck_3, dac045a_sck_2, dac045a_sck_1}),
+    .CLRn       ({dac045a_clrn_6, dac045a_clrn_5, dac045a_clrn_4, dac045a_clrn_3, dac045a_clrn_2, dac045a_clrn_1}),
+    .LDAc       ({dac045a_ldac_6, dac045a_ldac_5, dac045a_ldac_4, dac045a_ldac_3, dac045a_ldac_2, dac045a_ldac_1}),
+    .CSn        ({dac045a_csn_6, dac045a_csn_5, dac045a_csn_4, dac045a_csn_3, dac045a_csn_2, dac045a_csn_1})
 );
 
 adc733_wrap adc_733_inst (
@@ -208,23 +225,6 @@ adc_8ch_045 adc_8ch_045_inst (
     .DATA_O ()
 );
 
-dac045a dac_045_inst (
-    .clk        (bb_clk_in),
-    .rst_l      (rst_l),
-
-    .sync_300Hz (),  // строб с частотой 300 Гц - частота обновления ЦАП
-    .mode       (),        // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
-    .fixed_value(), // порог, равный по умолчанию 0хffff
-    .cs         (),
-    // добавить сигнал busy
-    // spi //
-    .SDO        (dac045a_sdo_1),
-    .SDI        (dac045a_sdi_1),
-    .SCK        (dac045a_sck_1),
-    .CLRn       (dac045a_clrn_1),
-    .LDAc       (dac045a_ldac_1),
-    .CSn        (dac045a_csn_1)
-);
 
 vsi vsi_inst (
     .bb_clk_in    (bb_clk_in),

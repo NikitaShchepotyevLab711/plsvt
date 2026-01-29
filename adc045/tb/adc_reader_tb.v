@@ -189,7 +189,7 @@ initial begin
         begin
         sync = 0;
         forever begin  
-            #1000000;
+            #1500000;
             @(posedge clk);
             sync = 1;
             @(posedge clk);
