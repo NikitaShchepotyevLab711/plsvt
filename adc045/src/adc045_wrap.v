@@ -19,14 +19,12 @@ module adc045_wrap (
     output reg         all_channels_done
 );
 
-wire [1:0] channel_choice = 2'b00; // 1&2 ch
+wire [1:0] channel_choice = 2'b10; // 1&2 ch
 //wire channel_choice = 2'b01; // 1 ch
 //wire channel_choice = 2'b10; // 2 ch
 //wire channel_choice = 2'b11; // 1&2 ch
 
-wire busy_delayed_pulse;
-wire ADC_BUSY;
-wire MODE;
+wire MODE; // режим (0 - каждый ацп принимает только в 1 канал, 1 - каждый ацп работает по обоим каналам)
 
 wire POL = 0; // non inverted input channels
 //reg POL = 1; // inverted input channels
@@ -57,7 +55,7 @@ wire BUF_DIS = 1; // reference voltage buffer on
 
 wire [1:0] Tech2 = 2'b01; // technical bits
 
-wire [13:0] wreg_command;
+wire [13:0] wreg_command; // прошивка для АЦП
 assign wreg_command =  {POL, GAIN, REF, MODE, DR, Tech1, SCALE, BUF_DIS, Tech2};
 
 // сигналы к модулю захвата данных //
@@ -69,20 +67,24 @@ wire sclk;
 wire nrst;
 wire start;
 
-wire busy_pulse; // строб, сигнализирующий окончания цикла работы с отдельным ацп
+
 reg [2:0] adc_counter; // счетчик для смены каждого из ацп
 
 wire work_frame; // сигнал активен, пока идет захват данных с шести ацп (от начала приема с первого до конца приема с шестого)
-wire delay_status; // сигнал акт
-wire sync_i;
-wire sync_extended;
-wire adc_enable;
 
-wire end_delay_pulse;
-wire end_delay_toggle;
-reg first_launch;
+wire sync_i;        // синхроимпульс, подаваемый на модуль захвата данных
+wire sync_extended; // синхроимпульс удвоенной длительности, чтобы тактируемый частотой 4 мгц модуль захвата данных реагировал
+wire adc_enable; // сигнал, включающий модуль приема даннных с АЦП. 
 
-always @(posedge clk or negedge rst_l) begin
+wire delay_status; // сигнал, сигнализирующий об активности стартовой задержки
+wire end_delay_pulse; // строб, сигнализирующий об окончании стартовой задержки
+wire end_delay_toggle; // единица соответствует активному режиму работы (не задержка)
+
+wire ADC_BUSY;   // положение "1" сигнализирует о том, что идет прием данных с одного из ацп
+wire busy_pulse; // строб, сигнализирующий об окончании цикла работы с отдельным ацп
+wire busy_delayed_pulse; // задержанный на такт (чтобы прихоидлся на след. значение счетчика) строб окончания цикла работы с отдельным ацп
+
+always @(posedge clk or negedge rst_l) begin // счетчик АЦП. Выставляет сигнал all_channels_done по окончании счета
     if (!rst_l) begin
         adc_counter <= 3'd0;
         all_channels_done    <= 1'b0;
@@ -105,33 +107,24 @@ always @(*) begin
     dout = DOUT[adc_counter];
 end
 
-always @(posedge clk or negedge rst_l) begin
-    if (!rst_l) begin
-        CS   <= 6'b000000;
-        DIN  <= 6'b000000;
-        SCLK <= 6'b000000;
-        nRST <= 6'b111111; 
-        START <= 6'b000000;
+always @(*) begin
+    if (!end_delay_toggle) begin // пока не прошла задержка (она запускается на всех АЦП разом), идет работа со всеми АЦП одновременно
+        CS <= {6{cs}};
+        DIN <= {6{din}};
+        SCLK <= {6{sclk}};
+        nRST <= {6{nrst}};
+        START <= {6{start}};    
     end
-    else begin
-        if (!end_delay_toggle) begin
-            CS <= {6{cs}};
-            DIN <= {6{din}};
-            SCLK <= {6{sclk}};
-            nRST <= {6{nrst}};
-            START <= {6{start}};    
-        end
-        else begin
-            CS[adc_counter]   <= cs;
-            DIN[adc_counter]  <= din;
-            SCLK[adc_counter] <= sclk;
-            nRST[adc_counter] <= nrst;
-            START[adc_counter] <= start;
-        end
+    else begin // после задержки АЦП обрабатываются по очереди, в соответствии с счетчиком
+        CS[adc_counter]   <= cs;
+        DIN[adc_counter]  <= din;
+        SCLK[adc_counter] <= sclk;
+        nRST[adc_counter] <= nrst;
+        START[adc_counter] <= start;
     end
 end
 
-assign sync_i = (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ;
+assign sync_i = (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ; // для первого ацп идет синхросигнал сверху, следующие запускаются сигналом busy_delayed_pulse от предыдущего ацп
 
 sync2_toggle_to_pulse busy_toggle_to_pulse_inst (
     .clk(clk),

@@ -30,11 +30,10 @@ localparam LOAD_DATA     = 4'd3;
 localparam CH_START      = 4'd4;
 localparam DELAY         = 4'd5;
 localparam CH_TX         = 4'd6;
-localparam CH1_RESULT    = 4'd7;
+localparam CH_RESULT     = 4'd7;
 localparam WAIT_FOR_SYNC = 4'd8;
 localparam WAIT_FOR_DRDY = 4'd9;
 localparam LOAD_WREG2    = 4'd10;
-localparam CH2_RESULT    = 4'd11;
 
 reg [23:0] shift_reg;
 reg [23:0] ch1_acc;
@@ -220,31 +219,18 @@ always @(posedge SCLK or negedge rst_l) begin
                 set_delay_start <= 1'b0;
                 delay_start_done_reg <= 1'b0;
                 cnt_rst = 1'b1;
-                if (!(^channel_choice)) begin
                     if (delay_done) begin
                         delay_done_reg <= 1'b1;
                         if (DRDY)
                             state <= CH_TX;
-                    end
-                end
-                else begin
-                    if (DRDY)
-                        cnt_en <= 1'b1;
-                        cnt_rst <= 1'b0;
-                    if (delay_active) begin
-                            state <= CH_TX;
-                        cnt_en <= 1'b0;
-                        cnt_rst <= 1'b1;
-                        delay_done_reg <= 1'b1;
-                    end
-                end
+                    end               
             end
 
             CH_TX: begin // получение значения из первого канала
                 set_delay <= 1'b0;
                 ready <= 1'b0;
                 if (dat_rcv_done) begin
-                    state <= channel ? CH2_RESULT : CH1_RESULT;
+                    state <= CH_RESULT;
                     cnt_rst <= 1'b1;
                     cnt_en <= 1'b0;
                 end
@@ -259,11 +245,11 @@ always @(posedge SCLK or negedge rst_l) begin
                 end
             end
 
-            CH1_RESULT: begin // сохранения целого слова
+            CH_RESULT: begin // сохранения целого слова
                 case (channel_choice)
-                    2'd0, 2'd2, 2'd3: state <= LOAD_WREG2;
-                    2'd1: state <= WAIT_FOR_SYNC;
-                    default: state <= CH1_RESULT;
+                    2'd0, 2'd3: state <= LOAD_WREG2;
+                    2'd1, 2'd2: state <= IDLE;
+                    default: state <= CH_RESULT;
                 endcase
                 ready <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -300,17 +286,6 @@ always @(posedge SCLK or negedge rst_l) begin
                 busy_reg <= 1'b1;
                 set_delay_start <= 1'b0;
                 ready <= 1'b0;
-            end
-
-            CH2_RESULT: begin
-                case (channel_choice)
-                    2'd0, 2'd1, 2'd3: state <= IDLE;
-                    2'd2: state <= WAIT_FOR_SYNC;
-                    default: state <= CH2_RESULT;
-                endcase
-                set_delay_start <= 1'b0;
-                ready <= 1'b1;
-                START <= 1'b0;
             end
 
             default: begin

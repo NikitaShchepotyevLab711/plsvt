@@ -177,7 +177,7 @@ initial begin
             
             #100;
             reset = 1'b0;
-            #150;
+            #200;
             reset = 1'b1;
             cs = 0;
             #1000;
