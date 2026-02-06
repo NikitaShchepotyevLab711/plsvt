@@ -11,11 +11,14 @@ module adc_8ch_045 (
     
     input  wire       SYNC,
     output reg        RD_EN,
+    output wire       TOTAL_RD_EN,
     output reg  [2:0] CHANNEL,
     output reg        BUSY,
     output reg [11:0] DATA_O
 
 );
+
+assign TOTAL_RD_EN = (RD_EN && (CHANNEL == 3'd7));
 
 // несинхронизированные входные и выходные сигналы //
 wire       sync;

@@ -77,7 +77,7 @@ initial begin
     fork
         begin
             forever begin  
-                #3333290;
+                #333290;
                 @(posedge clk);
                 sync_300Hz = 1;
                 count_number = count_number + 1; 

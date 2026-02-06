@@ -4,7 +4,8 @@ module tb_adc_8ch_045;
 reg clk;
 reg rst_l;
 reg sync;
-wire SCLK;
+wire [2:0] sclk;
+reg SCLK;
 reg SDOFS;
 reg SDO;
 wire [2:0] channel;
@@ -16,13 +17,15 @@ localparam SIGNAL_FREQ3 = 1500; // 5kHz
 localparam SIGNAL_FREQ4 = 2000;
 localparam ADC_PERIOD = 1000000000/ADC_SAMPLE_RATE; 
 
-adc_8ch_045 dut (
+reg [3:0] DOUT;
+
+adc_8ch_wrap dut (
     .clk(clk),
     .rst_l(rst_l),
 
     // serial interface //
-    .DOUT(SDO),
-    .SCLK(SCLK),
+    .DOUT(DOUT),
+    .SCLK(sclk),
     .CS_ADC(),
     .CD_MUX(),
     .DIN(),
@@ -30,6 +33,29 @@ adc_8ch_045 dut (
     
     .SYNC(sync)
 ); 
+
+always @(*) begin
+    case (dut.adc_counter)
+        3'd0: begin
+            DOUT[0] = SDO;
+            SCLK = sclk[0];
+        end
+
+        3'd1: begin
+            DOUT[1] = SDO;      
+            SCLK = sclk[1];
+        end
+
+        3'd2: begin
+            DOUT[2] = SDO;  
+            SCLK = sclk[2];  
+        end
+
+        default: begin
+             
+        end
+    endcase
+end
 
 reg adc_clk;
 reg bit_counter;
@@ -126,7 +152,7 @@ task send_adc_data;
     input [15:0] ch1;
     integer i;
     begin
-        for (i = 15; i >= 0; i = i - 1) begin
+        for (i = 16; i >= 0; i = i - 1) begin
             if (i >= 13)
                 SDO = 0;
             else
@@ -142,7 +168,7 @@ endtask
 
 initial begin
     forever begin
-        @(posedge dut.data_mode);
+        @(posedge dut.adc_8ch_045_inst.data_mode);
         send_adc_data(ch1_sample);
     end
 end
@@ -166,7 +192,7 @@ initial begin
         begin
             sync = 0;
             forever begin  
-            #(333333/4); //  sync будет с частотой максимум 300 Гц, но тут для наглядности 3 или 6 КГц
+            #(333333); //  sync будет с частотой максимум 300 Гц, но тут для наглядности 3 или 6 КГц
             @(posedge clk);
             sync = 1;
             @(posedge clk);

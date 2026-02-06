@@ -207,16 +207,16 @@ adc733_wrap adc_733_inst (
     .CHANNEL()  //номер канала, из которого выводится значение на данный момент
 );
 
-adc_8ch_045 adc_8ch_045_inst (
+adc_8ch_wrap adc_8ch_wrap_inst (
     .clk    (bb_clk_in),
     .rst_l  (rst_l),
 
     // serial interface //
-    .DOUT   (adc8ch_dout_1),
-    .SCLK   (adc8ch_sclk_1),
-    .CS_ADC (adc8ch_cs_adc_1),
-    .CD_MUX (adc8ch_cd_mux_1),
-    .DIN    (adc8ch_din_1),
+    .DOUT   ({adc8ch_dout_3, adc8ch_dout_2, adc8ch_dout_1}),
+    .SCLK   ({adc8ch_sclk_3, adc8ch_sclk_2, adc8ch_sclk_1}),
+    .CS_ADC ({adc8ch_cs_adc_3, adc8ch_cs_adc_2, adc8ch_cs_adc_1}),
+    .CD_MUX ({adc8ch_cd_mux_3, adc8ch_cd_mux_2, adc8ch_cd_mux_1}),
+    .DIN    ({adc8ch_din_3, adc8ch_din_2, adc8ch_din_1}),
     
     .SYNC   (),
     .RD_EN  (),

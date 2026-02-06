@@ -7,6 +7,7 @@ module spi_controller #(
     input  wire [15:0] data_i,
     input  wire        dac_en,
     input  wire        renew,
+    output reg         rdy,
 
     // spi //
     input  wire       SDO,
@@ -42,6 +43,7 @@ always @(posedge clk or negedge rst_l) begin
         shiftreg <= 16'h0;
         SDI <= 1'b0;
         cnt <= 4'h0;
+        rdy    <= 1'b0;
         state <= IDLE;
     end
     else begin
@@ -56,6 +58,7 @@ always @(posedge clk or negedge rst_l) begin
                 LDAc <= 1'b1;
                 SDI  <= 1'b0;
                 CSn <= 1'b1;
+                rdy    <= 1'b0;
                 shiftreg <= 16'b0;
             end
 
@@ -63,6 +66,7 @@ always @(posedge clk or negedge rst_l) begin
                 SCK_en <= 1'b0;
                 LDAc <= 1'b1;
                 CSn <= 1'b0;
+                rdy    <= 1'b0;
                 state <= SCK_START;
             end
 
@@ -70,6 +74,7 @@ always @(posedge clk or negedge rst_l) begin
                 SCK_en <= 1'b1;
                 LDAc <= 1'b1;
                 CSn <= 1'b0;
+                rdy    <= 1'b0;
                 if (strb) begin
                     if (cnt == 16'hf) begin
                         state <= SCK_STOP;
@@ -94,6 +99,7 @@ always @(posedge clk or negedge rst_l) begin
                 SCK_en <= 1'b0;
                 LDAc <= 1'b1;
                 CSn <= 1'b0;
+                rdy    <= 1'b0;
                 state <= CS_STOP;
             end
 
@@ -101,6 +107,7 @@ always @(posedge clk or negedge rst_l) begin
                 SCK_en <= 1'b0;
                 LDAc <= 1'b1;
                 CSn <= 1'b1;
+                rdy    <= 1'b0;
                 state <= LDAC_ENABLE;
             end
 
@@ -108,6 +115,7 @@ always @(posedge clk or negedge rst_l) begin
                 SCK_en <= 1'b0;
                 LDAc <= 1'b0;
                 CSn <= 1'b1;
+                rdy    <= 1'b0;
                 state <= LDAC_WAIT;
             end
 
@@ -115,20 +123,23 @@ always @(posedge clk or negedge rst_l) begin
                 SCK_en <= 1'b0;
                 LDAc <= 1'b0;
                 CSn <= 1'b1;
+                rdy    <= 1'b0;
                 state <= LDAC_DISABLE;
             end
 
             LDAC_DISABLE: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b1;
-                CSn <= 1'b1;
-                state <= IDLE;
+                LDAc   <= 1'b1;
+                rdy    <= 1'b1;
+                CSn    <= 1'b1;
+                state  <= IDLE;
             end
 
             default: begin
                 SCK_en <= 1'b0;
                 LDAc <= 1'b1;
                 CSn <= 1'b1;
+                rdy    <= 1'b0;
                 state <= IDLE;
             end
         endcase
