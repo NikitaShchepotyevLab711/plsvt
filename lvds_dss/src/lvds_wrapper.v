@@ -8,14 +8,14 @@ module lvds_wrapper #(
     input  wire        rst_l,
     input  wire        sync,
     
-    input  wire        RO,
-    output wire        RE,
-    output wire        DI,
-    output wire        DE,
+    input  wire        RO,  // линия приема данных по uart от ДСС
+    output wire        RE,  // сигнал активности приема
+    output wire        DI,  // линия отправки команды в виде 1 для ДСС
+    output wire        DE,  // сигнал активности отправки
     
-    output wire [11:0] data12b,
-    output wire [1:0]  word_num,
-    output wire        data_rdy
+    output wire [11:0] data12b,  // принимаемые после каждого sync три 12битные значения
+    output wire [1:0]  word_num, // номер (0 1 или 2) принимаемых от ДСС значений
+    output wire        data_rdy  // строб после каждого принятого значения
 );
 
 wire [2:0] val_num;

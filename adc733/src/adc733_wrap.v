@@ -60,8 +60,6 @@ wire        adc_rd_en;
 wire        adc_operation_mode;
 wire        adc_busy;
 wire [2:0]  adc_channel;
-reg         sync;
-
 reg  [3:0]  state;
 
 localparam IDLE          = 2'd0;
@@ -81,10 +79,11 @@ pulse_to_toggle pulse_to_toggle_inst (
     .clk(clk),
     .rst(rst_l),
     .pulse(SYNC),
+    .reset_toggle(1'b0),
     .toggle(sync_toggle)
 );
 
-sync2_toggle_to_pulse toggle_to_pulse_inst (
+sync2_toggle_to_pulse_bothedge toggle_to_pulse_inst (
     .clk(SCLK),
     .rst(rst_l),
     .toggle(sync_toggle),

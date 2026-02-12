@@ -17,7 +17,7 @@ localparam SIGNAL_FREQ3 = 1500; // 5kHz
 localparam SIGNAL_FREQ4 = 2000;
 localparam ADC_PERIOD = 1000000000/ADC_SAMPLE_RATE; 
 
-reg [3:0] DOUT;
+reg [2:0] DOUT;
 
 adc_8ch_wrap dut (
     .clk(clk),

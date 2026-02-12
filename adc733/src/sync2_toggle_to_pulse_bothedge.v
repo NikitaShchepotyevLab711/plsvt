@@ -1,4 +1,4 @@
-module sync2_toggle_to_pulse
+module sync2_toggle_to_pulse_bothedge
 (
     input      clk,
     input      rst,

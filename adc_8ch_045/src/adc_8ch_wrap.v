@@ -10,7 +10,7 @@ module adc_8ch_wrap (
     output reg  [2:0]  DIN,
     
     input  wire        SYNC,
-    output reg         RD_EN,
+    output wire        RD_EN,
     output wire [2:0]  CHANNEL,
     output reg         BUSY,
     output wire [11:0] DATA_O   
@@ -18,7 +18,6 @@ module adc_8ch_wrap (
 
 reg all_devices_done;
 reg [1:0] adc_counter;
-wire channel_ready;
 wire all_channels_ready;
 wire ready_delayed;
 
@@ -71,7 +70,7 @@ adc_8ch_045 adc_8ch_045_inst(
     .DIN(din),
     
     .SYNC(sync_i),
-    .RD_EN(channel_ready),
+    .RD_EN(RD_EN),
     .TOTAL_RD_EN(all_channels_ready),
     .CHANNEL(CHANNEL),
     .BUSY(),

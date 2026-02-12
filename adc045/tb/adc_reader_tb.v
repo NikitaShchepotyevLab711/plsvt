@@ -22,14 +22,7 @@ wire [5:0] nRST;
 wire [5:0] SCLK;
 
 // signals from above //
-reg         hard_start;
-reg         hard_wreg;
-reg         rst_l_adc;
 reg         sync;
-
-// signals up //
-wire        ready_sample;
-wire [23:0] adc045_data;
 
 real time_counter = 0;
 real dt = 1.0 / ADC_SAMPLE_RATE;
@@ -168,12 +161,9 @@ initial begin
         begin
             sync = 0;
             reset = 1'b1;
-            rst_l_adc = 1;
             cs = 1;
             drdy = 1'b0;
             dout = 1'b0;
-            hard_wreg = 0;
-            hard_start = 0;
             
             #100;
             reset = 1'b0;

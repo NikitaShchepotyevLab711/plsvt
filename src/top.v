@@ -1,3 +1,5 @@
+`define DEBUG_MODE
+
 module top #(
     parameter UART_BIT_RATE     = 9600, // bit per second
     parameter UART_CLK_HZ       = 12_000_000, // Hz
@@ -151,6 +153,20 @@ module top #(
     output wire        lvds_de
 );
 
+wire sync;
+wire adc045_ready;
+wire adc733_ready;
+wire adc_8ch_ready;
+wire dss_ready;
+
+wire [23:0] adc045_data;
+wire [15:0] adc733_data;
+wire [11:0] adc_8ch_data;
+wire [11:0] dss_data;
+
+wire [7:0] data_to_apb;
+wire       package_complete;
+
 adc045_wrap adc_045_inst (
     .clk     (bb_clk_in),
     .rst_l   (rst_l),
@@ -165,19 +181,19 @@ adc045_wrap adc_045_inst (
     .START   ({adc045_start_6, adc045_start_5, adc045_start_4, adc045_start_3, adc045_start_2, adc045_start_1}),
 
     // others //
-    .sync    (), 
-    .DATA_OUT(),
-    .RD_EN   ()
+    .sync    (sync), 
+    .DATA_OUT(adc045_data),
+    .RD_EN   (adc045_ready)
 );
 
 dac045a dac_045_inst (
     .clk        (bb_clk_in),
     .rst_l      (rst_l),
 
-    .sync_300Hz (),  // строб с частотой 300 Гц - частота обновления ЦАП
-    .mode       (),        // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
-    .fixed_value(), // порог, равный по умолчанию 0хffff
-    .cs         (),
+    .sync_300Hz (sync),     // строб с частотой 300 Гц - частота обновления ЦАП
+    .mode       (1'b1),         // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
+    .fixed_value(16'h3200),         // порог, равный по умолчанию 0хffff
+    .cs         (1'b1),
     // добавить сигнал busy
     // spi //
     .SDO        ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2, dac045a_sdo_1}),
@@ -200,9 +216,9 @@ adc733_wrap adc_733_inst (
     .SDI    (adc733_sdi),
     .SE     (adc733_se),  
 
-    .SYNC   (),    //импульс - команда для захвата данных с 6 каналов
-    .DATA_O (),  //полученное значение из АЦП
-    .RD_EN  (),   //импульс, сообщающий о новом полученном значении
+    .SYNC   (sync),    //импульс - команда для захвата данных с 6 каналов
+    .DATA_O (adc733_data),  //полученное значение из АЦП
+    .RD_EN  (adc733_ready),   //импульс, сообщающий о новом полученном значении
     .OP_MODE(), //высокий уровень - режим захвата данных, низкий - режим программирования 
     .CHANNEL()  //номер канала, из которого выводится значение на данный момент
 );
@@ -218,11 +234,11 @@ adc_8ch_wrap adc_8ch_wrap_inst (
     .CD_MUX ({adc8ch_cd_mux_3, adc8ch_cd_mux_2, adc8ch_cd_mux_1}),
     .DIN    ({adc8ch_din_3, adc8ch_din_2, adc8ch_din_1}),
     
-    .SYNC   (),
-    .RD_EN  (),
+    .SYNC   (sync),
+    .RD_EN  (adc_8ch_ready),
     .CHANNEL(),
     .BUSY   (),
-    .DATA_O ()
+    .DATA_O (adc_8ch_data)
 );
 
 
@@ -248,16 +264,43 @@ lvds_wrapper  #(
 ) lvds_wrapper_inst (
     .clk        (bb_clk_in),
     .rst_l      (rst_l),
-    .sync       (),
+    .sync       (sync),
 
     .RO         (lvds_ro),
     .RE         (lvds_re),
     .DI         (lvds_di),
     .DE         (lvds_de),
 
-    .data12b   (),
+    .data12b   (dss_data),
     .word_num  (),
-    .data_rdy  ()
+    .data_rdy  (dss_ready)
+);
+
+sync_strobe sync_strobe_sync(
+    .clk       (bb_clk_in),
+    .rst_l     (rst_l),
+    .strobe    (sync)
+);
+
+// модуль для формирования пакета от ОБ //
+package_complectation package_complectation_inst(
+    .clk(bb_clk_in),
+    .rst_l(rst_l),
+    
+    // данные от АЦП и ДСС //
+    .adc045_data(adc045_data),
+    .adc733_data(adc733_data),
+    .adc_8ch_data(adc_8ch_data),
+    .dss_data(dss_data),
+
+    // сигналы о готовности от АЦП и ДСС //
+    .adc045_ready(adc045_ready),
+    .adc733_ready(adc733_ready),
+    .adc_8ch_ready(adc_8ch_ready),
+    .dss_ready(dss_ready),
+
+    .data_o(data_to_apb), // пакет данных 
+    .package_complete(package_complete) // сигнал о готовности пакета
 );
 
 endmodule

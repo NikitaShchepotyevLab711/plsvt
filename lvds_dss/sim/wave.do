@@ -12,9 +12,9 @@ add wave -noupdate /tb/dut/DI
 add wave -noupdate /tb/dut/DE
 add wave -noupdate /tb/dut/val_num
 add wave -noupdate /tb/dut/lvds_dss_inst/data_o
-add wave -noupdate /tb/dut/uart_ready
 add wave -noupdate /tb/dut/data12b
 add wave -noupdate /tb/dut/word_num
+add wave -noupdate /tb/dut/data_rdy
 add wave -noupdate -radix hexadecimal /tb/send_uart_byte/byte_data
 add wave -noupdate /tb/dut/state
 add wave -noupdate /tb/dut/lvds_dss_inst/uart_tx_inst/stop_done
@@ -27,10 +27,12 @@ add wave -noupdate /tb/dut/byte1_reg
 add wave -noupdate /tb/dut/byte2_reg
 add wave -noupdate /tb/dut/byte3_reg
 add wave -noupdate /tb/dut/byte4_reg
+add wave -noupdate /tb/dut/byte_received
+add wave -noupdate /tb/dut/byte_sent
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {160594 ns} 0}
+WaveRestoreCursors {{Cursor 1} {3136034 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 189
+configure wave -namecolwidth 275
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -44,4 +46,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {2470513 ns} {10396289 ns}
+WaveRestoreZoom {2519130 ns} {10393731 ns}

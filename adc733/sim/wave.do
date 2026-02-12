@@ -26,8 +26,12 @@ add wave -noupdate /tb_adc733/dut/DATA_O
 add wave -noupdate /tb_adc733/dut/RD_EN
 add wave -noupdate /tb_adc733/dut/OP_MODE
 add wave -noupdate /tb_adc733/dut/CHANNEL
+add wave -noupdate /tb_adc733/dut/sync_toggle
+add wave -noupdate /tb_adc733/dut/sync_pulse
+add wave -noupdate /tb_adc733/send_adc_data/ch1
+add wave -noupdate /tb_adc733/send_adc_data/i
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {994046 ns} 0}
+WaveRestoreCursors {{Cursor 1} {845000 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 267
 configure wave -valuecolwidth 123
@@ -43,4 +47,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {992412 ns} {1000400 ns}
+WaveRestoreZoom {835513 ns} {1008658 ns}
