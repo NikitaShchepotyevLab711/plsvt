@@ -9,6 +9,24 @@ module top #(
     input wire bb_clk_in,
     input wire rst_l,
 
+	output wire        bb_clk_out        ,
+	// GPIO
+	input  wire [ 7:0] bb_gpio_in        ,
+	output wire [ 7:0] bb_gpio_out       ,
+	// APB Slave
+	output wire        bb_apb_sync_clk   ,
+
+    input  wire        bb_psel           ,
+	input  wire        bb_penable        ,
+	input  wire [15:0] bb_paddr          ,
+	input  wire        bb_pwrite         ,
+	input  wire [31:0] bb_pwdata         ,
+	input  wire [ 3:0] bb_pstrb          ,
+	input  wire [ 2:0] bb_pprot          ,
+	output wire [31:0] bb_prdata         ,
+	output wire        bb_pready         ,
+	output wire        bb_pslverr        ,
+
     //  1 adc045 //
     input  wire        adc045_drdy_1,           
     input  wire        adc045_dout_1,    
@@ -153,6 +171,15 @@ module top #(
     output wire        lvds_de
 );
 
+assign bb_pslverr = 0;
+assign bb_pready = 1;
+assign bb_apb_sync_clk=bb_clk_in;
+assign bb_clk_out=bb_clk_in;
+assign bb_gpio_out=8'hAF; 
+
+wire read_transaction =  bb_psel && !bb_penable;
+reg read_request;
+
 wire sync;
 wire adc045_ready;
 wire adc733_ready;
@@ -166,6 +193,10 @@ wire [11:0] dss_data;
 
 wire [7:0] data_to_apb;
 wire       package_complete;
+
+wire [31:0] data_to_cpu;
+wire        package_start;
+wire        package_rd_en;
 
 adc045_wrap adc_045_inst (
     .clk     (bb_clk_in),
@@ -271,36 +302,49 @@ lvds_wrapper  #(
     .DI         (lvds_di),
     .DE         (lvds_de),
 
-    .data12b   (dss_data),
-    .word_num  (),
-    .data_rdy  (dss_ready)
+    .data12b    (dss_data),
+    .word_num   (),
+    .data_rdy   (dss_ready)
 );
 
 sync_strobe sync_strobe_sync(
-    .clk       (bb_clk_in),
-    .rst_l     (rst_l),
-    .strobe    (sync)
+    .clk        (bb_clk_in),
+    .rst_l      (rst_l),
+    .strobe     (sync)
 );
 
 // модуль для формирования пакета от ОБ //
 package_complectation package_complectation_inst(
-    .clk(bb_clk_in),
-    .rst_l(rst_l),
+    .clk             (bb_clk_in),
+    .rst_l           (rst_l),
     
     // данные от АЦП и ДСС //
-    .adc045_data(adc045_data),
-    .adc733_data(adc733_data),
-    .adc_8ch_data(adc_8ch_data),
-    .dss_data(dss_data),
+    .adc045_data     (adc045_data),
+    .adc733_data     (adc733_data),
+    .adc_8ch_data    (adc_8ch_data),
+    .dss_data        (dss_data),
 
     // сигналы о готовности от АЦП и ДСС //
-    .adc045_ready(adc045_ready),
-    .adc733_ready(adc733_ready),
-    .adc_8ch_ready(adc_8ch_ready),
-    .dss_ready(dss_ready),
+    .adc045_ready    (adc045_ready),
+    .adc733_ready    (adc733_ready),
+    .adc_8ch_ready   (adc_8ch_ready),
+    .dss_ready       (dss_ready),
 
-    .data_o(data_to_apb), // пакет данных 
-    .package_complete(package_complete) // сигнал о готовности пакета
+    .read_request    (read_request),
+
+    .data_o          (data_to_apb), // пакет данных 
+    .package_complete(package_complete), // сигнал о готовности пакета
+    .start_reading   (package_start   ),
+    .rd_en           (package_rd_en)
+);
+
+data_compressor compressor_inst (
+	.clk	   (bb_clk_in	  	  ),
+	.rst_l     (rst_l	  		  ),
+	.data_i	   (data_to_apb       ),
+	.next_word (package_rd_en     ),
+	.data_o	   (data_to_cpu		  ),
+	.error_flag(	  		      )
 );
 
 endmodule

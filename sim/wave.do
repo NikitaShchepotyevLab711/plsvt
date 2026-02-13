@@ -36,9 +36,16 @@ add wave -noupdate /top_tb/dut/adc_8ch_data
 add wave -noupdate /top_tb/dut/dss_data
 add wave -noupdate /top_tb/dut/data_to_apb
 add wave -noupdate /top_tb/dut/package_complete
+add wave -noupdate /top_tb/dut/data_to_cpu
+add wave -noupdate /top_tb/dut/package_complectation_inst/start_reading
+add wave -noupdate /top_tb/dut/package_complectation_inst/RDB
+add wave -noupdate /top_tb/dut/package_complectation_inst/state
+add wave -noupdate /top_tb/dut/package_complectation_inst/start_read_break
+add wave -noupdate /top_tb/dut/read_request
+add wave -noupdate /top_tb/dut/package_complectation_inst/rd_word_counter
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {39833540 ns} 0} {Trace {33812394 ns} 0}
-quietly wave cursor active 1
+WaveRestoreCursors {{Cursor 1} {44996058 ns} 0} {Trace {39826174 ns} 0}
+quietly wave cursor active 2
 configure wave -namecolwidth 334
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -53,4 +60,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {44959682 ns} {45002122 ns}
+WaveRestoreZoom {44993263 ns} {45000355 ns}

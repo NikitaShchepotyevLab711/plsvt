@@ -335,6 +335,7 @@ end
 
 initial begin
     uart_rxd = 1;
+    dut.read_request = 0;
     rst_l = 1;
     #400;
     rst_l = 0;
@@ -343,6 +344,20 @@ initial begin
     begin
         @(posedge dut.lvds_wrapper_inst.byte_sent);
         send_5_values();
+    end
+end
+
+integer l;
+
+initial begin
+    #40000000;
+
+
+    for (l = 0; l < 27 ; l = l + 1) begin
+        dut.read_request = 1;
+        #84;
+        dut.read_request = 0;
+        #500;
     end
 end
 

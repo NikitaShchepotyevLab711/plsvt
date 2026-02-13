@@ -12,8 +12,13 @@ module package_complectation (
     input wire        adc_8ch_ready,
     input wire        dss_ready,
 
+    input wire        read_request,
+
     output wire [7:0] data_o,
-    output reg        package_complete
+    output reg        all_data_sent,
+    output reg        start_reading,
+    output reg        package_complete,
+    output reg        rd_en
 );
 
 reg [7:0]  data_to_ram;
@@ -28,7 +33,9 @@ reg [7:0]  raddr2;
 reg [7:0]  raddr3;
 reg [7:0]  raddr4;
 
-reg [5:0] word_counter;
+reg [5:0] wr_word_counter;
+reg [2:0] rd_word_counter;
+reg       start_read_break;
 
 reg [1:0]  memblock_sel;
 wire       dc_in0 = memblock_sel[0];
@@ -40,20 +47,21 @@ reg RDB;
 wire [8:0] DOut1;
 
 reg [3:0] state;
-localparam IDLE            = 0;
-localparam ADC045_1BYTE    = 1;
-localparam ADC045_2BYTE    = 2;
-localparam ADC045_3BYTE    = 3;
-localparam ADC733_1BYTE    = 4;
-localparam ADC733_2BYTE    = 5;
-localparam ADC8CH_1BYTE    = 6;
-localparam ADC8CH_2BYTE    = 7;
-localparam DSS_1BYTE       = 8;
-localparam DSS_2BYTE       = 9;
-localparam ADC_045_READING = 10;
-localparam ADC_733_READING = 11;
-localparam ADC_8CH_READING = 12;
-localparam DSS_READING     = 13;
+localparam IDLE              = 0;
+localparam ADC045_1BYTE      = 1;
+localparam ADC045_2BYTE      = 2;
+localparam ADC045_3BYTE      = 3;
+localparam ADC733_1BYTE      = 4;
+localparam ADC733_2BYTE      = 5;
+localparam ADC8CH_1BYTE      = 6;
+localparam ADC8CH_2BYTE      = 7;
+localparam DSS_1BYTE         = 8;
+localparam DSS_2BYTE         = 9;
+localparam WAIT_FOR_READ_REQ = 10;
+localparam ADC_045_READING   = 11;
+localparam ADC_733_READING   = 12;
+localparam ADC_8CH_READING   = 13;
+localparam DSS_READING       = 14;
 
 
 always @(posedge clk or negedge rst_l) begin
@@ -73,16 +81,20 @@ always @(posedge clk or negedge rst_l) begin
         state            <= IDLE;
         WRB              <= 1'b1;
         RDB              <= 1'b1;
-        word_counter     <= 6'd0;
+        wr_word_counter  <= 6'd0;
+        rd_word_counter  <= 6'd0;
+        all_data_sent    <= 1'b0;
+        start_read_break <= 1'b0;
         package_complete <= 1'b0;
+        rd_en            <= 1'b0;
     end
     else begin
 
         if (!RDB) begin
-            word_counter <= 6'd0;
+            wr_word_counter <= 6'd0;
         end
         else begin
-            word_counter <= (adc045_ready || adc733_ready || adc_8ch_ready || dss_ready) ? word_counter + 1'b1 : word_counter;
+            wr_word_counter <= (adc045_ready || adc733_ready || adc_8ch_ready || dss_ready) ? wr_word_counter + 1'b1 : wr_word_counter;
         end
 
         case (state)
@@ -98,15 +110,21 @@ always @(posedge clk or negedge rst_l) begin
                                 else if (dss_ready)
                                     state <= DSS_1BYTE;
 
-                    if (word_counter == 6'd45)
-                        state <= ADC_045_READING;
+                    if (wr_word_counter == 6'd45)
+                        state <= WAIT_FOR_READ_REQ;
 
                     WRB              <= 1'b1;
                     RDB              <= 1'b1; 
+                    all_data_sent    <= 1'b0;
+                    start_reading    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_word_counter  <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC045_1BYTE: begin   // данные с ацп 045 идут в первый подблок
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc045_data[23:16];
                     waddr            <= waddr1;
                     waddr1           <= waddr1 + 1'b1;
@@ -114,10 +132,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1; 
                     state            <= ADC045_2BYTE;  
-                    package_complete <= 1'b0;    
+                    all_data_sent    <= 1'b0;    
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC045_2BYTE: begin   
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc045_data[15:8];
                     waddr            <= waddr1;
                     waddr1           <= waddr1 + 1'b1;
@@ -125,10 +147,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1; 
                     state            <= ADC045_3BYTE; 
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC045_3BYTE: begin   
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc045_data[7:0];
                     waddr            <= waddr1;
                     waddr1           <= waddr1 + 1'b1;
@@ -136,10 +162,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;
                     state            <= IDLE;  
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC733_1BYTE: begin   // данные с ацп 733 идут во второй подблок
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc733_data[15:8];
                     waddr            <= waddr2;
                     waddr2           <= waddr2 + 1'b1;
@@ -147,10 +177,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
                     state            <= ADC733_2BYTE;
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC733_2BYTE: begin   
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc733_data[7:0];
                     waddr            <= waddr2;
                     waddr2           <= waddr2 + 1'b1;
@@ -158,10 +192,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1; 
                     state            <= IDLE; 
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC8CH_1BYTE: begin   // данные с 8 канального ацп идут в третий подблок
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc_8ch_data[11:8];
                     waddr            <= waddr3;
                     waddr3           <= waddr3 + 1'b1;
@@ -169,10 +207,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
                     state            <= ADC8CH_2BYTE;
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 ADC8CH_2BYTE: begin 
+                    start_reading    <= 1'b0;
                     data_to_ram      <= adc_8ch_data[7:0];
                     waddr            <= waddr3;
                     waddr3           <= waddr3 + 1'b1;
@@ -180,10 +222,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
                     state            <= IDLE;
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 DSS_1BYTE: begin   // данные с дсс идут в четвертый подблок
+                    start_reading    <= 1'b0;
                     data_to_ram      <= dss_data[11:8];
                     memblock_sel     <= 2'd3;
                     waddr            <= waddr4;
@@ -191,10 +237,14 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
                     state            <= DSS_2BYTE;
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                 end
 
                 DSS_2BYTE: begin
+                    start_reading    <= 1'b0;
                     data_to_ram      <= dss_data[7:0];
                     waddr            <= waddr4;
                     waddr4           <= waddr4 + 1'b1;
@@ -202,61 +252,128 @@ always @(posedge clk or negedge rst_l) begin
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
                     state            <= IDLE;
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
                     
                 end
 
-                ADC_045_READING: begin // после записи 45 слов начинается чтение и формирование единого пакета
-                    WRB              <= 1'b1;
-                    RDB              <= (raddr1 == waddr1) ? 1'b1 : 1'b0; 
-                    memblock_sel     <= 2'd0;
-                    raddr1           <= raddr1 + 1'b1;
-                    raddr            <= raddr1;
-                    state            <= (raddr1 == waddr1) ? ADC_733_READING : ADC_045_READING;
-                    package_complete <= 1'b0;
+                WAIT_FOR_READ_REQ: begin
+                    rd_en            <= 1'b0;
+                    if (!start_read_break) begin
+                        if (start_reading == 1'b1) begin
+                            package_complete <= 1'b0;
+                            start_read_break <= 1'b1;
+                        end
+                        else
+                            package_complete    <= 1'b1;
+                    end
+                    state <= read_request ? ADC_045_READING : WAIT_FOR_READ_REQ;
+                end
+
+                ADC_045_READING: begin // после записи 45 слов начинается чтение и формирование единого пакета     
+
+                    if (read_request) 
+                        rd_word_counter <= 3'd0;
+                    else if (rd_word_counter < 3'd4) begin
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        start_reading    <= 1'b1;
+                        WRB              <= 1'b1;
+                        RDB              <= (raddr1 == waddr1) ? 1'b1 : 1'b0; 
+                        memblock_sel     <= 2'd0;
+                        raddr1           <= raddr1 + 1'b1;
+                        raddr            <= raddr1;
+                        state            <= (raddr1 == waddr1) ? ADC_733_READING : ADC_045_READING;
+                        all_data_sent    <= 1'b0;
+                        package_complete <= 1'b0;
+                        rd_en            <= 1'b1;
+                    end
+                    else begin
+                        rd_en            <= 1'b0;
+                    end
                 end
 
                 ADC_733_READING: begin
-                    WRB              <= 1'b1;
-                    RDB              <= (raddr2 == waddr2) ? 1'b1 : 1'b0; 
-                    memblock_sel     <= 2'd1;
-                    raddr2           <= raddr2 + 1'b1;
-                    raddr            <= raddr2;
-                    state            <= (raddr2 == waddr2) ? ADC_8CH_READING : ADC_733_READING;
-                    package_complete <= 1'b0;
+                    if (read_request) 
+                        rd_word_counter <= 3'd0;
+                    else if (rd_word_counter < 3'd4) begin
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        start_reading    <= 1'b1;
+                        WRB              <= 1'b1;
+                        RDB              <= (raddr2 == waddr2) ? 1'b1 : 1'b0; 
+                        memblock_sel     <= 2'd1;
+                        raddr2           <= raddr2 + 1'b1;
+                        raddr            <= raddr2;
+                        state            <= (raddr2 == waddr2) ? ADC_8CH_READING : ADC_733_READING;
+                        all_data_sent    <= 1'b0;
+                        package_complete <= 1'b0;
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        rd_en            <= 1'b1;
+                        end
+                    else begin
+                        rd_en            <= 1'b0;
+                    end
                 end
 
                 ADC_8CH_READING: begin
-                    WRB              <= 1'b1;
-                    RDB              <= (raddr3 == waddr3) ? 1'b1 : 1'b0; 
-                    memblock_sel     <= 2'd2;
-                    raddr3           <= raddr3 + 1'b1;
-                    raddr            <= raddr3;
-                    state            <= (raddr3 == waddr3) ? DSS_READING : ADC_8CH_READING;
-                    package_complete <= 1'b0;
+                    if (read_request) 
+                        rd_word_counter <= 3'd0;
+                    else if (rd_word_counter < 3'd4) begin
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        start_reading    <= 1'b1;
+                        WRB              <= 1'b1;
+                        RDB              <= (raddr3 == waddr3) ? 1'b1 : 1'b0; 
+                        memblock_sel     <= 2'd2;
+                        raddr3           <= raddr3 + 1'b1;
+                        raddr            <= raddr3;
+                        state            <= (raddr3 == waddr3) ? DSS_READING : ADC_8CH_READING;
+                        all_data_sent    <= 1'b0;
+                        package_complete <= 1'b0;
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        rd_en            <= 1'b1;
+                        end
+                    else begin
+                        rd_en            <= 1'b0;
+                    end
                 end
                 
                 DSS_READING: begin
-                    WRB              <= 1'b1;
-                    RDB              <= (raddr4 == waddr4) ? 1'b1 : 1'b0; 
-                    memblock_sel     <= 2'd3;
-                    raddr4           <= raddr4 + 1'b1;
-                    raddr            <= raddr4;
-                    state            <= (raddr4 == waddr4) ? IDLE : DSS_READING;
-                    package_complete <= (raddr4 == waddr4);
+                    if (read_request) 
+                        rd_word_counter <= 3'd0;
+                    else if (rd_word_counter < 3'd4) begin
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        start_reading    <= 1'b1;
+                        WRB              <= 1'b1;
+                        RDB              <= (raddr4 == waddr4) ? 1'b1 : 1'b0; 
+                        memblock_sel     <= 2'd3;
+                        raddr4           <= raddr4 + 1'b1;
+                        raddr            <= raddr4;
+                        state            <= (raddr4 == waddr4) ? IDLE : DSS_READING;
+                        all_data_sent    <= (raddr4 == waddr4);
+                        package_complete <= 1'b0;
+                        rd_word_counter  <= rd_word_counter + 1'b1;
+                        rd_en            <= 1'b1;
+                        end
+                        else begin
+                            rd_en            <= 1'b0;
+                    end
                 end
 
                 default: begin
-                    data_to_ram  <= 8'b0;
-                    waddr        <= 8'b0;
-                    waddr1       <= 8'b0;
-                    waddr2       <= 8'b0;
-                    waddr3       <= 8'b0;
-                    waddr4       <= 8'b0;
-                    memblock_sel <= 2'd0;
-                    WRB          <= 1'b0;
-                    RDB          <= 1'b1;  
-                    state        <= IDLE;        
+                    start_reading    <= 1'b0;
+                    data_to_ram      <= 8'b0;
+                    waddr            <= 8'b0;
+                    waddr1           <= 8'b0;
+                    waddr2           <= 8'b0;
+                    waddr3           <= 8'b0;
+                    waddr4           <= 8'b0;
+                    memblock_sel     <= 2'd0;
+                    WRB              <= 1'b0;
+                    RDB              <= 1'b1;  
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    state            <= IDLE;        
                 end
 
             endcase

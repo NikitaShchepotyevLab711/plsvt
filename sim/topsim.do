@@ -5,6 +5,7 @@ vlog "../tb/top_tb.v"                            \
      "../src/top.v"                              \
      "../src/sync_strobe.v"                      \
      "../src/package_complectation.v"            \
+     "../src/data_compressor.v"                  \
      "../adc_8ch_045/src/adc_8ch_wrap.v"         \
      "../adc_8ch_045/src/adc_8ch_045.v"          \
      "../adc_8ch_045/src/clk_divider2.v"         \
