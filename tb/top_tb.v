@@ -74,10 +74,21 @@ localparam BAUD_RATE = 9600;
 localparam BIT_PERIOD = CLOCK_FREQ / BAUD_RATE; 
 reg uart_rxd;
 
+reg bb_psel, bb_penable;
+wire bb_pready;
+
 top dut (
 
     .bb_clk_in(clk),
     .rst_l(rst_l),
+
+    .bb_psel(bb_psel),
+	.bb_penable(bb_penable),
+	.bb_paddr(),
+	.bb_pwrite(),
+	.bb_pwdata(),
+	.bb_prdata(),
+	.bb_pready(bb_pready),
 
     //  1 adc045 //
     .adc045_drdy_1(drdy),           
@@ -347,17 +358,22 @@ initial begin
     end
 end
 
-integer l;
-
 initial begin
-    #40000000;
-
-
-    for (l = 0; l < 27 ; l = l + 1) begin
-        dut.read_request = 1;
-        #84;
-        dut.read_request = 0;
-        #500;
+    bb_psel = 0;
+    bb_penable = 0;
+    forever begin
+        if (bb_pready) begin
+            bb_psel <= 1;
+            #84;
+            bb_penable <= 1;
+            #84;
+            bb_psel <= 0;
+            bb_penable <= 0;  
+            #3000;
+        end
+        else begin
+            #1;
+        end
     end
 end
 

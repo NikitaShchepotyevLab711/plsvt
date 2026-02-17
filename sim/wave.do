@@ -26,12 +26,18 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /top_tb/dut/bb_clk_in
 add wave -noupdate /top_tb/dut/rst_l
 add wave -noupdate /top_tb/dut/adc_045_inst/sync
+add wave -noupdate /top_tb/dut/bb_psel
+add wave -noupdate /top_tb/dut/bb_penable
+add wave -noupdate /top_tb/dut/bb_pready
 add wave -noupdate /top_tb/dut/adc045_ready
 add wave -noupdate /top_tb/dut/adc733_ready
 add wave -noupdate /top_tb/dut/adc_8ch_ready
 add wave -noupdate /top_tb/dut/dss_ready
-add wave -noupdate /top_tb/dut/adc045_data
+add wave -noupdate /top_tb/dut/dac_value
+add wave -noupdate /top_tb/dut/dac_045_inst/dac_rdy
+add wave -noupdate /top_tb/dut/dac_045_inst/spi_inst/state
 add wave -noupdate /top_tb/dut/adc733_data
+add wave -noupdate /top_tb/dut/adc045_data
 add wave -noupdate /top_tb/dut/adc_8ch_data
 add wave -noupdate /top_tb/dut/dss_data
 add wave -noupdate /top_tb/dut/data_to_apb
@@ -40,13 +46,11 @@ add wave -noupdate /top_tb/dut/data_to_cpu
 add wave -noupdate /top_tb/dut/package_complectation_inst/start_reading
 add wave -noupdate /top_tb/dut/package_complectation_inst/RDB
 add wave -noupdate /top_tb/dut/package_complectation_inst/state
-add wave -noupdate /top_tb/dut/package_complectation_inst/start_read_break
-add wave -noupdate /top_tb/dut/read_request
-add wave -noupdate /top_tb/dut/package_complectation_inst/rd_word_counter
+add wave -noupdate /top_tb/dut/package_complectation_inst/wr_word_counter
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {44996058 ns} 0} {Trace {39826174 ns} 0}
-quietly wave cursor active 2
-configure wave -namecolwidth 334
+WaveRestoreCursors {{Cursor 1} {33605016 ns} 0} {Trace {19372280 ns} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 389
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -60,4 +64,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {44993263 ns} {45000355 ns}
+WaveRestoreZoom {59986098 ns} {60000732 ns}

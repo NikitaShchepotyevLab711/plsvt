@@ -2,6 +2,7 @@ vlib work
 vmap work work
 
 vlog "../tb/top_tb.v"                            \
+     "../src/apb_coder.v"                        \
      "../src/top.v"                              \
      "../src/sync_strobe.v"                      \
      "../src/package_complectation.v"            \
@@ -26,6 +27,7 @@ vlog "../tb/top_tb.v"                            \
      "../dac045a/src/dac045a.v"                  \
      "../dac045a/src/spi_controller.v"           \
      "../dac045a/src/dac_codegen.v"              \
+     "../dac045a/src/multiplier_16x3.v"          \
      "../lvds_dss/src/lvds_wrapper.v"            \
      "../lvds_dss/src/lvds_dss.v"                \
      "../lvds_dss/src/uart_rx.v"                 \
@@ -49,4 +51,4 @@ vsim -debugDB -fsmdebug -gui work.top_tb
 
 do {wave.do}
 
-run 45000us
+run 60000us

@@ -1,5 +1,5 @@
 `define DEBUG_MODE
-
+// поправить сигнал о новом значении ЦАП и организовать запись в память значения ЦАП
 module top #(
     parameter UART_BIT_RATE     = 9600, // bit per second
     parameter UART_CLK_HZ       = 12_000_000, // Hz
@@ -177,7 +177,6 @@ assign bb_apb_sync_clk=bb_clk_in;
 assign bb_clk_out=bb_clk_in;
 assign bb_gpio_out=8'hAF; 
 
-wire read_transaction =  bb_psel && !bb_penable;
 reg read_request;
 
 wire sync;
@@ -197,6 +196,9 @@ wire       package_complete;
 wire [31:0] data_to_cpu;
 wire        package_start;
 wire        package_rd_en;
+
+wire        dac_rdy;
+wire [15:0] dac_value;
 
 adc045_wrap adc_045_inst (
     .clk     (bb_clk_in),
@@ -218,21 +220,50 @@ adc045_wrap adc_045_inst (
 );
 
 dac045a dac_045_inst (
-    .clk        (bb_clk_in),
-    .rst_l      (rst_l),
+    .clk         (bb_clk_in),
+    .rst_l       (rst_l),
 
-    .sync_300Hz (sync),     // строб с частотой 300 Гц - частота обновления ЦАП
-    .mode       (1'b1),         // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
-    .fixed_value(16'h3200),         // порог, равный по умолчанию 0хffff
-    .cs         (1'b1),
+    .sync_300Hz  (sync),     // строб с частотой 300 Гц - частота обновления ЦАП
+    .mode1       (1'b1),         // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
+    .mode2       (1'b1),
+    .mode3       (1'b1),
+    .mode4       (1'b1),
+    .mode5       (1'b1),
+    .mode6       (1'b1),
+
+    .period1     (),
+    .period2     (),
+    .period3     (),
+    .period4     (),
+    .period5     (),
+    .period6     (),
+
+    .fixed_value1(16'h3200),         // порог, равный по умолчанию 0хffff
+    .fixed_value2(16'h4200),
+    .fixed_value3(16'h5200),
+    .fixed_value4(16'h6200),
+    .fixed_value5(16'h7200),
+    .fixed_value6(16'h8200),
+    .cs          (1'b1),
+
+    .dac_value   (dac_value),
+    .dac_rdy     (dac_rdy),
+
+    .step_coefficent1(3'd1),
+    .step_coefficent2(3'd2),
+    .step_coefficent3(3'd3),
+    .step_coefficent4(3'd4),
+    .step_coefficent5(3'd5),
+    .step_coefficent6(3'd6),
+
     // добавить сигнал busy
     // spi //
-    .SDO        ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2, dac045a_sdo_1}),
-    .SDI        ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2,  dac045a_sdi_1}),
-    .SCK        ({dac045a_sck_6, dac045a_sck_5, dac045a_sck_4, dac045a_sck_3, dac045a_sck_2, dac045a_sck_1}),
-    .CLRn       ({dac045a_clrn_6, dac045a_clrn_5, dac045a_clrn_4, dac045a_clrn_3, dac045a_clrn_2, dac045a_clrn_1}),
-    .LDAc       ({dac045a_ldac_6, dac045a_ldac_5, dac045a_ldac_4, dac045a_ldac_3, dac045a_ldac_2, dac045a_ldac_1}),
-    .CSn        ({dac045a_csn_6, dac045a_csn_5, dac045a_csn_4, dac045a_csn_3, dac045a_csn_2, dac045a_csn_1})
+    .SDO         ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2, dac045a_sdo_1}),
+    .SDI         ({dac045a_sdo_6, dac045a_sdo_5, dac045a_sdo_4, dac045a_sdo_3, dac045a_sdo_2,  dac045a_sdi_1}),
+    .SCK         ({dac045a_sck_6, dac045a_sck_5, dac045a_sck_4, dac045a_sck_3, dac045a_sck_2, dac045a_sck_1}),
+    .CLRn        ({dac045a_clrn_6, dac045a_clrn_5, dac045a_clrn_4, dac045a_clrn_3, dac045a_clrn_2, dac045a_clrn_1}),
+    .LDAc        ({dac045a_ldac_6, dac045a_ldac_5, dac045a_ldac_4, dac045a_ldac_3, dac045a_ldac_2, dac045a_ldac_1}),
+    .CSn         ({dac045a_csn_6, dac045a_csn_5, dac045a_csn_4, dac045a_csn_3, dac045a_csn_2, dac045a_csn_1})
 );
 
 adc733_wrap adc_733_inst (
@@ -332,10 +363,11 @@ package_complectation package_complectation_inst(
 
     .read_request    (read_request),
 
-    .data_o          (data_to_apb), // пакет данных 
+    .data_o          (data_to_apb),      // пакет данных 
     .package_complete(package_complete), // сигнал о готовности пакета
-    .start_reading   (package_start   ),
-    .rd_en           (package_rd_en)
+    .start_reading   (package_start   ), // сигнал активности операции чтения включая паузы
+    .rd_en           (package_rd_en),    // активность операции чтения
+    .apb_read        (apb_read)
 );
 
 data_compressor compressor_inst (
@@ -345,6 +377,21 @@ data_compressor compressor_inst (
 	.next_word (package_rd_en     ),
 	.data_o	   (data_to_cpu		  ),
 	.error_flag(	  		      )
+);
+
+apb_coder apb_coder_inst (
+    .rst_l           (rst_l),
+    .clk             (bb_clk_in),
+
+    // apb //
+    .prdata          (bb_prdata),
+    .psel            (bb_psel),
+    .penable         (bb_penable),
+    .pready          (bb_pready),
+    .paddr           (bb_paddr),
+    .read_transaction(apb_read),
+
+    .data_i          ()
 );
 
 endmodule

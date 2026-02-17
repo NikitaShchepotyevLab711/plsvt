@@ -12,6 +12,7 @@ module package_complectation (
     input wire        adc_8ch_ready,
     input wire        dss_ready,
 
+    input wire        apb_read,
     input wire        read_request,
 
     output wire [7:0] data_o,
@@ -57,7 +58,7 @@ localparam ADC8CH_1BYTE      = 6;
 localparam ADC8CH_2BYTE      = 7;
 localparam DSS_1BYTE         = 8;
 localparam DSS_2BYTE         = 9;
-localparam WAIT_FOR_READ_REQ = 10;
+localparam WAIT_FOR_APB_TX   = 10;
 localparam ADC_045_READING   = 11;
 localparam ADC_733_READING   = 12;
 localparam ADC_8CH_READING   = 13;
@@ -111,7 +112,7 @@ always @(posedge clk or negedge rst_l) begin
                                     state <= DSS_1BYTE;
 
                     if (wr_word_counter == 6'd45)
-                        state <= WAIT_FOR_READ_REQ;
+                        state <= WAIT_FOR_APB_TX;
 
                     WRB              <= 1'b1;
                     RDB              <= 1'b1; 
@@ -259,7 +260,7 @@ always @(posedge clk or negedge rst_l) begin
                     
                 end
 
-                WAIT_FOR_READ_REQ: begin
+                WAIT_FOR_APB_TX: begin
                     rd_en            <= 1'b0;
                     if (!start_read_break) begin
                         if (start_reading == 1'b1) begin
@@ -269,12 +270,12 @@ always @(posedge clk or negedge rst_l) begin
                         else
                             package_complete    <= 1'b1;
                     end
-                    state <= read_request ? ADC_045_READING : WAIT_FOR_READ_REQ;
+                    state <= apb_read ? ADC_045_READING : WAIT_FOR_APB_TX;
                 end
 
                 ADC_045_READING: begin // после записи 45 слов начинается чтение и формирование единого пакета     
 
-                    if (read_request) 
+                    if (apb_read) 
                         rd_word_counter <= 3'd0;
                     else if (rd_word_counter < 3'd4) begin
                         rd_word_counter  <= rd_word_counter + 1'b1;
@@ -295,7 +296,7 @@ always @(posedge clk or negedge rst_l) begin
                 end
 
                 ADC_733_READING: begin
-                    if (read_request) 
+                    if (apb_read) 
                         rd_word_counter <= 3'd0;
                     else if (rd_word_counter < 3'd4) begin
                         rd_word_counter  <= rd_word_counter + 1'b1;
@@ -317,7 +318,7 @@ always @(posedge clk or negedge rst_l) begin
                 end
 
                 ADC_8CH_READING: begin
-                    if (read_request) 
+                    if (apb_read) 
                         rd_word_counter <= 3'd0;
                     else if (rd_word_counter < 3'd4) begin
                         rd_word_counter  <= rd_word_counter + 1'b1;
@@ -339,7 +340,7 @@ always @(posedge clk or negedge rst_l) begin
                 end
                 
                 DSS_READING: begin
-                    if (read_request) 
+                    if (apb_read) 
                         rd_word_counter <= 3'd0;
                     else if (rd_word_counter < 3'd4) begin
                         rd_word_counter  <= rd_word_counter + 1'b1;
