@@ -3,11 +3,15 @@ module package_complectation (
     input wire rst_l,
 
     input wire [23:0] adc045_data,
+    input wire [15:0] dac_value,
     input wire [15:0] adc733_data,
     input wire [11:0] adc_8ch_data,
     input wire [11:0] dss_data,
+    input wire [21:0] log_outputs_data,
 
+    input wire        log_outputs_load,
     input wire        adc045_ready,
+    input wire        dac_value_valid,
     input wire        adc733_ready,
     input wire        adc_8ch_ready,
     input wire        dss_ready,
@@ -45,24 +49,33 @@ wire       dc_in1 = memblock_sel[1];
 reg WRB;
 reg RDB;
 
+reg half_byte_writen;
+reg half_word_writen;
+reg [7:0] data8ch_to_ram;
+
 wire [8:0] DOut1;
 
-reg [3:0] state;
-localparam IDLE              = 0;
-localparam ADC045_1BYTE      = 1;
-localparam ADC045_2BYTE      = 2;
-localparam ADC045_3BYTE      = 3;
-localparam ADC733_1BYTE      = 4;
-localparam ADC733_2BYTE      = 5;
-localparam ADC8CH_1BYTE      = 6;
-localparam ADC8CH_2BYTE      = 7;
-localparam DSS_1BYTE         = 8;
-localparam DSS_2BYTE         = 9;
-localparam WAIT_FOR_APB_TX   = 10;
-localparam ADC_045_READING   = 11;
-localparam ADC_733_READING   = 12;
-localparam ADC_8CH_READING   = 13;
-localparam DSS_READING       = 14;
+reg [4:0] state;
+localparam IDLE              = 5'h0;
+localparam ADC045_1BYTE      = 5'h1;
+localparam ADC045_2BYTE      = 5'h2;
+localparam ADC045_3BYTE      = 5'h3;
+localparam DAC_1BYTE         = 5'h4;
+localparam DAC_2BYTE         = 5'h5;
+localparam LOG_OUTPUTS_1BYTE = 5'h6;
+localparam LOG_OUTPUTS_2BYTE = 5'h7;
+localparam LOG_OUTPUTS_3BYTE = 5'h8;
+localparam ADC733_1BYTE      = 5'h9;
+localparam ADC733_2BYTE      = 5'ha;
+localparam ADC8CH_1BYTE      = 5'hb;
+localparam ADC8CH_2BYTE      = 5'hc;
+localparam DSS_1BYTE         = 5'hd;
+localparam DSS_2BYTE         = 5'he;
+localparam WAIT_FOR_APB_TX   = 5'hf;
+localparam ADC_045_READING   = 5'h10;
+localparam ADC_733_READING   = 5'h11;
+localparam ADC_8CH_READING   = 5'h12;
+localparam DAC_DSS_READING   = 5'h13;
 
 
 always @(posedge clk or negedge rst_l) begin
@@ -88,6 +101,9 @@ always @(posedge clk or negedge rst_l) begin
         start_read_break <= 1'b0;
         package_complete <= 1'b0;
         rd_en            <= 1'b0;
+        half_byte_writen <= 1'b0;
+        half_word_writen <= 1'b0;
+        data8ch_to_ram   <= 8'b0;
     end
     else begin
 
@@ -100,20 +116,24 @@ always @(posedge clk or negedge rst_l) begin
 
         case (state)
                 IDLE: begin
-                    data_to_ram  <= 8'b0;
-                    memblock_sel <= 2'd0;
-                    if (adc045_ready)
+                    if (log_outputs_load)   
+                        state <= LOG_OUTPUTS_1BYTE;   
+                    else if (adc045_ready)
                         state <= ADC045_1BYTE;
                         else if (adc733_ready)
                             state <= ADC733_1BYTE;
                             else if (adc_8ch_ready)
                                 state <= ADC8CH_1BYTE;
-                                else if (dss_ready)
-                                    state <= DSS_1BYTE;
+                                else if (dac_value_valid)
+                                    state <= DAC_1BYTE;
+                                    else if (dss_ready)
+                                        state <= DSS_1BYTE;
 
                     if (wr_word_counter == 6'd45)
                         state <= WAIT_FOR_APB_TX;
 
+                    data_to_ram      <= 8'b0;
+                    memblock_sel     <= 2'd0;
                     WRB              <= 1'b1;
                     RDB              <= 1'b1; 
                     all_data_sent    <= 1'b0;
@@ -169,6 +189,81 @@ always @(posedge clk or negedge rst_l) begin
                     rd_en            <= 1'b0;
                 end
 
+                DAC_1BYTE: begin     // 6 значений ЦАП будуи храниться вместе с лог. выходами и 3 ззначениями ДСС
+                    start_reading    <= 1'b0;
+                    data_to_ram      <= dac_value[15:8];
+                    waddr            <= waddr4;
+                    waddr4           <= waddr4 + 1'b1;
+                    memblock_sel     <= 2'd3;
+                    WRB              <= 1'b0;
+                    RDB              <= 1'b1;
+                    state            <= DAC_2BYTE;  
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
+                end
+
+                DAC_2BYTE: begin
+                    start_reading    <= 1'b0;
+                    data_to_ram      <= dac_value[7:0];
+                    waddr            <= waddr4;
+                    waddr4           <= waddr4 + 1'b1;
+                    memblock_sel     <= 2'd3;
+                    WRB              <= 1'b0;
+                    RDB              <= 1'b1;
+                    state            <= IDLE;  
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
+                end
+
+                LOG_OUTPUTS_1BYTE: begin
+                    start_reading    <= 1'b0;
+                    data_to_ram      <= {2'b0, log_outputs_data[21:16]};
+                    waddr            <= waddr4;
+                    waddr4           <= waddr4 + 1'b1;
+                    memblock_sel     <= 2'd3;
+                    WRB              <= 1'b0;
+                    RDB              <= 1'b1;
+                    state            <= LOG_OUTPUTS_2BYTE;  
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
+                end
+
+                LOG_OUTPUTS_2BYTE: begin
+                    start_reading    <= 1'b0;
+                    data_to_ram      <= log_outputs_data[15:8];
+                    waddr            <= waddr4;
+                    waddr4           <= waddr4 + 1'b1;
+                    memblock_sel     <= 2'd3;
+                    WRB              <= 1'b0;
+                    RDB              <= 1'b1;
+                    state            <= LOG_OUTPUTS_3BYTE;  
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
+                end
+
+                LOG_OUTPUTS_3BYTE: begin
+                    start_reading    <= 1'b0;
+                    data_to_ram      <= log_outputs_data[7:0]; 
+                    waddr            <= waddr4;
+                    waddr4           <= waddr4 + 1'b1;
+                    memblock_sel     <= 2'd3;
+                    WRB              <= 1'b0;
+                    RDB              <= 1'b1;
+                    state            <= IDLE;  
+                    all_data_sent    <= 1'b0;
+                    start_read_break <= 1'b0;
+                    package_complete <= 1'b0;
+                    rd_en            <= 1'b0;
+                end
+
                 ADC733_1BYTE: begin   // данные с ацп 733 идут во второй подблок
                     start_reading    <= 1'b0;
                     data_to_ram      <= adc733_data[15:8];
@@ -201,9 +296,17 @@ always @(posedge clk or negedge rst_l) begin
 
                 ADC8CH_1BYTE: begin   // данные с 8 канального ацп идут в третий подблок
                     start_reading    <= 1'b0;
-                    data_to_ram      <= adc_8ch_data[11:8];
-                    waddr            <= waddr3;
+                    if (half_byte_writen) begin
+                        data_to_ram       <= {data8ch_to_ram[7:4], adc_8ch_data[11:8]};
+                        half_byte_writen  <= 1'b0;
+                        half_word_writen  <= 1'b1;
+                    end
+                    else begin
+                        data_to_ram      <= adc_8ch_data[11:4];   
+                        
+                    end
                     waddr3           <= waddr3 + 1'b1;
+                    waddr            <= waddr3;
                     memblock_sel     <= 2'd2;
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
@@ -216,9 +319,22 @@ always @(posedge clk or negedge rst_l) begin
 
                 ADC8CH_2BYTE: begin 
                     start_reading    <= 1'b0;
-                    data_to_ram      <= adc_8ch_data[7:0];
+                    if (half_byte_writen) begin
+                        data_to_ram [3:0] <= 4'ha; 
+                        half_byte_writen  <= 1'b0;
+                    end
+                    else begin  
+                        if (half_word_writen) begin
+                            data_to_ram <= adc_8ch_data[7:0];
+                            waddr3      <= waddr3 + 1'b1; 
+                            half_word_writen  <= 1'b0;
+                        end
+                        else begin
+                            data8ch_to_ram    <= {adc_8ch_data[3:0], 4'b0};                        
+                            half_byte_writen  <= 1'b1;
+                        end
+                    end
                     waddr            <= waddr3;
-                    waddr3           <= waddr3 + 1'b1;
                     memblock_sel     <= 2'd2;
                     WRB              <= 1'b0;
                     RDB              <= 1'b1;  
@@ -273,8 +389,7 @@ always @(posedge clk or negedge rst_l) begin
                     state <= apb_read ? ADC_045_READING : WAIT_FOR_APB_TX;
                 end
 
-                ADC_045_READING: begin // после записи 45 слов начинается чтение и формирование единого пакета     
-
+                ADC_045_READING: begin // после записи 45 слов начинается чтение и формирование единого пакета
                     if (apb_read) 
                         rd_word_counter <= 3'd0;
                     else if (rd_word_counter < 3'd4) begin
@@ -310,7 +425,7 @@ always @(posedge clk or negedge rst_l) begin
                         all_data_sent    <= 1'b0;
                         package_complete <= 1'b0;
                         rd_word_counter  <= rd_word_counter + 1'b1;
-                        rd_en            <= 1'b1;
+                        rd_en            <= RDB ? 1'b0 : 1'b1;
                         end
                     else begin
                         rd_en            <= 1'b0;
@@ -328,18 +443,18 @@ always @(posedge clk or negedge rst_l) begin
                         memblock_sel     <= 2'd2;
                         raddr3           <= raddr3 + 1'b1;
                         raddr            <= raddr3;
-                        state            <= (raddr3 == waddr3) ? DSS_READING : ADC_8CH_READING;
+                        state            <= (raddr3 == waddr3) ? DAC_DSS_READING : ADC_8CH_READING;
                         all_data_sent    <= 1'b0;
                         package_complete <= 1'b0;
                         rd_word_counter  <= rd_word_counter + 1'b1;
-                        rd_en            <= 1'b1;
+                        rd_en            <= RDB ? 1'b0 : 1'b1;
                         end
                     else begin
                         rd_en            <= 1'b0;
                     end
                 end
                 
-                DSS_READING: begin
+                DAC_DSS_READING: begin
                     if (apb_read) 
                         rd_word_counter <= 3'd0;
                     else if (rd_word_counter < 3'd4) begin
@@ -350,11 +465,11 @@ always @(posedge clk or negedge rst_l) begin
                         memblock_sel     <= 2'd3;
                         raddr4           <= raddr4 + 1'b1;
                         raddr            <= raddr4;
-                        state            <= (raddr4 == waddr4) ? IDLE : DSS_READING;
+                        state            <= (raddr4 == waddr4) ? IDLE : DAC_DSS_READING;
                         all_data_sent    <= (raddr4 == waddr4);
                         package_complete <= 1'b0;
                         rd_word_counter  <= rd_word_counter + 1'b1;
-                        rd_en            <= 1'b1;
+                        rd_en            <= RDB ? 1'b0 : 1'b1;
                         end
                         else begin
                             rd_en            <= 1'b0;
@@ -374,6 +489,9 @@ always @(posedge clk or negedge rst_l) begin
                     RDB              <= 1'b1;  
                     start_read_break <= 1'b0;
                     package_complete <= 1'b0;
+                    half_byte_writen <= 1'b0;
+                    half_word_writen <= 1'b0;
+                    data8ch_to_ram   <= 8'b0;
                     state            <= IDLE;        
                 end
 
@@ -399,6 +517,7 @@ psevdo_ram_block ram0 (
 	.DO1(DOut1),
 	.DO2()
 );
+
 `else
 ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
 	.DIn({1'b0,data_inf_buf}),

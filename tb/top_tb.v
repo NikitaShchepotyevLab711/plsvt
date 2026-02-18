@@ -364,12 +364,13 @@ initial begin
     forever begin
         if (bb_pready) begin
             bb_psel <= 1;
-            #84;
+            @(posedge clk);
             bb_penable <= 1;
-            #84;
+            @(posedge clk);
             bb_psel <= 0;
             bb_penable <= 0;  
             #3000;
+            @(posedge clk);
         end
         else begin
             #1;

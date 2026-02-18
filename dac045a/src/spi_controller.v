@@ -8,6 +8,7 @@ module spi_controller #(
     input  wire        dac_en,
     input  wire        renew,
     output reg         rdy,
+    output reg         valid,
 
     // spi //
     input  wire       SDO,
@@ -37,14 +38,15 @@ assign CLRn = rst_l;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        SCK_en <= 1'b0;
-        LDAc <= 1'b1;
-        CSn <= 1'b1;
+        SCK_en   <= 1'b0;
+        LDAc     <= 1'b1;
+        CSn      <= 1'b1;
         shiftreg <= 16'h0;
-        SDI <= 1'b0;
-        cnt <= 4'h0;
-        rdy    <= 1'b0;
-        state <= IDLE;
+        SDI      <= 1'b0;
+        cnt      <= 4'h0;
+        rdy      <= 1'b0;
+        valid    <= 1'b0;
+        state    <= IDLE;
     end
     else begin
         case (state)
@@ -54,27 +56,30 @@ always @(posedge clk or negedge rst_l) begin
                 else 
                     state <= IDLE;
 
-                SCK_en <= 1'b0;
-                LDAc <= 1'b1;
-                SDI  <= 1'b0;
-                CSn <= 1'b1;
-                rdy    <= 1'b0;
+                SCK_en   <= 1'b0;
+                LDAc     <= 1'b1;
+                SDI      <= 1'b0;
+                CSn      <= 1'b1;
+                rdy      <= 1'b0;
+                valid    <= 1'b0;
                 shiftreg <= 16'b0;
             end
 
             CS_START: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b1;
-                CSn <= 1'b0;
+                LDAc   <= 1'b1;
+                CSn    <= 1'b0;
                 rdy    <= 1'b0;
-                state <= SCK_START;
+                valid  <= 1'b1;
+                state  <= SCK_START;
             end
 
             SCK_START: begin
                 SCK_en <= 1'b1;
-                LDAc <= 1'b1;
-                CSn <= 1'b0;
+                LDAc   <= 1'b1;
+                CSn    <= 1'b0;
                 rdy    <= 1'b0;
+                valid  <= 1'b0;
                 if (strb) begin
                     if (cnt == 16'hf) begin
                         state <= SCK_STOP;
@@ -97,34 +102,38 @@ always @(posedge clk or negedge rst_l) begin
 
             SCK_STOP: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b1;
-                CSn <= 1'b0;
+                LDAc   <= 1'b1;
+                CSn    <= 1'b0;
                 rdy    <= 1'b0;
-                state <= CS_STOP;
+                valid  <= 1'b0;
+                state  <= CS_STOP;
             end
 
             CS_STOP: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b1;
-                CSn <= 1'b1;
+                LDAc   <= 1'b1;
+                CSn    <= 1'b1;
                 rdy    <= 1'b0;
-                state <= LDAC_ENABLE;
+                valid  <= 1'b0;
+                state  <= LDAC_ENABLE;
             end
 
             LDAC_ENABLE: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b0;
-                CSn <= 1'b1;
+                LDAc   <= 1'b0;
+                CSn    <= 1'b1;
                 rdy    <= 1'b0;
-                state <= LDAC_WAIT;
+                valid  <= 1'b0;
+                state  <= LDAC_WAIT;
             end
 
             LDAC_WAIT: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b0;
-                CSn <= 1'b1;
+                LDAc   <= 1'b0;
+                CSn    <= 1'b1;
                 rdy    <= 1'b0;
-                state <= LDAC_DISABLE;
+                valid  <= 1'b0;
+                state  <= LDAC_DISABLE;
             end
 
             LDAC_DISABLE: begin
@@ -132,15 +141,17 @@ always @(posedge clk or negedge rst_l) begin
                 LDAc   <= 1'b1;
                 rdy    <= 1'b1;
                 CSn    <= 1'b1;
+                valid  <= 1'b0;
                 state  <= IDLE;
             end
 
             default: begin
                 SCK_en <= 1'b0;
-                LDAc <= 1'b1;
-                CSn <= 1'b1;
+                LDAc   <= 1'b1;
+                CSn    <= 1'b1;
                 rdy    <= 1'b0;
-                state <= IDLE;
+                valid  <= 1'b0;
+                state  <= IDLE;
             end
         endcase
 

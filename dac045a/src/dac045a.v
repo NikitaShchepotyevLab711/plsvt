@@ -35,6 +35,7 @@ module dac045a (
 
     output wire [15:0] dac_value,
     output wire        dac_rdy,
+    output wire        dac_value_valid,
 
     // добавить сигнал busy
     // spi //
@@ -125,6 +126,7 @@ spi_controller spi_inst (
     .LDAc(ldac),
     .CSn(csn),
 
+    .valid(dac_value_valid),
     .rdy(dac_rdy)
 );
 

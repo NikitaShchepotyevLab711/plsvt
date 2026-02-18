@@ -34,8 +34,9 @@ add wave -noupdate /top_tb/dut/adc733_ready
 add wave -noupdate /top_tb/dut/adc_8ch_ready
 add wave -noupdate /top_tb/dut/dss_ready
 add wave -noupdate /top_tb/dut/dac_value
+add wave -noupdate /top_tb/dut/dac_value_valid
+add wave -noupdate /top_tb/dut/package_complectation_inst/log_outputs_data
 add wave -noupdate /top_tb/dut/dac_045_inst/dac_rdy
-add wave -noupdate /top_tb/dut/dac_045_inst/spi_inst/state
 add wave -noupdate /top_tb/dut/adc733_data
 add wave -noupdate /top_tb/dut/adc045_data
 add wave -noupdate /top_tb/dut/adc_8ch_data
@@ -46,11 +47,16 @@ add wave -noupdate /top_tb/dut/data_to_cpu
 add wave -noupdate /top_tb/dut/package_complectation_inst/start_reading
 add wave -noupdate /top_tb/dut/package_complectation_inst/RDB
 add wave -noupdate /top_tb/dut/package_complectation_inst/state
-add wave -noupdate /top_tb/dut/package_complectation_inst/wr_word_counter
+add wave -noupdate /top_tb/dut/package_complectation_inst/waddr3
+add wave -noupdate /top_tb/dut/package_complectation_inst/half_byte_writen
+add wave -noupdate /top_tb/dut/package_complectation_inst/half_word_writen
+add wave -noupdate /top_tb/dut/package_complectation_inst/data_to_ram
+add wave -noupdate /top_tb/dut/package_complectation_inst/data8ch_to_ram
+add wave -noupdate /top_tb/dut/package_complectation_inst/ram0/memory_block2
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {33605016 ns} 0} {Trace {19372280 ns} 0}
+WaveRestoreCursors {{Cursor 1} {59980713 ns} 0} {Trace {33610494 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 389
+configure wave -namecolwidth 299
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -64,4 +70,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {59986098 ns} {60000732 ns}
+WaveRestoreZoom {59945007 ns} {60002895 ns}

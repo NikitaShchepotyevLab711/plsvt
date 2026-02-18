@@ -129,6 +129,9 @@ module top #(
     output wire        dac045a_ldac_6,
     output wire        dac045a_csn_6,
 
+    // logic outputs //
+    output wire [21:0] log_control,
+
     // adc733 serial port //
     input  wire        adc733_sclk,
     input  wire        adc733_sdofs,
@@ -199,6 +202,21 @@ wire        package_rd_en;
 
 wire        dac_rdy;
 wire [15:0] dac_value;
+wire        dac_value_valid;
+
+reg [21:0] log_control_reg;
+
+assign log_control = 22'habcde;
+
+always @(posedge bb_clk_in or negedge rst_l) begin
+    if (!rst_l) begin
+        log_control_reg <= 22'b0;
+    end
+    else begin
+        if (sync)
+            log_control_reg <= log_control;
+    end
+end
 
 adc045_wrap adc_045_inst (
     .clk     (bb_clk_in),
@@ -248,6 +266,7 @@ dac045a dac_045_inst (
 
     .dac_value   (dac_value),
     .dac_rdy     (dac_rdy),
+    .dac_value_valid(dac_value_valid),
 
     .step_coefficent1(3'd1),
     .step_coefficent2(3'd2),
@@ -349,14 +368,18 @@ package_complectation package_complectation_inst(
     .clk             (bb_clk_in),
     .rst_l           (rst_l),
     
-    // данные от АЦП и ДСС //
+    // данные от АЦП, ЦАП и ДСС //
     .adc045_data     (adc045_data),
+    .dac_value       (dac_value),
     .adc733_data     (adc733_data),
     .adc_8ch_data    (adc_8ch_data),
     .dss_data        (dss_data),
+    .log_outputs_data(log_control_reg),
 
     // сигналы о готовности от АЦП и ДСС //
+    .log_outputs_load(sync),
     .adc045_ready    (adc045_ready),
+    .dac_value_valid (dac_value_valid),
     .adc733_ready    (adc733_ready),
     .adc_8ch_ready   (adc_8ch_ready),
     .dss_ready       (dss_ready),
