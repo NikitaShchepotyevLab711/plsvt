@@ -7,6 +7,10 @@ vlog "../tb/top_tb.v"                            \
      "../src/sync_strobe.v"                      \
      "../src/package_complectation.v"            \
      "../src/data_compressor.v"                  \
+     "../src/front_detector.v"                   \
+     "../src/front_detector_by_negedge.v"        \
+     "../src/pulse_to_toggle.v"                  \
+     "../src/vsi_pack_counter.v"                 \
      "../adc_8ch_045/src/adc_8ch_wrap.v"         \
      "../adc_8ch_045/src/adc_8ch_045.v"          \
      "../adc_8ch_045/src/clk_divider2.v"         \

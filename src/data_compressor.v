@@ -11,43 +11,41 @@ module data_compressor (
 	input  wire 	   rst_l,
 	input  wire [7:0]  data_i,
 	input  wire 	   next_word,
-	output wire [31:0] data_o,
-	output reg  	   error_flag
+	output reg  [31:0] data_o,
+	output reg  	   ready
 	
 );	
 
-reg [1:0] addr_change_counter;
+reg [2:0]  counter;
 reg [31:0] captured_data;
 reg [31:0] prev_captured_data;
 reg [31:0] pre_prev_captured_data;
+reg  	   capture_frame;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        addr_change_counter <= 0;
-        captured_data <= 0;
-        prev_captured_data <= 0;
-        pre_prev_captured_data <= 0;
-        error_flag <= 0;
+        counter    			   <= 1'b0;
+        captured_data          <= 1'b0;
+        prev_captured_data 	   <= 1'b0;
+        pre_prev_captured_data <= 1'b0;
+		ready 				   <= 1'b0;
+		capture_frame 		   <= 1'b0;
+		data_o 				   <= 32'b0;
     end else begin		
-    
-		if ((pre_prev_captured_data + 1 != prev_captured_data) && (pre_prev_captured_data > 0))
-		error_flag <= 1;
-		
+		capture_frame 		   <= next_word;
 		if (next_word) begin
-                captured_data <= {captured_data[23:0], data_i};
-                addr_change_counter <= addr_change_counter + 1;
-                
-				if (addr_change_counter == 1) begin
-					prev_captured_data [31:24]   <= captured_data[31:24];
-					prev_captured_data [23:16]  <= captured_data[23:16];
-					prev_captured_data [15:8] <= captured_data[15:8];
-					prev_captured_data [7:0] <= captured_data[7:0];
-					pre_prev_captured_data <= prev_captured_data;
-				end
+            captured_data <= {captured_data[23:0], data_i};
+			counter  	  <= counter + 1'b1;
         end
+		
+		if ((capture_frame)&&(!next_word)) begin
+			data_o <= captured_data;
+			ready  <= 1'b1;
+		end
+		else 
+			ready  <= 1'b0;
+
     end
 end
-		
-assign data_o = prev_captured_data;
 
 endmodule

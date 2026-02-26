@@ -171,11 +171,17 @@ module top #(
     input  wire        lvds_ro,
     output wire        lvds_re,
     output wire        lvds_di,
-    output wire        lvds_de
+    output wire        lvds_de,
+
+    output wire [20:0] A,
+    inout  wire [15:0] IO,
+    output wire        CS,
+    output wire        OE,
+    output wire        LB,
+    output wire        UB
 );
 
 assign bb_pslverr = 0;
-assign bb_pready = 1;
 assign bb_apb_sync_clk=bb_clk_in;
 assign bb_clk_out=bb_clk_in;
 assign bb_gpio_out=8'hAF; 
@@ -197,6 +203,7 @@ wire [7:0] data_to_apb;
 wire       package_complete;
 
 wire [31:0] data_to_cpu;
+wire [31:0] data_from_cpu;
 wire        package_start;
 wire        package_rd_en;
 
@@ -205,6 +212,13 @@ wire [15:0] dac_value;
 wire        dac_value_valid;
 
 reg [21:0] log_control_reg;
+wire       word_to_cpu_rdy;
+
+wire       vsi_word_rcvd;
+wire       vsi_package_rcvd;
+
+wire [15:0] data_to_ram;
+wire        vsi_data_ready;
 
 assign log_control = 22'habcde;
 
@@ -399,7 +413,7 @@ data_compressor compressor_inst (
 	.data_i	   (data_to_apb       ),
 	.next_word (package_rd_en     ),
 	.data_o	   (data_to_cpu		  ),
-	.error_flag(	  		      )
+    .ready     (word_to_cpu_rdy   )
 );
 
 apb_coder apb_coder_inst (
@@ -408,13 +422,63 @@ apb_coder apb_coder_inst (
 
     // apb //
     .prdata          (bb_prdata),
+    .pwdata          (bb_pwdata),
     .psel            (bb_psel),
     .penable         (bb_penable),
     .pready          (bb_pready),
     .paddr           (bb_paddr),
-    .read_transaction(apb_read),
 
-    .data_i          ()
+    // REGS //
+    .DATA_READY      (package_complete),
+    .UKS0_READY      (),
+    .UKS1_READY      (),
+    .UKS2_READY      (),
+    .UKS3_READY      (),
+    .TIME            (),
+
+    .read_transaction(apb_read),      // сигнал для передачи данных в процессор
+    .package_start   (package_start), // сигнал активности операции чтения включая паузы
+
+    .data_i          (data_to_cpu),
+    .data_o          (data_from_cpu),
+    .valid           (word_to_cpu_rdy), // каждое 32 битное слово из пакета ОБ сопровождается этим стробом
+
+    .vsi_package_rcvd(vsi_pack_rcvd),
+    .vsi_word_rcvd   (vsi_word_rcvd)
+);
+
+vsi_pack_counter vsi_pack_counter_inst (
+    .rst_l           (rst_l),
+    .clk             (bb_clk_in),
+
+    .data_i          (data_from_cpu),
+    .word_valid      (vsi_word_rcvd),  // строб сопровождающий каждое слово
+    .pack_valid      (vsi_pack_rcvd),  // строб об окончании одного пакета 
+    .pack_num        (vsi_pack_num),   // номер пакета 
+
+    .data_o          (data_to_ram),    // 2байтовые слова для записи в ОЗУ 
+    .rdy             (rdy_data_to_ram), // строб о готовности 2байтового слова для записи в ОЗУ
+    .vsi_data_ready  (vsi_data_ready) // сигнал о том что 6 пакетов по 310 байт принято
+);
+
+ram_controller_wrap ram_controller_wrap_inst (
+    .rst_l           (rst_l),
+    .clk             (bb_clk_in),
+
+    .A               (A),
+    .IO              (IO),
+    .CS              (CS),
+    .OE              (OE),
+    .LB              (LB),
+    .UB              (UB),
+    
+    .data_i          (data_to_ram),
+    .data_o          (),
+    .wr_req          (rdy_data_to_ram), // 1 = запись
+    .rd_req          (),                // 1 = чтение
+    .vsi_data_ready  (vsi_data_ready),  // 1 = пришло 6 пакетов от ОБ и можно формировать пакет ВСИ
+    .irq_current     ()
+
 );
 
 endmodule

@@ -75,6 +75,8 @@ localparam BIT_PERIOD = CLOCK_FREQ / BAUD_RATE;
 reg uart_rxd;
 
 reg bb_psel, bb_penable;
+reg [31:0] bb_pwdata;
+reg [15:0] bb_paddr;
 wire bb_pready;
 
 top dut (
@@ -84,9 +86,9 @@ top dut (
 
     .bb_psel(bb_psel),
 	.bb_penable(bb_penable),
-	.bb_paddr(),
+	.bb_paddr(bb_paddr),
 	.bb_pwrite(),
-	.bb_pwdata(),
+	.bb_pwdata(bb_pwdata),
 	.bb_prdata(),
 	.bb_pready(bb_pready),
 
@@ -358,24 +360,48 @@ initial begin
     end
 end
 
+// получение от плис пакета данных ОБ //
 initial begin
     bb_psel = 0;
     bb_penable = 0;
+    bb_paddr = 15'h0;
     forever begin
-        if (bb_pready) begin
-            bb_psel <= 1;
-            @(posedge clk);
-            bb_penable <= 1;
-            @(posedge clk);
-            bb_psel <= 0;
-            bb_penable <= 0;  
-            #3000;
-            @(posedge clk);
-        end
-        else begin
-            #1;
-        end
+        if (dut.apb_coder_inst.DATA_READY)
+        bb_paddr = 15'h100;
+        bb_psel <= 1;
+        @(posedge clk);
+        bb_penable <= 1;
+        wait (bb_pready);
+        @(posedge clk);
+        if (dut.apb_coder_inst.data_tx_frame)
+            bb_paddr <= bb_paddr + 3'd4;
+        bb_psel <= 0;
+        bb_penable <= 0;  
+        #3000;
+        @(posedge clk);
     end
+end
+
+integer tx_cnt;
+
+// отправка в плис итогового пакета 310 Байт // 
+initial begin
+    bb_pwdata = 31'hf0000000;
+    
+    @(posedge dut.apb_coder_inst.data_tx_end_pulse);
+    bb_paddr = 16'h200;
+    @(posedge clk);  
+    
+    for (tx_cnt = 0; tx_cnt < 310; tx_cnt = tx_cnt + 1) begin
+        @(posedge clk);  
+        wait (bb_psel);
+        bb_pwdata = bb_pwdata + 1;
+        bb_paddr  = bb_paddr + 1;
+        @(posedge bb_psel);  
+    end
+
+    bb_paddr <= 16'h0;
+
 end
 
 // dac //

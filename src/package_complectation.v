@@ -1,4 +1,4 @@
-module package_complectation (
+module package_complectation ( // доработать посл. байт от adc8ch и чтение оттуда же, добавить возвратные регистры
     input wire clk,
     input wire rst_l,
 
@@ -390,89 +390,105 @@ always @(posedge clk or negedge rst_l) begin
                 end
 
                 ADC_045_READING: begin // после записи 45 слов начинается чтение и формирование единого пакета
-                    if (apb_read) 
+                    if (!apb_read) 
                         rd_word_counter <= 3'd0;
-                    else if (rd_word_counter < 3'd4) begin
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        start_reading    <= 1'b1;
-                        WRB              <= 1'b1;
-                        RDB              <= (raddr1 == waddr1) ? 1'b1 : 1'b0; 
-                        memblock_sel     <= 2'd0;
-                        raddr1           <= raddr1 + 1'b1;
-                        raddr            <= raddr1;
-                        state            <= (raddr1 == waddr1) ? ADC_733_READING : ADC_045_READING;
-                        all_data_sent    <= 1'b0;
-                        package_complete <= 1'b0;
-                        rd_en            <= 1'b1;
-                    end
                     else begin
-                        rd_en            <= 1'b0;
+                        RDB <= (raddr1 == waddr1) ? 1'b1 : 1'b0; 
+                        if (rd_word_counter < 3'd5) begin
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+                            
+                            memblock_sel     <= 2'd0;
+                            start_reading    <= 1'b1;
+                            raddr1           <= (rd_word_counter < 3'd4) ? raddr1 + 1'b1 : raddr1;
+                            raddr            <= raddr1;
+                            if (rd_word_counter > 3'd0) begin
+                                WRB              <= 1'b1;           
+                                all_data_sent    <= 1'b0;
+                                package_complete <= 1'b0;
+                                rd_en            <= 1'b1;
+                            end
+                        end
+                        else begin
+                            rd_en            <= 1'b0;
+                            state            <= (raddr1 == waddr1) ? ADC_733_READING : ADC_045_READING;
+                        end
                     end
                 end
 
                 ADC_733_READING: begin
-                    if (apb_read) 
+                    if (!apb_read) 
                         rd_word_counter <= 3'd0;
-                    else if (rd_word_counter < 3'd4) begin
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        start_reading    <= 1'b1;
-                        WRB              <= 1'b1;
-                        RDB              <= (raddr2 == waddr2) ? 1'b1 : 1'b0; 
-                        memblock_sel     <= 2'd1;
-                        raddr2           <= raddr2 + 1'b1;
-                        raddr            <= raddr2;
-                        state            <= (raddr2 == waddr2) ? ADC_8CH_READING : ADC_733_READING;
-                        all_data_sent    <= 1'b0;
-                        package_complete <= 1'b0;
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        rd_en            <= RDB ? 1'b0 : 1'b1;
-                        end
                     else begin
-                        rd_en            <= 1'b0;
+                        RDB <= (raddr2 == waddr2) ? 1'b1 : 1'b0; 
+                        if (rd_word_counter < 3'd5) begin
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+                            start_reading    <= 1'b1;
+                            memblock_sel     <= 2'd1;
+                            raddr2           <= (rd_word_counter < 3'd4) ? raddr2 + 1'b1 : raddr2;
+                            raddr            <= raddr2;
+                            state            <= (raddr2 == waddr2) ? ADC_8CH_READING : ADC_733_READING;
+                            package_complete <= 1'b0;
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+
+                            if (rd_word_counter > 3'd0) begin
+                                WRB              <= 1'b1;           
+                                all_data_sent    <= 1'b0;
+                                package_complete <= 1'b0;
+                                rd_en            <= 1'b1;
+                            end
+
+                        end
+                        else begin
+                            rd_en            <= 1'b0;
+                        end
                     end
                 end
 
                 ADC_8CH_READING: begin
-                    if (apb_read) 
+                    if (!apb_read) 
                         rd_word_counter <= 3'd0;
-                    else if (rd_word_counter < 3'd4) begin
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        start_reading    <= 1'b1;
-                        WRB              <= 1'b1;
-                        RDB              <= (raddr3 == waddr3) ? 1'b1 : 1'b0; 
-                        memblock_sel     <= 2'd2;
-                        raddr3           <= raddr3 + 1'b1;
-                        raddr            <= raddr3;
-                        state            <= (raddr3 == waddr3) ? DAC_DSS_READING : ADC_8CH_READING;
-                        all_data_sent    <= 1'b0;
-                        package_complete <= 1'b0;
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        rd_en            <= RDB ? 1'b0 : 1'b1;
+                    else begin 
+                        RDB <= (raddr3 == waddr3) ? 1'b1 : 1'b0; 
+                        if (rd_word_counter < 3'd5) begin
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+                            start_reading    <= 1'b1;
+                            WRB              <= 1'b1;
+                            memblock_sel     <= 2'd2;
+                            raddr3           <= (rd_word_counter < 3'd4) ? raddr3 + 1'b1 : raddr3;
+                            raddr            <= raddr3;
+                            state            <= (raddr3 == waddr3) ? DAC_DSS_READING : ADC_8CH_READING;
+                            all_data_sent    <= 1'b0;
+                            package_complete <= 1'b0;
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+                            rd_en            <= RDB ? 1'b0 : 1'b1;
                         end
-                    else begin
-                        rd_en            <= 1'b0;
+                        else begin
+                            rd_en            <= 1'b0;
+                        end
                     end
                 end
                 
                 DAC_DSS_READING: begin
-                    if (apb_read) 
+                    if (!apb_read) 
                         rd_word_counter <= 3'd0;
-                    else if (rd_word_counter < 3'd4) begin
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        start_reading    <= 1'b1;
-                        WRB              <= 1'b1;
-                        RDB              <= (raddr4 == waddr4) ? 1'b1 : 1'b0; 
-                        memblock_sel     <= 2'd3;
-                        raddr4           <= raddr4 + 1'b1;
-                        raddr            <= raddr4;
-                        state            <= (raddr4 == waddr4) ? IDLE : DAC_DSS_READING;
-                        all_data_sent    <= (raddr4 == waddr4);
-                        package_complete <= 1'b0;
-                        rd_word_counter  <= rd_word_counter + 1'b1;
-                        rd_en            <= RDB ? 1'b0 : 1'b1;
+                    else begin 
+                        RDB <= (raddr4 == waddr4) ? 1'b1 : 1'b0; 
+                        if (rd_word_counter < 3'd5) begin
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+                            start_reading    <= 1'b1;
+                            WRB              <= 1'b1;
+                            memblock_sel     <= 2'd3;
+                            raddr4           <= (rd_word_counter < 3'd4) ? raddr4 + 1'b1 : raddr4;
+                            raddr            <= raddr4;
+                            state            <= (raddr4 == waddr4) ? IDLE : DAC_DSS_READING;
+                            all_data_sent    <= (raddr4 == waddr4);
+                            package_complete <= 1'b0;
+                            rd_word_counter  <= rd_word_counter + 1'b1;
+                            rd_en            <= RDB ? 1'b0 : 1'b1;
                         end
                         else begin
                             rd_en            <= 1'b0;
+                        end
                     end
                 end
 
