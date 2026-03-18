@@ -11,6 +11,8 @@ vlog "../tb/top_tb.v"                            \
      "../src/front_detector_by_negedge.v"        \
      "../src/pulse_to_toggle.v"                  \
      "../src/vsi_pack_counter.v"                 \
+     "../src/ram_controller.v"                   \
+     "../src/ram_controller_wrap.v"              \
      "../adc_8ch_045/src/adc_8ch_wrap.v"         \
      "../adc_8ch_045/src/adc_8ch_045.v"          \
      "../adc_8ch_045/src/clk_divider2.v"         \
@@ -55,4 +57,4 @@ vsim -debugDB -fsmdebug -gui work.top_tb
 
 do {wave.do}
 
-run 60000us
+run 70000us

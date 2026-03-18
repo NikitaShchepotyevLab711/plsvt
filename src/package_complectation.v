@@ -111,7 +111,12 @@ always @(posedge clk or negedge rst_l) begin
             wr_word_counter <= 6'd0;
         end
         else begin
-            wr_word_counter <= (adc045_ready || adc733_ready || adc_8ch_ready || dss_ready) ? wr_word_counter + 1'b1 : wr_word_counter;
+            if (adc045_ready && adc_8ch_ready) begin
+                wr_word_counter <= wr_word_counter + 2'd2;
+            end
+            else if (dac_value_valid || adc045_ready || adc733_ready || adc_8ch_ready || dss_ready) begin
+                wr_word_counter <= wr_word_counter + 2'd1;
+            end
         end
 
         case (state)
@@ -129,7 +134,7 @@ always @(posedge clk or negedge rst_l) begin
                                     else if (dss_ready)
                                         state <= DSS_1BYTE;
 
-                    if (wr_word_counter == 6'd45)
+                    if (wr_word_counter == 6'd51)
                         state <= WAIT_FOR_APB_TX;
 
                     data_to_ram      <= 8'b0;

@@ -1,7 +1,7 @@
 `define DEBUG_MODE
 // поправить сигнал о новом значении ЦАП и организовать запись в память значения ЦАП
 module top #(
-    parameter UART_BIT_RATE     = 9600, // bit per second
+    parameter UART_BIT_RATE     = 57600, // bit per second
     parameter UART_CLK_HZ       = 12_000_000, // Hz
     parameter UART_PAYLOAD_BITS = 8,
     parameter UART_STOP_BITS    = 1
@@ -220,9 +220,14 @@ wire       vsi_package_rcvd;
 wire [15:0] data_to_ram;
 wire        vsi_data_ready;
 
+wire        rdy_data_to_ram;
+wire        vsi_pack_writen;
+
+wire        wr_to_ram_active;
+
 assign log_control = 22'habcde;
 
-always @(posedge bb_clk_in or negedge rst_l) begin
+always @(posedge bb_clk_in or negedge rst_l) begin // фиксация значений логических выходов
     if (!rst_l) begin
         log_control_reg <= 22'b0;
     end
@@ -341,6 +346,9 @@ vsi vsi_inst (
     .bb_clk_in    (bb_clk_in),
     .rst_l        (rst_l),
 
+    .data_i       (),
+    .request      (),
+
     // линия передачи 1
     .DATA1        (vsi_data1),
     // линия передачи 2
@@ -407,6 +415,7 @@ package_complectation package_complectation_inst(
     .apb_read        (apb_read)
 );
 
+// байтовый поток преобр. в 4-байтовый для шины ПЛИС-процессор
 data_compressor compressor_inst (
 	.clk	   (bb_clk_in	  	  ),
 	.rst_l     (rst_l	  		  ),
@@ -444,41 +453,49 @@ apb_coder apb_coder_inst (
     .valid           (word_to_cpu_rdy), // каждое 32 битное слово из пакета ОБ сопровождается этим стробом
 
     .vsi_package_rcvd(vsi_pack_rcvd),
-    .vsi_word_rcvd   (vsi_word_rcvd)
+    .vsi_word_rcvd   (vsi_word_rcvd),
+    .wr_to_ram_active(wr_to_ram_active), // запись в ОЗУ активна на данный момент
+    .tail_of_pack    (tail_of_pack)
 );
 
 vsi_pack_counter vsi_pack_counter_inst (
-    .rst_l           (rst_l),
-    .clk             (bb_clk_in),
+    .rst_l              (rst_l),
+    .clk                (bb_clk_in),
 
-    .data_i          (data_from_cpu),
-    .word_valid      (vsi_word_rcvd),  // строб сопровождающий каждое слово
-    .pack_valid      (vsi_pack_rcvd),  // строб об окончании одного пакета 
-    .pack_num        (vsi_pack_num),   // номер пакета 
+    .data_i             (data_from_cpu),
+    .word_valid         (vsi_word_rcvd),       // строб сопровождающий каждое слово
+    .pack_valid         (vsi_pack_rcvd),       // строб об окончании одного пакета 
+    .pack_num           (vsi_pack_num),        // номер пакета 
 
-    .data_o          (data_to_ram),    // 2байтовые слова для записи в ОЗУ 
-    .rdy             (rdy_data_to_ram), // строб о готовности 2байтового слова для записи в ОЗУ
-    .vsi_data_ready  (vsi_data_ready) // сигнал о том что 6 пакетов по 310 байт принято
+    .data_o             (data_to_ram),         // 2байтовые слова для записи в ОЗУ 
+    .rdy                (rdy_data_to_ram),     // строб о готовности 2байтового слова для записи в ОЗУ
+    .vsi_data_ready     (vsi_data_ready),      // сигнал о том что 6 пакетов по 310 байт принято
+    .first_pack_incoming(first_pack_incoming), // сигнал сообщает о том, что сейчас в обработке первый из шести пакетов
+    .tail_of_pack       (tail_of_pack)
 );
 
 ram_controller_wrap ram_controller_wrap_inst (
-    .rst_l           (rst_l),
-    .clk             (bb_clk_in),
+    .rst_l               (rst_l),
+    .clk                 (bb_clk_in),
 
-    .A               (A),
-    .IO              (IO),
-    .CS              (CS),
-    .OE              (OE),
-    .LB              (LB),
-    .UB              (UB),
+    .A                   (A),
+    .IO                  (IO),
+    .CS                  (CS),
+    .OE                  (OE),
+    .LB                  (LB),
+    .UB                  (UB),
     
-    .data_i          (data_to_ram),
-    .data_o          (),
-    .wr_req          (rdy_data_to_ram), // 1 = запись
-    .rd_req          (),                // 1 = чтение
-    .vsi_data_ready  (vsi_data_ready),  // 1 = пришло 6 пакетов от ОБ и можно формировать пакет ВСИ
-    .irq_current     ()
-
+    .data_i              (data_to_ram),
+    .data_o              (),
+    .en                  (wr_to_ram_active),    // сигнал активации модуля
+    .first_pack_incoming (first_pack_incoming), // сигнал сообщает о том, что сейчас в обработке первый из шести пакетов
+    .wr_req              (rdy_data_to_ram),     // 1 = запись
+    .rd_req              (),                    // 1 = чтение
+    .vsi_data_ready      (vsi_data_ready),      // 1 = пришло 6 пакетов от ОБ и можно формировать пакет ВСИ
+    .irq_current         (),
+    .tail_of_pack        (tail_of_pack)         // идет заполнение нулями остатка пакета ВСИ (для притормаживания en)
 );
+
+
 
 endmodule

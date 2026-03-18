@@ -5,7 +5,7 @@ module sync_strobe (
 );
 
 localparam CLK_FREQ = 12_000_000;  
-localparam STROBE_FREQ = 30;      
+localparam STROBE_FREQ = 120;      
 
 localparam COUNTER_MAX = CLK_FREQ / STROBE_FREQ - 1;
 localparam COUNTER_WIDTH = $clog2(COUNTER_MAX + 1);

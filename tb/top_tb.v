@@ -70,7 +70,7 @@ reg adc8ch_dout_3;
 reg SCLK_8ch;
 
 localparam CLOCK_FREQ = 12_000_000; 
-localparam BAUD_RATE = 9600;  
+localparam BAUD_RATE = 57600;  
 localparam BIT_PERIOD = CLOCK_FREQ / BAUD_RATE; 
 reg uart_rxd;
 
@@ -354,7 +354,7 @@ initial begin
     rst_l = 0;
     #200;
     rst_l = 1;
-    begin
+    forever begin
         @(posedge dut.lvds_wrapper_inst.byte_sent);
         send_5_values();
     end
@@ -388,19 +388,24 @@ integer tx_cnt;
 initial begin
     bb_pwdata = 31'hf0000000;
     
-    @(posedge dut.apb_coder_inst.data_tx_end_pulse);
-    bb_paddr = 16'h200;
-    @(posedge clk);  
-    
-    for (tx_cnt = 0; tx_cnt < 310; tx_cnt = tx_cnt + 1) begin
+    forever begin
+        
+        @(posedge dut.apb_coder_inst.data_tx_end_pulse);
+        bb_paddr = 16'h200;
         @(posedge clk);  
-        wait (bb_psel);
-        bb_pwdata = bb_pwdata + 1;
-        bb_paddr  = bb_paddr + 1;
-        @(posedge bb_psel);  
-    end
+        
+        for (tx_cnt = 0; tx_cnt < 78; tx_cnt = tx_cnt + 1) begin
+            @(posedge clk);  
+            wait (bb_psel);
+            @(posedge bb_psel);  
+            bb_paddr  = bb_paddr + 1;
+            bb_pwdata = bb_pwdata + 1;
+        end
 
-    bb_paddr <= 16'h0;
+        bb_paddr <= 16'h0;
+        
+
+    end
 
 end
 

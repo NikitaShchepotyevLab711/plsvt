@@ -1,22 +1,20 @@
 `define DEBUG_MODE
 
 module vsi (
-    input  wire bb_clk_in,
-    input  wire rst_l,
+    input  wire       bb_clk_in,
+    input  wire       rst_l,
 
-    // запрос на запись в память
-    output wire RX_RAM_REQ_WR,
-    // завершение действия по запросу на запись в память
-    input  wire RX_RAM_RDY_WR,
+    input  wire [7:0] data_i,
+    output wire       request,
 
     // линия передачи 1
-    output wire DATA1,
+    output wire       DATA1,
     // линия передачи 2
-    output wire DATA2,
+    output wire       DATA2,
     // линия приема 1
-    input  wire COM1,
+    input  wire       COM1,
     // линия приема 2
-    input  wire COM2
+    input  wire       COM2
 );
 
 // прием //
@@ -28,9 +26,9 @@ wire [15:0] RX_BYTE_NUMBER;
 wire 	   RX_FLAG_BYTE_NUMBER_RD_EN;
 
 // запрос на запись в память
-//wire 		RX_RAM_REQ_WR;
+wire 		RX_RAM_REQ_WR;
 // завершение действия по запросу на запись в память
-//wire 		RX_RAM_RDY_WR;
+wire 		RX_RAM_RDY_WR;
 
 // выходная шина адреса
 wire  [15:0]	RX_RAM_ADDR_OUT;
@@ -60,9 +58,6 @@ wire rst_s;
 wire [15:0] rd_addr;   
 wire       ram_rd_rq;
 wire       ready;
-wire [7:0] data_o;
-
-assign data_mem_out = data_o[0];
 /*
 reset_sync res_sync_inst (
     .rst_n(rst_s), 
@@ -80,14 +75,6 @@ strobe_generator #(.STROBE_PERIOD(3)) strobegen_4mhz (
     .clk(clk),
     .rst_l(rst_l),
     .strobe(strobe_4mhz)
-);
-
-slave_device slave_device_inst (
-    .clk(clk),            
-    .rst_l(rst_l),        
-    .ram_rd_rq(ram_rd_rq),
-    .rd_addr(rd_addr),    
-    .data_o(data_o)           
 );
 
 mod_hi_speed_protocol_rx #(
@@ -128,9 +115,9 @@ mod_hi_speed_protocol_rx #(
     .TX_RAM_REQ_RD(ram_rd_rq),
     .TX_RAM_RDY_RD(1'b1),
     .TX_RAM_ADDR_OUT(rd_addr),
-    .TX_RAM_DATA_IN(data_o),
+    .TX_RAM_DATA_IN(data_i),
     
-    .FLAG_DATA_OUT(FLAG_DATA_OUT),
+    .FLAG_DATA_OUT(request),
     
     //////////////////////////// ВХОДНЫЕ И ВЫХОДНЫЕ ЛИНИИ
     .COM1(COM1),

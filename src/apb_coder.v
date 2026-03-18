@@ -24,7 +24,10 @@ module apb_coder (
     input  wire        package_start,
 
     output reg         vsi_package_rcvd,
-    output reg         vsi_word_rcvd
+    output reg         vsi_word_rcvd,
+    output reg         wr_to_ram_active,
+
+    input  wire        tail_of_pack 
 );
 
 wire data_tx_frame; // 1 = идет передача пакета
@@ -33,12 +36,12 @@ wire data_tx_frame; // 1 = идет передача пакета
 wire data_tx_begin_pulse; 
 wire data_tx_end_pulse;
 
+// момент для передачи слова по шине apb //
 assign read_transaction =  psel && penable;
 
 always @(*) begin
     pready = data_tx_frame ? valid : 1'b1;    
 end 
-
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
@@ -46,6 +49,7 @@ always @(posedge clk or negedge rst_l) begin
         data_o           <= 32'h0;
         vsi_package_rcvd <= 1'b0;
         vsi_word_rcvd    <= 1'b0;
+        wr_to_ram_active <= 1'b0;
     end
     else begin
         if (paddr == 16'h0)
@@ -57,14 +61,21 @@ always @(posedge clk or negedge rst_l) begin
         if ((paddr > 16'h99)&&(paddr < 16'h200))
             prdata <= data_i;
 
-        if (paddr > 16'h200) begin
-            data_o        <= pwdata;
-            vsi_word_rcvd <= psel && penable;
+        if (tail_of_pack)
+            wr_to_ram_active <= 1'b1;
+        else begin
+            if (paddr >= 16'h200) begin
+                data_o           <= pwdata;
+                vsi_word_rcvd    <= psel && penable;
+                wr_to_ram_active <= 1'b1;
+            end
+            else begin
+                vsi_word_rcvd    <= 1'b0;
+                wr_to_ram_active <= 1'b0;
+            end
         end
-        else 
-            vsi_word_rcvd <= 1'b0;
 
-        if (paddr == 16'h336)
+        if (paddr == 16'h24d)
             vsi_package_rcvd <= 1'b1;
         else 
             vsi_package_rcvd <= 1'b0;

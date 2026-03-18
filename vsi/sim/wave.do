@@ -24,10 +24,11 @@ add wave -noupdate /vsi_suspi/rx_byte
 add wave -noupdate /vsi_suspi/rx_byte
 add wave -noupdate /vsi_suspi/packet_crc_low
 add wave -noupdate /vsi_suspi/packet_crc_high
+add wave -noupdate /vsi_suspi/dut/hi_speed_protocol_rx_inst/flag_data_out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {204233089 ps} 0} {{Cursor 2} {29801881387 ps} 0}
+WaveRestoreCursors {{Cursor 2} {92033115 ps} 0} {{Cursor 2} {29801881387 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 327
+configure wave -namecolwidth 455
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -41,4 +42,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {90388120 ps} {204641612 ps}
+WaveRestoreZoom {39480031 ps} {313711578 ps}
