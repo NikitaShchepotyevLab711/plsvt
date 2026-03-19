@@ -16,7 +16,8 @@ module ram_controller (
     input  wire        wr_req,      // запрос на запись
     input  wire        rd_req,      // запрос на чтение
     output wire        irq_current, // показывает текущий процесс (1 = чтение, 0 = запись)
-    output reg         ram_wr_rdy
+    output reg         ram_wr_rdy,  // строб о том, что слово записано
+    output reg         ram_rd_rdy   // строб о том, что слово прочитано
 );
 
 reg [20:0] wr_addr;
@@ -31,8 +32,8 @@ localparam WR_ADDR_CHANGE  = 1;
 localparam WE_LOW          = 2;
 localparam WR_DATA         = 3;
 localparam RD_ADDR_CHANGE  = 4;
-localparam WE_HIGH         = 5;
-localparam RD_DATA         = 6;
+localparam RD_DATA         = 5;
+localparam RD_WAIT         = 6;
 
 reg [15:0] output_datareg;
 
@@ -50,6 +51,8 @@ always @(posedge clk or negedge rst_l) begin
         OE         <= 1'b0;
         addr       <= 21'b0;
         ram_wr_rdy <= 1'b0;
+        ram_rd_rdy <= 1'b0;
+        data_o     <= 16'b0;
     end
     else begin
         case (state)
@@ -59,6 +62,7 @@ always @(posedge clk or negedge rst_l) begin
                 WE         <= 1'b1;
                 OE         <= 1'b0;
                 ram_wr_rdy <= 1'b0;
+                ram_rd_rdy <= 1'b0;
                 
                 if (wr_req)
                     state <= WR_ADDR_CHANGE;
@@ -74,6 +78,7 @@ always @(posedge clk or negedge rst_l) begin
                 OE         <= 1'b0;
                 data_wr_en <= 1'b0;
                 ram_wr_rdy <= 1'b0;
+                ram_rd_rdy <= 1'b0;
                 state      <= WE_LOW;
 
             end
@@ -83,6 +88,7 @@ always @(posedge clk or negedge rst_l) begin
                OE         <= 1'b1;
                data_wr_en <= 1'b0;
                ram_wr_rdy <= 1'b0;
+               ram_rd_rdy <= 1'b0;
                state      <= WR_DATA; 
             end
 
@@ -91,6 +97,7 @@ always @(posedge clk or negedge rst_l) begin
                 OE         <= 1'b1;
                 data_wr_en <= 1'b1;
                 ram_wr_rdy <= 1'b1;
+                ram_rd_rdy <= 1'b0;
                 state      <= IDLE;
             end
 
@@ -98,31 +105,39 @@ always @(posedge clk or negedge rst_l) begin
                 rd_addr    <= rd_addr + 1'b1;
                 addr       <= rd_addr;
                 OE         <= 1'b0;
-                WE         <= 1'b0;
-                data_wr_en <= 1'b0;
-                state      <= WE_HIGH;                
-            end
-
-            WE_HIGH: begin
                 WE         <= 1'b1;
-                OE         <= 1'b0;
                 data_wr_en <= 1'b0;
-                state      <= WR_DATA; 
+                ram_rd_rdy <= 1'b1;
+                state      <= RD_DATA;                
             end
 
             RD_DATA: begin
-                WE         <= 1'b1;
+                addr       <= rd_addr;
                 OE         <= 1'b0;
+                WE         <= 1'b1;
                 data_wr_en <= 1'b0;
+                ram_rd_rdy <= 1'b0;
                 data_o     <= IO;
-                state      <= IDLE;
+                state      <= RD_WAIT;
+            end
+
+            RD_WAIT: begin
+                addr       <= rd_addr;
+                OE         <= 1'b0;
+                WE         <= 1'b1;
+                data_wr_en <= 1'b0;
+                ram_rd_rdy <= 1'b0;
+                state      <= IDLE;                
             end
 
             default: begin
-                wr_addr <= 21'b0;
-                rd_addr <= 21'b0;
-                OE      <= 1'b0;
-                state   <= IDLE;
+                wr_addr    <= 21'b0;
+                rd_addr    <= 21'b0;
+                OE         <= 1'b0;
+                WE         <= 1'b0;
+                data_o     <= 16'b0;
+                ram_rd_rdy <= 1'b0;
+                state      <= IDLE;
             end
         endcase
         

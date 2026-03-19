@@ -35,28 +35,21 @@ add wave -noupdate /top_tb/dut/bb_paddr
 add wave -noupdate /top_tb/dut/bb_prdata
 add wave -noupdate /top_tb/dut/apb_coder_inst/pwdata
 add wave -noupdate /top_tb/dut/data_from_cpu
-add wave -noupdate -radix unsigned /top_tb/dut/data_to_ram
-add wave -noupdate /top_tb/dut/vsi_pack_counter_inst/pack_counter
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/vsi_data_ready
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/en
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/word_cnt
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/vsi_pack_cnt
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/data_i
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/IO
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/WE
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/OE
-add wave -noupdate /top_tb/dut/vsi_pack_counter_inst/vsi_data_ready
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/wr_req
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/wr_req
-add wave -noupdate -radix unsigned /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/wr_addr
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/wr_req_reg
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/zero_counter
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/ram_wr_rdy
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/first_pack_incoming
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/tail_of_pack
-add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/ram_controller_inst/state
+add wave -noupdate /top_tb/dut/ram_controller_wrap_inst/data_i
+add wave -noupdate /top_tb/dut/vsi_controller_inst/data_i
+add wave -noupdate /top_tb/dut/vsi_controller_inst/rd_request
+add wave -noupdate /top_tb/dut/vsi_controller_inst/rd_flag
+add wave -noupdate /top_tb/dut/vsi_controller_inst/data_o
+add wave -noupdate /top_tb/dut/vsi_controller_inst/wr_flag
+add wave -noupdate /top_tb/dut/vsi_controller_inst/full
+add wave -noupdate /top_tb/dut/vsi_controller_inst/data_splitter_inst/data_i
+add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/data_i
+add wave -noupdate /top_tb/dut/vsi_controller_inst/word_to_ramblock_rdy
+add wave -noupdate /top_tb/dut/vsi_controller_inst/data_splitter_inst/byte_change
+add wave -noupdate /top_tb/dut/vsi_controller_inst/data_splitter_inst/byte_change2
+add wave -noupdate /top_tb/dut/vsi_controller_inst/data_splitter_inst/data_valid
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {9532584 ns} 0} {Trace {51806277 ns} 0}
+WaveRestoreCursors {{Cursor 1} {9533640 ns} 0} {Trace {51808023 ns} 0}
 quietly wave cursor active 2
 configure wave -namecolwidth 391
 configure wave -valuecolwidth 152
@@ -72,4 +65,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {69997563 ns} {70000129 ns}
+WaveRestoreZoom {69996180 ns} {70000202 ns}

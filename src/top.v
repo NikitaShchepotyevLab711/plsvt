@@ -217,13 +217,19 @@ wire       word_to_cpu_rdy;
 wire       vsi_word_rcvd;
 wire       vsi_package_rcvd;
 
-wire [15:0] data_to_ram;
+wire [15:0] data_to_sram;
+wire [15:0] data_from_sram;
 wire        vsi_data_ready;
 
 wire        rdy_data_to_ram;
 wire        vsi_pack_writen;
 
 wire        wr_to_ram_active;
+
+wire        read_vsi_pack_flag;
+wire        vsi_sram_rd_flag;
+
+wire        vsi_sram_new_word;
 
 assign log_control = 22'habcde;
 
@@ -467,7 +473,7 @@ vsi_pack_counter vsi_pack_counter_inst (
     .pack_valid         (vsi_pack_rcvd),       // строб об окончании одного пакета 
     .pack_num           (vsi_pack_num),        // номер пакета 
 
-    .data_o             (data_to_ram),         // 2байтовые слова для записи в ОЗУ 
+    .data_o             (data_to_sram),         // 2байтовые слова для записи в ОЗУ 
     .rdy                (rdy_data_to_ram),     // строб о готовности 2байтового слова для записи в ОЗУ
     .vsi_data_ready     (vsi_data_ready),      // сигнал о том что 6 пакетов по 310 байт принято
     .first_pack_incoming(first_pack_incoming), // сигнал сообщает о том, что сейчас в обработке первый из шести пакетов
@@ -482,20 +488,46 @@ ram_controller_wrap ram_controller_wrap_inst (
     .IO                  (IO),
     .CS                  (CS),
     .OE                  (OE),
+    .WE                  (WE),
     .LB                  (LB),
     .UB                  (UB),
     
-    .data_i              (data_to_ram),
-    .data_o              (),
-    .en                  (wr_to_ram_active),    // сигнал активации модуля
+    .data_i              (data_to_sram),
+    .data_o              (data_from_sram),
+    .wr_en               (wr_to_ram_active),    // сигнал активации модуля
     .first_pack_incoming (first_pack_incoming), // сигнал сообщает о том, что сейчас в обработке первый из шести пакетов
     .wr_req              (rdy_data_to_ram),     // 1 = запись
-    .rd_req              (),                    // 1 = чтение
+    .rd_req              (read_vsi_pack_flag),  // 1 = чтение
     .vsi_data_ready      (vsi_data_ready),      // 1 = пришло 6 пакетов от ОБ и можно формировать пакет ВСИ
     .irq_current         (),
-    .tail_of_pack        (tail_of_pack)         // идет заполнение нулями остатка пакета ВСИ (для притормаживания en)
+    .tail_of_pack        (tail_of_pack),        // идет заполнение нулями остатка пакета ВСИ (для притормаживания wr_en)
+    .rd_flag             (vsi_sram_rd_flag),    // есть пакеты для передачи по ВСИ
+    .word_out_rdy        (vsi_sram_new_word)    // новое слово прочитано из ОЗУ
 );
 
+vsi_controller vsi_controller_inst(
+    .clk            (bb_clk_in),
+    .rst_l          (rst_l),
 
+    .data_i         (data_from_sram),
+    .rd_request     (),                   // запрос на пакет данных от модуля ВСИ
+    .rd_flag        (vsi_sram_rd_flag),    // сигнал от контроллера ОЗУ о наличии пакетов
+    .new_word_valid (vsi_sram_new_word),
+
+    .data_o         (),
+    .wr_flag        (read_vsi_pack_flag)  // флаг поднимается, если пакетов меньше чем 2 и можно записать
+);
+
+`ifdef DEBUG_MODE
+    IS61WV204816 IS61WV204816_inst(
+        .A      (A),      
+        .IO     (IO),      
+        .CS_n   (CS), 
+        .OE_n   (OE), 
+        .WE_n   (WE),
+        .LB_n   (LB),
+        .UB_n   (UB)
+    );
+`endif
 
 endmodule
