@@ -5,7 +5,10 @@ module vsi (
     input  wire       rst_l,
 
     input  wire [7:0] data_i,
-    output wire       request,
+    input  wire       word_valid,   // строб для передачи каждого байта
+    input  wire       pack_valid,   // доступны данные для передачи
+    output wire       request,      //  запрос на передачу данных
+    output wire       ram_rd_rq,    //  передан байт
 
     // линия передачи 1
     output wire       DATA1,
@@ -56,7 +59,6 @@ wire strobe_4mhz;
 wire rst_s;
 
 wire [15:0] rd_addr;   
-wire       ram_rd_rq;
 wire       ready;
 /*
 reset_sync res_sync_inst (
@@ -90,7 +92,7 @@ mod_hi_speed_protocol_rx #(
     .DECODING(DECODING),
     
     //////////////////////////// БИТЫ УПРАВЛЕНИЯ
-    .BIT_SR(1'b1),
+    .BIT_SR(pack_valid),
     .BIT_BUSY(1'b0),
     
     //////////////////////////// ПРИЕМ СООБЩЕНИЙ
@@ -113,7 +115,7 @@ mod_hi_speed_protocol_rx #(
     .CLK_EN_RS_CODER(strobe_1mhz),
     
     .TX_RAM_REQ_RD(ram_rd_rq),
-    .TX_RAM_RDY_RD(1'b1),
+    .TX_RAM_RDY_RD(word_valid),
     .TX_RAM_ADDR_OUT(rd_addr),
     .TX_RAM_DATA_IN(data_i),
     

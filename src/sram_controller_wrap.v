@@ -1,4 +1,4 @@
-module ram_controller_wrap (
+module sram_controller_wrap (
     input  wire        rst_l,
     input  wire        clk,
 
@@ -123,7 +123,7 @@ always @(*) begin
     rd_req_reg            = (current_pack_quantity != 0) ? rd_req : 1'b0;    
 end
 
-ram_controller ram_controller_inst (
+sram_controller sram_controller_inst (
     .rst_l           (rst_l),
     .clk             (clk),
 

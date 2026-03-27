@@ -6,23 +6,17 @@ module vsi_controller (
     input  wire        rd_request,      // запрос на пакет данных от модуля ВСИ
     input  wire        rd_flag,         // наличие пакетов у ОЗУ
     input  wire        new_word_valid,  // строб о готовности для записи нового слова из ОЗУ
+    input  wire        rd_rdy,
 
     output wire [7:0]  data_o,
-    output wire        wr_flag          // флаг поднимается, если пакетов меньше чем 2 и можно записать
+    output wire        wr_flag,         // флаг поднимается, если пакетов меньше чем 2 и можно записать
+    output wire        ready_pack,
+    output wire        data_o_rdy
 );
 
 wire       full;
 wire [7:0] data_to_ramblocks;
 wire       word_to_ramblock_rdy;
-
-always @(posedge clk or negedge rst_l) begin
-    if (!rst_l) begin
-        
-    end
-    else begin
-        
-    end
-end
 
 data_splitter_16_to_8 data_splitter_inst(
     .clk        (clk),
@@ -40,11 +34,14 @@ vsi_packs_ram vsi_packs_ram_inst(
     .rst_l      (rst_l),
 
     .data_valid (word_to_ramblock_rdy),
+    .rd_request (rd_request),
+    .rd_flag    (rd_flag),
     .data_i     (data_to_ramblocks),
-    .data_o     (),
-    .full       (full)
+    .rd_rdy     (rd_rdy),
+    .data_o     (data_o),
+    .wr_flag    (wr_flag),
+    .ready_pack (ready_pack),
+    .data_o_rdy (data_o_rdy)
 );
-
-assign wr_flag = (!full)&&(rd_flag);
 
 endmodule

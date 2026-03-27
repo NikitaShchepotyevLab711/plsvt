@@ -41,11 +41,11 @@ always #41.667 bb_clk_in = ~bb_clk_in;
 
 always #500 suspi_clk = ~suspi_clk;
 
-// Функция расчета бита четности (нечетный паритет)
+// Функция расчета бита четности (нечет)
 function calculate_parity;
     input [7:0] data;
     begin
-        calculate_parity = ~(^data); // Нечетный паритет
+        calculate_parity = ~(^data); 
     end
 endfunction
 

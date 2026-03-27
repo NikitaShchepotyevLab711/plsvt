@@ -1,4 +1,4 @@
-module ram_controller (
+module sram_controller (
     input  wire        rst_l,
     input  wire        clk,
 

@@ -230,6 +230,13 @@ wire        read_vsi_pack_flag;
 wire        vsi_sram_rd_flag;
 
 wire        vsi_sram_new_word;
+wire        vsi_request;
+wire        vsi_tx_rdy;
+
+wire [7:0]  data_to_vsi;
+wire        data_to_vsi_rdy;
+
+wire        ready_pack_in_ramblock;
 
 assign log_control = 22'habcde;
 
@@ -352,8 +359,11 @@ vsi vsi_inst (
     .bb_clk_in    (bb_clk_in),
     .rst_l        (rst_l),
 
-    .data_i       (),
-    .request      (),
+    .data_i       (data_to_vsi),
+    .request      (vsi_request),
+    .pack_valid   (ready_pack_in_ramblock),
+    .word_valid   (data_to_vsi_rdy),
+    .ram_rd_rq    (vsi_tx_rdy),
 
     // линия передачи 1
     .DATA1        (vsi_data1),
@@ -480,7 +490,7 @@ vsi_pack_counter vsi_pack_counter_inst (
     .tail_of_pack       (tail_of_pack)
 );
 
-ram_controller_wrap ram_controller_wrap_inst (
+sram_controller_wrap sram_controller_wrap_inst (
     .rst_l               (rst_l),
     .clk                 (bb_clk_in),
 
@@ -510,12 +520,15 @@ vsi_controller vsi_controller_inst(
     .rst_l          (rst_l),
 
     .data_i         (data_from_sram),
-    .rd_request     (),                   // запрос на пакет данных от модуля ВСИ
-    .rd_flag        (vsi_sram_rd_flag),    // сигнал от контроллера ОЗУ о наличии пакетов
+    .rd_request     (vsi_request),            // запрос на пакет данных от модуля ВСИ
+    .rd_flag        (vsi_sram_rd_flag),       // сигнал от контроллера ОЗУ о наличии пакетов
     .new_word_valid (vsi_sram_new_word),
+    .rd_rdy         (vsi_tx_rdy),
 
-    .data_o         (),
-    .wr_flag        (read_vsi_pack_flag)  // флаг поднимается, если пакетов меньше чем 2 и можно записать
+    .data_o         (data_to_vsi),
+    .wr_flag        (read_vsi_pack_flag),     // флаг поднимается, если пакетов меньше чем 2 и можно записать
+    .ready_pack     (ready_pack_in_ramblock), // сигнал о наличии в памяти ПЛИС пакетов для выдачи по ВСИ
+    .data_o_rdy     (data_to_vsi_rdy)         // валидность данных из памяти ПЛИС для выдачи (чтобы избежать передачи, пока данные не прочтаны из памяти)
 );
 
 `ifdef DEBUG_MODE

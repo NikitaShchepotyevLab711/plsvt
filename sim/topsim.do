@@ -11,12 +11,13 @@ vlog "../tb/top_tb.v"                            \
      "../src/front_detector_by_negedge.v"        \
      "../src/pulse_to_toggle.v"                  \
      "../src/vsi_pack_counter.v"                 \
-     "../src/ram_controller.v"                   \
-     "../src/ram_controller_wrap.v"              \
+     "../src/sram_controller.v"                  \
+     "../src/sram_controller_wrap.v"             \
      "../src/IS61WV204816.v"                     \
      "../src/vsi_controller.v"                   \
      "../src/data_splitter_16_to_8.v"            \
      "../src/vsi_packs_ram.v"                    \
+     "../src/vsi_ramblock_wrap.v"                \
      "../adc_8ch_045/src/adc_8ch_wrap.v"         \
      "../adc_8ch_045/src/adc_8ch_045.v"          \
      "../adc_8ch_045/src/clk_divider2.v"         \
@@ -61,4 +62,4 @@ vsim -debugDB -fsmdebug -gui work.top_tb
 
 do {wave.do}
 
-run 70000us
+run 170000us
