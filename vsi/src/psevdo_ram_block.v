@@ -56,7 +56,7 @@ end
 
 always @(posedge RCLKS or negedge rst_l) begin
     if (!rst_l) begin
-//        read_data01 <= 0;
+        read_data01 <= 0;
     end
     if (!RDB) begin
 		read_data23 <= '0;
