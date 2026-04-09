@@ -1,4 +1,4 @@
-module sync_strobe (
+module sync_strobe ( // синхронизировать с модулем времени и герцовой меткой
     input wire clk,
     input wire rst_l,
     output reg strobe

@@ -24,14 +24,10 @@ module dac045a (
     input  wire [15:0] fixed_value4,
     input  wire [15:0] fixed_value5,
     input  wire [15:0] fixed_value6,
+    input  wire [15:0] limit,
     input  wire        cs,
 
-    input  wire [2:0]  step_coefficent1,
-    input  wire [2:0]  step_coefficent2,
-    input  wire [2:0]  step_coefficent3,
-    input  wire [2:0]  step_coefficent4,
-    input  wire [2:0]  step_coefficent5,
-    input  wire [2:0]  step_coefficent6,
+    input  wire [15:0]  step_coefficent,
 
     output wire [15:0] dac_value,
     output wire        dac_rdy,
@@ -119,7 +115,7 @@ spi_controller spi_inst (
     .dac_en(cs),
     .renew(sync_i),
     // spi //
-    .SDO(SDO),
+    .SDO(SDO[0]),
     .SDI(sdi),
     .SCK(sck),
     .CLRn(clrn),
@@ -137,8 +133,8 @@ dac_codegen dac_codegen_inst1 (
 	.start(sync_300Hz),
     .enable(mode1),
     .period(period1),
-    .step_coefficent(step_coefficent1),
-    .limit(fixed_value1)
+    .step_coefficent(step_coefficent[2:0]),
+    .limit(limit)
 );
 
 dac_codegen dac_codegen_inst2 (
@@ -148,8 +144,8 @@ dac_codegen dac_codegen_inst2 (
 	.start(sync_300Hz),
     .enable(mode2),
     .period(period2),
-    .step_coefficent(step_coefficent2),
-    .limit(fixed_value2)
+    .step_coefficent(step_coefficent[2:0]),
+    .limit(limit)
 );
 
 dac_codegen dac_codegen_inst3 (
@@ -159,8 +155,8 @@ dac_codegen dac_codegen_inst3 (
 	.start(sync_300Hz),
     .enable(mode3),
     .period(period3),
-    .step_coefficent(step_coefficent3),
-    .limit(fixed_value3)
+    .step_coefficent(step_coefficent[2:0]),
+    .limit(limit)
 );
 
 dac_codegen dac_codegen_inst4 (
@@ -170,8 +166,8 @@ dac_codegen dac_codegen_inst4 (
 	.start(sync_300Hz),
     .enable(mode4),
     .period(period4),
-    .step_coefficent(step_coefficent4),
-    .limit(fixed_value4)
+    .step_coefficent(step_coefficent[2:0]),
+    .limit(limit)
 );
 
 dac_codegen dac_codegen_inst5 (
@@ -181,8 +177,8 @@ dac_codegen dac_codegen_inst5 (
 	.start(sync_300Hz),
     .enable(mode5),
     .period(period5),
-    .step_coefficent(step_coefficent5),
-    .limit(fixed_value5)
+    .step_coefficent(step_coefficent[2:0]),
+    .limit(limit)
 );
 
 dac_codegen dac_codegen_inst6 (
@@ -192,8 +188,8 @@ dac_codegen dac_codegen_inst6 (
 	.start(sync_300Hz),
     .enable(mode6),
     .period(period6),
-    .step_coefficent(step_coefficent6),
-    .limit(fixed_value6)
+    .step_coefficent(step_coefficent[2:0]),
+    .limit(limit)
 );
 
 endmodule

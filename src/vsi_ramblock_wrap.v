@@ -402,101 +402,136 @@ always @(*) begin
     end
 end
 
+wire clk_b;
+xci2_buf clk_buf1 (
+	.a(clk),
+	.y(clk_b)
+);
 
-`ifdef DEBUG_MODE
-	psevdo_ram_block vsi_ram0 (
-		.rst_l(rst_l),
-		.DIn({1'b0,data_to_ram0}),
-		.RADDR(raddr0),
-		.WADDR(waddr0),
-		.RDB(RDB0),
-		.WRB(WRB0),
-		.RCLKS(clk),
-		.WCLKS(clk),
-		.DC_in0(dc_in0_0),
-		.DC_in1(dc_in1_0),
-		.DC_in2(1'b0),
-		.DO1(DOut0),
-		.DO2()
-	);
 
-    psevdo_ram_block vsi_ram1 (
-		.rst_l(rst_l),
-		.DIn({1'b0,data_to_ram1}),      
-		.RADDR(raddr1),
-		.WADDR(waddr1),
-		.RDB(RDB1),
-		.WRB(WRB1),
-		.RCLKS(clk),
-		.WCLKS(clk),
-		.DC_in0(dc_in0_1),
-		.DC_in1(dc_in1_1),
-		.DC_in2(1'b0),
-		.DO1(DOut1),
-		.DO2()
-	);
+psevdo_ram_block vsi_ram0 (
+    .rst_l(rst_l),
+    .DIn({1'b0,data_to_ram0}),
+    .RADDR(raddr0),
+    .WADDR(waddr0),
+    .RDB(RDB0),
+    .WRB(WRB0),
+    .RCLKS(clk),
+    .WCLKS(clk),
+    .DC_in0(dc_in0_0),
+    .DC_in1(dc_in1_0),
+    .DC_in2(1'b0),
+    .DO1(DOut0),
+    .DO2()
+);
 
-    psevdo_ram_block vsi_ram2 (
-		.rst_l(rst_l),
-		.DIn({1'b0,data_to_ram2}),
-		.RADDR(raddr2),
-		.WADDR(waddr2),
-		.RDB(RDB2),
-		.WRB(WRB2),
-		.RCLKS(clk),
-		.WCLKS(clk),
-		.DC_in0(dc_in0_2),
-		.DC_in1(dc_in1_2),
-		.DC_in2(1'b0),
-		.DO1(DOut2),
-		.DO2()
-	);
+psevdo_ram_block vsi_ram1 (
+    .rst_l(rst_l),
+    .DIn({1'b0,data_to_ram1}),      
+    .RADDR(raddr1),
+    .WADDR(waddr1),
+    .RDB(RDB1),
+    .WRB(WRB1),
+    .RCLKS(clk),
+    .WCLKS(clk),
+    .DC_in0(dc_in0_1),
+    .DC_in1(dc_in1_1),
+    .DC_in2(1'b0),
+    .DO1(DOut1),
+    .DO2()
+);
 
-	psevdo_ram_block vsi_ram3 (
-		.rst_l(rst_l),
-		.DIn({1'b0,data_to_ram3}),
-		.RADDR(raddr3),
-		.WADDR(waddr3),
-		.RDB(RDB3),
-		.WRB(WRB3),
-		.RCLKS(clk),
-		.WCLKS(clk),
-		.DC_in0(dc_in0_3),
-		.DC_in1(dc_in1_3),
-		.DC_in2(1'b0),
-		.DO1(DOut3),
-		.DO2()
-	);
-`else
-	ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
-		.DIn({1'b0,data_inf_buf}),
-		.RADDR(raddr_buf),
-		.WADDR(data_inf_buf),
-		.RDB(RDB_buf),
-		.WRB(WRB_buf),
-		.RCLKS(fifo_read_clk),
-		.WCLKS(fifo_write_clk),
-		.DC_in0(DC_in0),
-		.DC_in1(DC_in1),
-		.DC_in2(DC_in2),
-		.DO1(DOut1),
-		.DO2()
-	);
+psevdo_ram_block vsi_ram2 (
+    .rst_l(rst_l),
+    .DIn({1'b0,data_to_ram2}),
+    .RADDR(raddr2),
+    .WADDR(waddr2),
+    .RDB(RDB2),
+    .WRB(WRB2),
+    .RCLKS(clk),
+    .WCLKS(clk),
+    .DC_in0(dc_in0_2),
+    .DC_in1(dc_in1_2),
+    .DC_in2(1'b0),
+    .DO1(DOut2),
+    .DO2()
+);
 
-	ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
-		.DIn({1'b0,data_inf_buf}),
-		.RADDR(raddr_buf),
-		.WADDR(data_inf_buf),
-		.RDB(RDB_buf),
-		.WRB(WRB_buf),
-		.RCLKS(fifo_read_clk),
-		.WCLKS(fifo_write_clk),
-		.DC_in0(DC_in0),
-		.DC_in1(DC_in1),
-		.DC_in2(DC_in2),
-		.DO1(DOut1),
-		.DO2()
-	);
-`endif
+psevdo_ram_block vsi_ram3 (
+    .rst_l(rst_l),
+    .DIn({1'b0,data_to_ram3}),
+    .RADDR(raddr3),
+    .WADDR(waddr3),
+    .RDB(RDB3),
+    .WRB(WRB3),
+    .RCLKS(clk),
+    .WCLKS(clk),
+    .DC_in0(dc_in0_3),
+    .DC_in1(dc_in1_3),
+    .DC_in2(1'b0),
+    .DO1(DOut3),
+    .DO2()
+);
+/*
+ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance1 (
+    .DIn({1'b0,data_to_ram0}),
+    .RADDR(raddr0),
+    .WADDR(waddr0),
+    .RDB(RDB0),
+    .WRB(WRB0),
+    .RCLKS(clk_b),
+    .WCLKS(clk_b),
+    .DC_in0(dc_in0_0),
+    .DC_in1(dc_in1_0),
+    .DC_in2(1'b0),
+    .DO1(DOut0),
+    .DO2()
+);
+
+ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance2 (
+    .DIn({1'b0,data_to_ram1}),
+    .RADDR(raddr1),
+    .WADDR(waddr1),
+    .RDB(RDB1),
+    .WRB(WRB1),
+    .RCLKS(clk_b),
+    .WCLKS(clk_b),
+    .DC_in0(dc_in0_1),
+    .DC_in1(dc_in1_1),
+    .DC_in2(1'b0),
+    .DO1(DOut1),
+    .DO2()
+);
+
+ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance3 (
+    .DIn({1'b0,data_to_ram2}),
+    .RADDR(raddr2),
+    .WADDR(waddr2),
+    .RDB(RDB2),
+    .WRB(WRB2),
+    .RCLKS(clk_b),
+    .WCLKS(clk_b),
+    .DC_in0(dc_in0_2),
+    .DC_in1(dc_in1_2),
+    .DC_in2(1'b0),
+    .DO1(DOut2),
+    .DO2()
+);
+
+    ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance4 (
+    .DIn({1'b0,data_to_ram3}),
+    .RADDR(raddr3),
+    .WADDR(waddr3),
+    .RDB(RDB3),
+    .WRB(WRB3),
+    .RCLKS(clk_b),
+    .WCLKS(clk_b),
+    .DC_in0(dc_in0_3),
+    .DC_in1(dc_in1_3),
+    .DC_in2(1'b0),
+    .DO1(DOut3),
+    .DO2()
+);
+*/
     
 endmodule

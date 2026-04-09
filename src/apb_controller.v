@@ -1,4 +1,4 @@
-module apb_coder (
+module apb_controller (
     input  wire        rst_l,
     input  wire        clk,
 
@@ -10,11 +10,17 @@ module apb_coder (
     output reg         pready,
     output reg  [31:0] prdata,
 
+    input wire  [31:0] MB1_UKS,
+    input wire  [31:0] MB2_UKS,
+    input wire  [31:0] MB3_UKS,
+    input wire  [31:0] MB4_UKS,
+
+
     input  wire        DATA_READY,
-    input  wire        UKS0_READY,
-    input  wire        UKS1_READY,
-    input  wire        UKS2_READY,
-    input  wire        UKS3_READY,
+    input  wire        MB_UKS_READY1,
+    input  wire        MB_UKS_READY2,
+    input  wire        MB_UKS_READY3,
+    input  wire        MB_UKS_READY4,
     input  wire [31:0] TIME,
 
     output wire        read_transaction,
@@ -39,9 +45,7 @@ wire data_tx_end_pulse;
 // момент для передачи слова по шине apb //
 assign read_transaction =  psel && penable;
 
-always @(*) begin
-    pready = data_tx_frame ? valid : 1'b1;    
-end 
+always @(*) pready = data_tx_frame ? valid : 1'b1;    
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
@@ -53,10 +57,22 @@ always @(posedge clk or negedge rst_l) begin
     end
     else begin
         if (paddr == 16'h0)
-            prdata <= {DATA_READY, UKS0_READY, UKS1_READY, UKS2_READY, UKS3_READY};
+            prdata <= {DATA_READY, MB_UKS_READY1, MB_UKS_READY2, MB_UKS_READY3, MB_UKS_READY4};
 
         if (paddr == 16'h1)
             prdata <= TIME;
+
+        if (paddr == 16'h2)
+            prdata <= MB1_UKS;
+
+        if (paddr == 16'h3)
+            prdata <= MB2_UKS;
+
+        if (paddr == 16'h4)
+            prdata <= MB3_UKS;
+        
+        if (paddr == 16'h5)
+            prdata <= MB4_UKS;
 
         if ((paddr > 16'h99)&&(paddr < 16'h200))
             prdata <= data_i;

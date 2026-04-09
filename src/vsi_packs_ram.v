@@ -17,11 +17,11 @@ module vsi_packs_ram (
 assign full = 0;
 
 reg [2:0] state1;
-localparam IDLE_1 		       = 0;
-localparam READ_1st_BLOCK_1    = 1;
-localparam READ_1st_BLOCK_2    = 2;
-localparam WRITE_1st_BLOCK     = 3;
-localparam WRITE_1st_BLOCK_RDY = 4;
+localparam IDLE_1 		     = 0;
+localparam READ_1st_CUP_1    = 1;
+localparam READ_1st_CUP_2    = 2;
+localparam WRITE_1st_CUP     = 3;
+localparam WRITE_1st_CUP_RDY = 4;
 
 wire [7:0] DOut1;
 reg  	   RDB1;
@@ -38,8 +38,8 @@ reg  [7:0] rd_word_counter1;
 reg  [7:0] rd_word_counter1_reg;
 
 reg  [2:0] memblock_sel1;
-reg        write_to_1st_block;
-reg        ramblock1_full;
+reg        write_to_1st_cup;
+reg        cup1_full;
 reg        rd_rdy_reg1;
 reg  	   cup1_enable; 
 reg  [1:0] data_load_counter1;
@@ -47,10 +47,10 @@ reg  [7:0] data_o1;
 
 reg  [2:0] state2;
 localparam IDLE_2 		       = 0;
-localparam READ_2nd_BLOCK_1    = 1;
-localparam READ_2nd_BLOCK_2    = 2;
-localparam WRITE_2nd_BLOCK     = 3;
-localparam WRITE_2nd_BLOCK_RDY = 4;
+localparam READ_2nd_CUP_1    = 1;
+localparam READ_2nd_CUP_2    = 2;
+localparam WRITE_2nd_CUP     = 3;
+localparam WRITE_2nd_CUP_RDY = 4;
 
 wire [7:0] DOut2;
 reg 	   RDB2;
@@ -67,17 +67,17 @@ reg  [7:0] rd_word_counter2;
 reg  [7:0] rd_word_counter2_reg;
 
 reg  [2:0] memblock_sel2;
-reg        write_to_2nd_block;
-reg        ramblock2_full;
+reg        write_to_2nd_cup;
+reg        cup2_full;
 reg        rd_rdy_reg2;
 reg  [1:0] data_load_counter2;
 wire 	   rd_rdy_pulse;
 reg  	   cup2_enable; 
 reg  [7:0] data_o2;
 
-assign wr_flag = write_to_1st_block || write_to_2nd_block;
-assign ready_pack = ramblock1_full || ramblock2_full;
-assign data_o_rdy = ((state1 == READ_1st_BLOCK_2)||(state2 == READ_2nd_BLOCK_2));
+assign wr_flag = write_to_1st_cup || write_to_2nd_cup;
+assign ready_pack = cup1_full || cup2_full;
+assign data_o_rdy = ((state1 == READ_1st_CUP_2)||(state2 == READ_2nd_CUP_2));
 
 always @(*) begin
 	if (cup1_enable)
@@ -88,22 +88,21 @@ always @(*) begin
 			data_o = 8'b0;
 end
 
-always @(posedge clk or negedge rst_l) begin // автомат для 1 блока памяти
+always @(posedge clk or negedge rst_l) begin // автомат для 1 стакана
 	if (!rst_l) begin
 		state1			     <= IDLE_1;
-		write_to_2nd_block   <= 1'b0;
+		write_to_2nd_cup     <= 1'b0;
 		WRB1   			     <= 1'b1;
 		waddr1 			     <= 8'b0;
 		waddr1_reg 		     <= 8'b0;
 		data_to_ram1 	     <= 8'b0;
-		ramblock1_full 	     <= 1'b0;
+		cup1_full 	     	 <= 1'b0;
 		wr_word_counter1 	 <= 8'b0;
 		wr_word_counter1_reg <= 8'b0;
 		rd_word_counter1 	 <= 8'b0;
 		rd_word_counter1_reg <= 8'b0;
 		memblock_sel1 	     <= 3'b0;
-		write_to_1st_block   <= 1'b0;
-		write_to_2nd_block   <= 1'b0;
+		write_to_1st_cup     <= 1'b0;
 		raddr1 			     <= 8'b0;
 		raddr1_reg 		     <= 8'b0;
 		data_o1				 <= 8'b0;
@@ -114,18 +113,15 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 	else begin
 		case (state1)
 			IDLE_1: begin
-				if (rd_request) begin // по запросу от ВСИ, если нет данных в приоритетом на чтение 2 блоке, смотрим данные в 1 блоке
-					if (!ramblock2_full) begin
-						if (ramblock1_full && rd_rdy_pulse)
-							state1 <= READ_1st_BLOCK_1;
-						
-					end
+				if (rd_request) begin // по запросу от ВСИ, если нет данных в приоритетом на чтение 2 стакан, смотрим данные в 1 стакане
+					if (cup1_full && rd_rdy_pulse)
+						state1 <= READ_1st_CUP_1;
 				end
 				else begin
-					if (!ramblock1_full) begin 
-						write_to_1st_block <= 1'b1;
+					if (!cup1_full) begin 
+						write_to_1st_cup <= 1'b1;
 						if (rd_flag)
-							state1 <= WRITE_1st_BLOCK;
+							state1 <= WRITE_1st_CUP;
 					end
 				end
 
@@ -133,13 +129,13 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 
 			end
 
-			READ_1st_BLOCK_1: begin
+			READ_1st_CUP_1: begin
 				data_o1 		   <= DOut1;
 				data_load_counter1  <= data_load_counter1 + 1'b1;
 				raddr1 			   <= raddr1_reg;
 				cup1_enable 	   <= 1'b1;
 				if (data_load_counter1 == 2'd3)
-					state1 <= READ_1st_BLOCK_2;
+					state1 <= READ_1st_CUP_2;
 				else if (data_load_counter1 == 2'd0) begin
 					RDB1   	   <= 1'b0;		
 					raddr1_reg <= raddr1_reg + 1'b1;
@@ -148,8 +144,8 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 						RDB1 <= 1'b1;	
 			end
 
-			READ_1st_BLOCK_2: begin // пока идет выдача данных из 1 блока, просим писать во 2
-				write_to_2nd_block <= 1'b1;
+			READ_1st_CUP_2: begin // пока идет выдача данных из 1 блока, просим писать во 2
+				write_to_2nd_cup <= 1'b1;
 				data_o1 		   <= DOut1;
 				raddr1 			   <= raddr1_reg;
 				cup1_enable 	   <= 1'b1;
@@ -165,7 +161,7 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 				if (memblock_sel1 == 3'd7) begin
 					if (rd_word_counter1 == 8'hed) begin
 						state1 		     <= IDLE_1; // блок заполнен, ждем запроса от ВСИ на чтение
-						ramblock1_full   <= 1'b0;
+						cup1_full   <= 1'b0;
 						memblock_sel1    <= 3'd0;
 						rd_word_counter1 <= 8'd0;
 					end
@@ -182,7 +178,7 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 
 			end
 
-			WRITE_1st_BLOCK: begin
+			WRITE_1st_CUP: begin
 				cup1_enable 	   <= 1'b1;
 				if (data_valid) begin
 					WRB1   <= 1'b0;
@@ -204,10 +200,10 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 
 				if (memblock_sel1 == 3'd7) begin
 					if (wr_word_counter1 == 8'hed) begin
-						state1 		   <= WRITE_1st_BLOCK_RDY; // блок заполнен, ждем запроса от ВСИ на чтение
+						state1 		   <= WRITE_1st_CUP_RDY; // блок заполнен, ждем запроса от ВСИ на чтение
 					end
 					else
-						ramblock1_full <= 1'b0;
+						cup1_full <= 1'b0;
 				end
 				else begin
 					if ((data_valid) && (wr_word_counter1 == 8'hff)) begin
@@ -216,9 +212,9 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 				end
 			end
 
-			WRITE_1st_BLOCK_RDY: begin
+			WRITE_1st_CUP_RDY: begin
 				cup1_enable    <= 1'b1;
-				ramblock1_full <= 1'b1;
+				cup1_full <= 1'b1;
 				memblock_sel1  <= 3'd0;
 				state1 		   <= IDLE_1;
 			end
@@ -233,12 +229,11 @@ end
 always @(posedge clk or negedge rst_l) begin // автомат для 1 блока памяти
 	if (!rst_l) begin
 		state2			     <= IDLE_1;
-		write_to_2nd_block   <= 1'b0;
 		WRB2   			     <= 1'b1;
 		waddr2 			     <= 8'b0;
 		waddr2_reg 		     <= 8'b0;
 		data_to_ram2 	     <= 8'b0;
-		ramblock2_full 	     <= 1'b0;
+		cup2_full 	         <= 1'b0;
 		wr_word_counter2 	 <= 8'b0;
 		wr_word_counter2_reg <= 8'b0;
 		rd_word_counter2 	 <= 8'b0;
@@ -255,24 +250,25 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 		case (state2)
 			IDLE_2: begin
 				if (rd_request) begin 
-					if (ramblock2_full) begin
-						state2 <= READ_2nd_BLOCK_1;
+					if (!cup1_full) begin
+						if (cup2_full) 
+							state2 <= READ_2nd_CUP_1;
 					end
 				end
-				else if ((rd_flag) && (ramblock1_full))
-					state2 <= WRITE_2nd_BLOCK;
+				else if ((rd_flag) && (cup1_full))
+					state2 <= WRITE_2nd_CUP;
 
 				cup2_enable <= 1'b0;
 
 			end
 
-			READ_2nd_BLOCK_1: begin
+			READ_2nd_CUP_1: begin
 				data_o2 		   <= DOut2;
 				data_load_counter2 <= data_load_counter2 + 1'b1;
 				raddr2 			   <= raddr2_reg;
 				cup2_enable 	   <= 1'b1;
 				if (data_load_counter2 == 2'd3)
-					state2 <= READ_2nd_BLOCK_2;
+					state2 <= READ_2nd_CUP_2;
 				else if (data_load_counter2 == 2'd0) begin
 					RDB2   	   <= 1'b0;		
 					raddr2_reg <= raddr2_reg + 1'b1;
@@ -281,8 +277,7 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 						RDB2 <= 1'b1;	
 			end
 
-			READ_2nd_BLOCK_2: begin // пока идет выдача данных из 1 блока, просим писать во 2
-				write_to_2nd_block <= 1'b1;
+			READ_2nd_CUP_2: begin // пока идет выдача данных из 2 блока, просим писать в 1
 				data_o2 		   <= DOut2;
 				raddr2 			   <= raddr2_reg;
 				cup2_enable 	   <= 1'b1;
@@ -298,7 +293,7 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 				if (memblock_sel2 == 3'd7) begin
 					if (rd_word_counter2 == 8'hed) begin
 						state2 		     <= IDLE_2; // блок заполнен, ждем запроса от ВСИ на чтение
-						ramblock2_full   <= 1'b0;
+						cup2_full   <= 1'b0;
 						memblock_sel2    <= 3'd0;
 						rd_word_counter2 <= 8'd0;
 					end
@@ -315,7 +310,7 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 
 			end
 
-			WRITE_2nd_BLOCK: begin
+			WRITE_2nd_CUP: begin
 				cup2_enable 	   <= 1'b1;
 				if (data_valid) begin
 					WRB2   <= 1'b0;
@@ -337,10 +332,10 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 
 				if (memblock_sel2 == 3'd7) begin
 					if (wr_word_counter2 == 8'hed) begin
-						state2 		   <= WRITE_2nd_BLOCK_RDY; // блок заполнен, ждем запроса от ВСИ на чтение
+						state2 		   <= WRITE_2nd_CUP_RDY; // блок заполнен, ждем запроса от ВСИ на чтение
 					end
 					else
-						ramblock2_full <= 1'b0;
+						cup2_full <= 1'b0;
 				end
 				else begin
 					if ((data_valid) && (wr_word_counter2 == 8'hff)) begin
@@ -349,8 +344,8 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 блок
 				end
 			end
 
-			WRITE_2nd_BLOCK_RDY: begin
-				ramblock2_full <= 1'b1;
+			WRITE_2nd_CUP_RDY: begin
+				cup2_full <= 1'b1;
 				memblock_sel2  <= 3'd0;
 				state2 		   <= IDLE_2;
 				cup2_enable    <= 1'b1;

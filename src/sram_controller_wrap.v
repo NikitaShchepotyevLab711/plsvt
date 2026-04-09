@@ -26,11 +26,6 @@ module sram_controller_wrap (
 
 parameter MARKER = 32'hb6;
 
-assign LB = 1'b0;
-assign UB = 1'b0;
-assign CS = 1'b0;
-assign OE = 1'b0;
-
 reg [15:0] data_to_sram;
 
 reg        wr_req_reg;   

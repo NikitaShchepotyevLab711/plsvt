@@ -520,9 +520,14 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
+wire clk_b;
+xci2_buf clk_buf2 (
+	.a(clk),
+	.y(clk_b)
+);
+
 assign data_o = DOut1[7:0];
 
-`ifdef DEBUG_MODE
 psevdo_ram_block ram0 (
     .rst_l(rst_l),
 	.DIn({1'b0,data_to_ram}),
@@ -539,21 +544,21 @@ psevdo_ram_block ram0 (
 	.DO2()
 );
 
-`else
+/*
 ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
-	.DIn({1'b0,data_inf_buf}),
-	.RADDR(raddr_buf),
-	.WADDR(data_inf_buf),
-	.RDB(RDB_buf),
-	.WRB(WRB_buf),
-	.RCLKS(fifo_read_clk),
-	.WCLKS(fifo_write_clk),
-	.DC_in0(DC_in0),
-	.DC_in1(DC_in1),
-	.DC_in2(DC_in2),
+	.DIn({1'b0,data_to_ram}),
+	.RADDR(raddr),
+	.WADDR(waddr),
+	.RDB(RDB),
+	.WRB(WRB),
+	.RCLKS(clk_b),
+	.WCLKS(clk_b),
+	.DC_in0(dc_in0),
+	.DC_in1(dc_in1),
+	.DC_in2(1'b0),
 	.DO1(DOut1),
 	.DO2()
 );
-`endif
+*/
 
 endmodule

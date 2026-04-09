@@ -2,7 +2,7 @@ vlib work
 vmap work work
 
 vlog "../tb/top_tb.v"                            \
-     "../src/apb_coder.v"                        \
+     "../src/apb_controller.v"                   \
      "../src/top.v"                              \
      "../src/sync_strobe.v"                      \
      "../src/package_complectation.v"            \
@@ -18,6 +18,8 @@ vlog "../tb/top_tb.v"                            \
      "../src/data_splitter_16_to_8.v"            \
      "../src/vsi_packs_ram.v"                    \
      "../src/vsi_ramblock_wrap.v"                \
+     "../src/mod_hertz_shift.v"                  \
+     "../src/uks_controller.v"                   \
      "../adc_8ch_045/src/adc_8ch_wrap.v"         \
      "../adc_8ch_045/src/adc_8ch_045.v"          \
      "../adc_8ch_045/src/clk_divider2.v"         \

@@ -83,6 +83,7 @@ reg uart_rxd;
 reg bb_psel, bb_penable;
 reg [31:0] bb_pwdata;
 reg [15:0] bb_paddr;
+wire [31:0] bb_prdata;
 wire bb_pready;
 
 top dut (
@@ -95,7 +96,7 @@ top dut (
 	.bb_paddr(bb_paddr),
 	.bb_pwrite(),
 	.bb_pwdata(bb_pwdata),
-	.bb_prdata(),
+	.bb_prdata(bb_prdata),
 	.bb_pready(bb_pready),
 
     //  1 adc045 //
@@ -372,14 +373,14 @@ initial begin
     bb_penable = 0;
     bb_paddr = 15'h0;
     forever begin
-        if (dut.apb_coder_inst.DATA_READY)
+        if (dut.apb_controller_inst.DATA_READY)
         bb_paddr = 15'h100;
         bb_psel <= 1;
         @(posedge clk);
         bb_penable <= 1;
         wait (bb_pready);
         @(posedge clk);
-        if (dut.apb_coder_inst.data_tx_frame)
+        if (dut.apb_controller_inst.data_tx_frame)
             bb_paddr <= bb_paddr + 3'd4;
         bb_psel <= 0;
         bb_penable <= 0;  
@@ -394,25 +395,68 @@ integer tx_cnt;
 initial begin
     bb_pwdata = 31'hf0000000;
     
-    forever begin
-        
-        @(posedge dut.apb_coder_inst.data_tx_end_pulse);
-        bb_paddr = 16'h200;
-        @(posedge clk);  
-        
-        for (tx_cnt = 0; tx_cnt < 78; tx_cnt = tx_cnt + 1) begin
-            @(posedge clk);  
-            wait (bb_psel);
-            @(posedge bb_psel);  
-            bb_paddr  = bb_paddr + 1;
-            bb_pwdata = bb_pwdata + 1;
+    fork
+        begin
+            forever begin
+                @(posedge dut.apb_controller_inst.data_tx_end_pulse);
+                bb_paddr = 16'h200;
+                @(posedge clk);  
+                
+                for (tx_cnt = 0; tx_cnt < 78; tx_cnt = tx_cnt + 1) begin
+                    @(posedge clk);  
+                    wait (bb_psel);
+                    @(posedge bb_psel);  
+                    bb_paddr  = bb_paddr + 1;
+                    bb_pwdata = bb_pwdata + 1;
+                end
+                bb_paddr <= 16'h0;   
+            end
         end
-
-        bb_paddr <= 16'h0;
-        
-
-    end
-
+        begin
+            wait ((bb_prdata == 2)&&(bb_paddr == 0));
+            wait (bb_penable); 
+            bb_paddr = 16'h2;
+            @(posedge clk);
+            @(posedge clk);
+            wait (bb_penable); 
+            bb_paddr = 16'h0;
+        end
+        begin
+            wait ((bb_prdata == 4)&&(bb_paddr == 0));
+            wait (bb_penable); 
+            bb_paddr = 16'h3;
+            @(posedge clk);
+            @(posedge clk);
+            wait (bb_penable); 
+            bb_paddr = 16'h0;
+        end
+        begin
+            wait ((bb_prdata == 8)&&(bb_paddr == 0));
+            wait (bb_penable); 
+            bb_paddr = 16'h4;
+            @(posedge clk);
+            @(posedge clk);
+            wait (bb_penable); 
+            bb_paddr = 16'h0;
+        end
+        begin
+            wait ((bb_prdata == 16)&&(bb_paddr == 0));
+            wait (bb_penable); 
+            bb_paddr = 16'h3;
+            @(posedge clk);
+            @(posedge clk);
+            wait (bb_penable); 
+            bb_paddr = 16'h0;
+        end
+        begin
+            forever begin
+                #12000000;
+                bb_paddr = 16'h1;
+                wait (bb_penable); 
+                bb_paddr = 16'h0;
+            end
+        end
+    join
 end
 
 // dac //
@@ -834,7 +878,7 @@ initial begin
     calculated_crc = 16'hFFFF;
     status_byte2 = 0;
 
-//    wait(dut.sync);
+    //    wait(dut.sync);
     #110000000;
     
     while (status_byte2 != 2) begin
@@ -857,7 +901,49 @@ initial begin
     
     // Прием пакета данных
     receive_data_packet();
+end
 
+reg [31:0] timecode_reg;
+
+integer z;
+
+initial begin
+    timecode_reg = 32'haabbccdd;
+    #1000000;
+    for (z = 0; z < 6 ; z = z + 1) begin
+        // Отправка команды "Код времени"
+        send_timemark();
+        #100000;
+        send_timecode(8'hA5, 8'h01, timecode_reg);
+        
+        timecode_reg = timecode_reg + 1'h1;
+        #10000000;
+    end
+
+    #26000000;
+
+    forever begin
+        
+        send_timemark();
+        #100000;
+        send_timecode(8'hA5, 8'h01, timecode_reg);
+
+        timecode_reg = timecode_reg + 1'h1;
+        #10000000; 
+    end
+end
+
+reg [7:0] OB_UKS_marker  = 8'ha0;
+reg [7:0] MB1_UKS_marker = 8'ha1;
+reg [7:0] MB2_UKS_marker = 8'ha2;
+reg [7:0] MB3_UKS_marker = 8'ha3;
+reg [7:0] MB4_UKS_marker = 8'ha4;
+
+initial begin
+    #2000000;
+    send_UKS(8'hA5, 8'h02, OB_UKS_marker, 8'h3, 16'haabb);                 // выставляем фикс. значением 1 ЦАП аааа
+    #2000000;
+    send_UKS(8'hA5, 8'h02, MB2_UKS_marker, 8'h2, 16'b0000_0000_0000_0010); // выставляем фикс. значением 2 ЦАП в 2 МБ
 end
 
 // Функция расчета бита четности (нечет)
@@ -867,6 +953,137 @@ function calculate_parity;
         calculate_parity = ~(^data); 
     end
 endfunction
+
+// Задача отправки команды с 11-битной последовательной передачей
+task send_timecode;
+    input [7:0] marker;
+    input [7:0] flag;
+    input [31:0] timecode;
+    
+    reg [15:0] crc;
+    begin
+        crc = 16'hFFFF;
+        
+        // Отправка маркера
+        send_11bit_byte(marker);
+        crc = calculate_crc(marker, crc);
+        
+        // Отправка флага
+        send_11bit_byte(flag);
+        crc = calculate_crc(flag, crc);
+        
+        // Отправка длины (старший байт)
+        send_11bit_byte(8'h0);
+        crc = calculate_crc(8'h0, crc);
+        
+        // Отправка длины (младший байт)
+        send_11bit_byte(8'h5);
+        crc = calculate_crc(8'h5, crc);
+
+        // Отправка данных - кода времени
+        send_11bit_byte(8'h0);
+        crc = calculate_crc(8'h0, crc);
+
+        send_11bit_byte(timecode[31:24]);
+        crc = calculate_crc(timecode[31:24], crc);
+
+        send_11bit_byte(timecode[23:16]);
+        crc = calculate_crc(timecode[23:16], crc);
+
+        send_11bit_byte(timecode[15:8]);
+        crc = calculate_crc(timecode[15:8], crc);
+
+        send_11bit_byte(timecode[7:0]);
+        crc = calculate_crc(timecode[7:0], crc);
+        
+        // Отправка CRC (младший байт)
+        send_11bit_byte(crc[15:8]);
+        
+        // Отправка CRC (старший байт)
+        send_11bit_byte(crc[7:0]);
+    end
+endtask
+
+// Задача отправки команды с 11-битной последовательной передачей
+task send_timemark;
+    reg [15:0] crc;
+    begin
+        crc = 16'hFFFF;
+        
+        // Отправка маркера
+        send_11bit_byte(8'ha5);
+        crc = calculate_crc(8'ha5, crc);
+        
+        // Отправка флага
+        send_11bit_byte(8'h05);
+        crc = calculate_crc(8'h05, crc);
+        
+        // Отправка длины (старший байт)
+        send_11bit_byte(8'h0);
+        crc = calculate_crc(8'h0, crc);
+        
+        // Отправка длины (младший байт)
+        send_11bit_byte(8'h0);
+        crc = calculate_crc(8'h0, crc);
+        
+        // Отправка CRC (младший байт)
+        send_11bit_byte(crc[15:8]);
+        
+        // Отправка CRC (старший байт)
+        send_11bit_byte(crc[7:0]);
+    end
+endtask
+
+integer y;
+
+// Задача отправки УКС
+task send_UKS;
+    input [7:0]  marker;
+    input [7:0]  flag;
+    input [7:0]  marker_2;
+    input [7:0]  addr;
+    input [15:0] data;
+    
+    reg [15:0] crc;
+    begin
+        crc = 16'hFFFF;
+        
+        // Отправка маркера
+        send_11bit_byte(marker);
+        crc = calculate_crc(marker, crc);
+        
+        // Отправка флага
+        send_11bit_byte(flag);
+        crc = calculate_crc(flag, crc);
+
+        // Отправка длины (старший байт)
+        send_11bit_byte(8'h0);
+        crc = calculate_crc(8'h0, crc);
+        
+        // Отправка длины (младший байт)
+        send_11bit_byte(8'h4);
+        crc = calculate_crc(8'h5, crc);
+
+        // Отправка УКC
+        send_11bit_byte(marker_2);
+        crc = calculate_crc(marker_2, crc);
+
+        send_11bit_byte(addr);
+        crc = calculate_crc(addr, crc);
+
+        send_11bit_byte(data[15:8]);
+        crc = calculate_crc(data[15:8], crc);
+
+        send_11bit_byte(data[7:0]);
+        crc = calculate_crc(data[7:0], crc);
+        
+        // Отправка CRC (младший байт)
+        send_11bit_byte(crc[15:8]);
+        
+        // Отправка CRC (старший байт)
+        send_11bit_byte(crc[7:0]);
+    end
+endtask
 
 // Задача отправки команды с 11-битной последовательной передачей
 task send_command;

@@ -1,4 +1,4 @@
-`define DEBUG_MODE
+//`define DEBUG_MODE
 // поправить сигнал о новом значении ЦАП и организовать запись в память значения ЦАП
 module top #(
     parameter UART_BIT_RATE     = 57600, // bit per second
@@ -175,6 +175,7 @@ module top #(
 
     output wire [20:0] A,
     inout  wire [15:0] IO,
+    output wire        WE,
     output wire        CS,
     output wire        OE,
     output wire        LB,
@@ -201,6 +202,7 @@ wire [11:0] dss_data;
 
 wire [7:0] data_to_apb;
 wire       package_complete;
+wire       apb_read;
 
 wire [31:0] data_to_cpu;
 wire [31:0] data_from_cpu;
@@ -214,6 +216,7 @@ wire        dac_value_valid;
 reg [21:0] log_control_reg;
 wire       word_to_cpu_rdy;
 
+wire [7:0] vsi_pack_num;
 wire       vsi_word_rcvd;
 wire       vsi_package_rcvd;
 
@@ -229,6 +232,7 @@ wire        wr_to_ram_active;
 wire        read_vsi_pack_flag;
 wire        vsi_sram_rd_flag;
 
+wire        first_pack_incoming;
 wire        vsi_sram_new_word;
 wire        vsi_request;
 wire        vsi_tx_rdy;
@@ -236,7 +240,51 @@ wire        vsi_tx_rdy;
 wire [7:0]  data_to_vsi;
 wire        data_to_vsi_rdy;
 
+wire        vsi_pack_rcvd;
+
 wire        ready_pack_in_ramblock;
+wire [7:0]  data_from_vsi;
+wire        vsi_rx_rdy;
+
+wire [31:0] timecode;
+wire        hz;
+
+wire [15:0] uks_data;
+wire [7:0]  uks_addr;
+wire [7:0]  uks_marker;
+
+wire        vsi_gen_en;
+wire        MB1_req;
+wire        MB2_req;
+wire        MB3_req;
+wire        MB4_req;
+wire        DSS_req;
+
+wire [5:0]  DAC_mode;
+
+wire [15:0] DAC1_value;
+wire [15:0] DAC2_value;
+wire [15:0] DAC3_value;
+wire [15:0] DAC4_value;
+wire [15:0] DAC5_value;
+wire [15:0] DAC6_value;
+
+wire [15:0] DAC_limit;
+wire [15:0] DAC_step_mux;
+
+wire [31:0] whole_uks;
+wire [31:0] MB1_UKS;
+wire [31:0] MB2_UKS;
+wire [31:0] MB3_UKS;
+wire [31:0] MB4_UKS;
+
+wire        MB_UKS_READY1;
+wire        MB_UKS_READY2;
+wire        MB_UKS_READY3;
+wire        MB_UKS_READY4;
+
+wire [31:0] internal_time;
+wire        tail_of_pack;
 
 assign log_control = 22'habcde;
 
@@ -273,13 +321,13 @@ dac045a dac_045_inst (
     .clk         (bb_clk_in),
     .rst_l       (rst_l),
 
-    .sync_300Hz  (sync),     // строб с частотой 300 Гц - частота обновления ЦАП
-    .mode1       (1'b1),         // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
-    .mode2       (1'b1),
-    .mode3       (1'b1),
-    .mode4       (1'b1),
-    .mode5       (1'b1),
-    .mode6       (1'b1),
+    .sync_300Hz  (sync),             // строб с частотой 300 Гц - частота обновления ЦАП
+    .mode1       (DAC_mode[0]),      // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
+    .mode2       (DAC_mode[1]),
+    .mode3       (DAC_mode[2]),
+    .mode4       (DAC_mode[3]),
+    .mode5       (DAC_mode[4]),
+    .mode6       (DAC_mode[5]),
 
     .period1     (),
     .period2     (),
@@ -288,24 +336,20 @@ dac045a dac_045_inst (
     .period5     (),
     .period6     (),
 
-    .fixed_value1(16'h3200),         // порог, равный по умолчанию 0хffff
-    .fixed_value2(16'h4200),
-    .fixed_value3(16'h5200),
-    .fixed_value4(16'h6200),
-    .fixed_value5(16'h7200),
-    .fixed_value6(16'h8200),
+    .fixed_value1(DAC1_value),         // порог, равный по умолчанию 0хffff
+    .fixed_value2(DAC2_value),
+    .fixed_value3(DAC3_value),
+    .fixed_value4(DAC4_value),
+    .fixed_value5(DAC5_value),
+    .fixed_value6(DAC6_value),
+    .limit       (DAC_limit),
     .cs          (1'b1),
 
     .dac_value   (dac_value),
     .dac_rdy     (dac_rdy),
     .dac_value_valid(dac_value_valid),
 
-    .step_coefficent1(3'd1),
-    .step_coefficent2(3'd2),
-    .step_coefficent3(3'd3),
-    .step_coefficent4(3'd4),
-    .step_coefficent5(3'd5),
-    .step_coefficent6(3'd6),
+    .step_coefficent(DAC_step_mux),
 
     // добавить сигнал busy
     // spi //
@@ -354,6 +398,46 @@ adc_8ch_wrap adc_8ch_wrap_inst (
     .DATA_O (adc_8ch_data)
 );
 
+uks_controller uks_controller_inst(
+    .clk         (bb_clk_in),
+    .rst_l       (rst_l),
+    .marker      (uks_marker),
+    .addr        (uks_addr),
+    .data        (uks_data),
+    .whole_uks   (whole_uks),
+    .valid       (vsi_rx_rdy),
+    .rd_ready    (bb_penable),
+    .cpu_addr    (bb_paddr),
+
+    .vsi_gen_en  (vsi_gen_en),
+    .MB1_req     (MB1_req),
+    .MB2_req     (MB2_req),
+    .MB3_req     (MB3_req),
+    .MB4_req     (MB4_req),
+    .DSS_req     (DSS_req),
+
+    .DAC_mode    (DAC_mode),
+
+    .DAC1_value  (DAC1_value),
+    .DAC2_value  (DAC2_value),
+    .DAC3_value  (DAC3_value),
+    .DAC4_value  (DAC4_value),
+    .DAC5_value  (DAC5_value),
+    .DAC6_value  (DAC6_value),
+
+    .MB1_UKS     (MB1_UKS),
+    .MB2_UKS     (MB2_UKS),
+    .MB3_UKS     (MB3_UKS),
+    .MB4_UKS     (MB4_UKS),
+
+    .MB_READY1   (MB_UKS_READY1),
+    .MB_READY2   (MB_UKS_READY2),
+    .MB_READY3   (MB_UKS_READY3),
+    .MB_READY4   (MB_UKS_READY4),
+
+    .DAC_limit   (DAC_limit),
+    .DAC_step_mux(DAC_step_mux)
+);
 
 vsi vsi_inst (
     .bb_clk_in    (bb_clk_in),
@@ -362,8 +446,16 @@ vsi vsi_inst (
     .data_i       (data_to_vsi),
     .request      (vsi_request),
     .pack_valid   (ready_pack_in_ramblock),
+    .timecode     (timecode),
+    .data_o       (data_from_vsi),
+    .uks_marker   (uks_marker),             // разделенные УКС (для ОБ)
+    .uks_addr     (uks_addr),
+    .uks_data     (uks_data),
+    .whole_uks    (whole_uks),              // целый УКС (для МБ)
     .word_valid   (data_to_vsi_rdy),
     .ram_rd_rq    (vsi_tx_rdy),
+    .rx_rdy       (vsi_rx_rdy),
+    .hz           (hz),
 
     // линия передачи 1
     .DATA1        (vsi_data1),
@@ -441,7 +533,7 @@ data_compressor compressor_inst (
     .ready     (word_to_cpu_rdy   )
 );
 
-apb_coder apb_coder_inst (
+apb_controller apb_controller_inst (
     .rst_l           (rst_l),
     .clk             (bb_clk_in),
 
@@ -455,11 +547,15 @@ apb_coder apb_coder_inst (
 
     // REGS //
     .DATA_READY      (package_complete),
-    .UKS0_READY      (),
-    .UKS1_READY      (),
-    .UKS2_READY      (),
-    .UKS3_READY      (),
-    .TIME            (),
+    .MB_UKS_READY1   (MB_UKS_READY1),
+    .MB_UKS_READY2   (MB_UKS_READY2),
+    .MB_UKS_READY3   (MB_UKS_READY3),
+    .MB_UKS_READY4   (MB_UKS_READY4),
+    .TIME            (internal_time),
+    .MB1_UKS         (MB1_UKS),
+    .MB2_UKS         (MB2_UKS),
+    .MB3_UKS         (MB3_UKS),
+    .MB4_UKS         (MB4_UKS),
 
     .read_transaction(apb_read),      // сигнал для передачи данных в процессор
     .package_start   (package_start), // сигнал активности операции чтения включая паузы
@@ -515,7 +611,7 @@ sram_controller_wrap sram_controller_wrap_inst (
     .word_out_rdy        (vsi_sram_new_word)    // новое слово прочитано из ОЗУ
 );
 
-vsi_controller vsi_controller_inst(
+vsi_controller vsi_controller_inst (
     .clk            (bb_clk_in),
     .rst_l          (rst_l),
 
@@ -531,16 +627,39 @@ vsi_controller vsi_controller_inst(
     .data_o_rdy     (data_to_vsi_rdy)         // валидность данных из памяти ПЛИС для выдачи (чтобы избежать передачи, пока данные не прочтаны из памяти)
 );
 
-`ifdef DEBUG_MODE
-    IS61WV204816 IS61WV204816_inst(
-        .A      (A),      
-        .IO     (IO),      
-        .CS_n   (CS), 
-        .OE_n   (OE), 
-        .WE_n   (WE),
-        .LB_n   (LB),
-        .UB_n   (UB)
-    );
-`endif
+mod_hertz_shift mod_hertz_shift_inst (
+    .CLK(bb_clk_in), 
+    // Общий ресет контроллера. GND - активный. (то есть при GND  всё в ресете.)
+    .RESET(rst_l),
+
+    // входные секунды
+    .HZ_IN(hz),
+    // время входное
+    .KBV_IN(timecode),
+
+    // значение сдвижки в мкс.
+    .SHIFT_IN(23'd10000),
+
+    // выходная секунда
+    .HZ_OUT(),
+    // время выходное
+    .KBV_OUT(internal_time),
+
+    // (1 - секундная метка приходит снаружи, 0 - автоматически генерится)
+    .STATUS_HZ_IN_NOT_AUTO(),
+
+    // строб - произошла коррекция времени.
+    .BIT_KBV_CORRECTION()
+);
+
+IS61WV204816 IS61WV204816_inst(
+    .A      (A),      
+    .IO     (IO),      
+    .CS_n   (CS), 
+    .OE_n   (OE), 
+    .WE_n   (WE),
+    .LB_n   (LB),
+    .UB_n   (UB)
+);
 
 endmodule

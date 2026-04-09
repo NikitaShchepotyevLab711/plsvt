@@ -20,6 +20,10 @@ module sram_controller (
     output reg         ram_rd_rdy   // строб о том, что слово прочитано
 );
 
+assign LB = 1'b0;
+assign UB = 1'b0;
+assign CS = 1'b0;
+
 reg [20:0] wr_addr;
 reg [20:0] rd_addr;
 reg [20:0] addr;
