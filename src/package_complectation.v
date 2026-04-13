@@ -1,4 +1,4 @@
-module package_complectation ( // доработать посл. байт от adc8ch и чтение оттуда же, добавить возвратные регистры
+module package_complectation ( // добавить возвратные регистры
     input wire clk,
     input wire rst_l,
 
@@ -527,38 +527,37 @@ xci2_buf clk_buf2 (
 );
 
 assign data_o = DOut1[7:0];
-
+/*
 psevdo_ram_block ram0 (
     .rst_l(rst_l),
-	.DIn({1'b0,data_to_ram}),
-	.RADDR(raddr),
-	.WADDR(waddr),
-	.RDB(RDB),
-	.WRB(WRB),
-	.RCLKS(clk),
-	.WCLKS(clk),
-	.DC_in0(dc_in0),
-	.DC_in1(dc_in1),
-	.DC_in2(1'b10),
-	.DO1(DOut1),
-	.DO2()
-);
-
-/*
-ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
-	.DIn({1'b0,data_to_ram}),
-	.RADDR(raddr),
-	.WADDR(waddr),
-	.RDB(RDB),
-	.WRB(WRB),
-	.RCLKS(clk_b),
-	.WCLKS(clk_b),
-	.DC_in0(dc_in0),
-	.DC_in1(dc_in1),
-	.DC_in2(1'b0),
-	.DO1(DOut1),
-	.DO2()
+    .DIn({1'b0,data_to_ram}),
+    .RADDR(raddr),
+    .WADDR(waddr),
+    .RDB(RDB),
+    .WRB(WRB),
+    .RCLKS(clk),
+    .WCLKS(clk),
+    .DC_in0(dc_in0),
+    .DC_in1(dc_in1),
+    .DC_in2(1'b10),
+    .DO1(DOut1),
+    .DO2()
 );
 */
+
+ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
+    .DIn({1'b0,data_to_ram}),
+    .RADDR(raddr),
+    .WADDR(waddr),
+    .RDB(RDB),
+    .WRB(WRB),
+    .RCLKS(clk_b),
+    .WCLKS(clk_b),
+    .DC_in0(dc_in0),
+    .DC_in1(dc_in1),
+    .DC_in2(1'b0),
+    .DO1(DOut1),
+    .DO2()
+);
 
 endmodule

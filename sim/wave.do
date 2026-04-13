@@ -51,8 +51,11 @@ add wave -noupdate /top_tb/dut/apb_controller_inst/penable
 add wave -noupdate /top_tb/dut/apb_controller_inst/paddr
 add wave -noupdate /top_tb/dut/apb_controller_inst/pwdata
 add wave -noupdate -radix hexadecimal /top_tb/dut/apb_controller_inst/prdata
+add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/memblock_sel1
+add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/memblock_sel2
+add wave -noupdate /top_tb/dut/vsi_inst/hi_speed_protocol_rx_inst/mod_hi_speed_protocol_coder_inst/rs_coder_inst/reg_data_in
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {4218811 ns} 0} {Trace {126200573 ns} 0}
+WaveRestoreCursors {{Cursor 1} {4218811 ns} 0} {Trace {123076787 ns} 0}
 quietly wave cursor active 2
 configure wave -namecolwidth 497
 configure wave -valuecolwidth 76
@@ -68,4 +71,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {126783125 ns} {172274573 ns}
+WaveRestoreZoom {158806855 ns} {170589113 ns}

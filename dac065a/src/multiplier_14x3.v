@@ -1,0 +1,15 @@
+module multiplier_14x3 (
+    input wire [13:0] a,
+    input wire [2:0] b,
+    output wire [16:0] product 
+);
+
+wire [13:0] pp0, pp1, pp2;
+    
+assign pp0 = b[0] ? a : 14'd0;
+assign pp1 = b[1] ? a : 14'd0;
+assign pp2 = b[2] ? a : 14'd0;
+    
+assign product = pp0 + (pp1 << 1) + (pp2 << 2);
+    
+endmodule

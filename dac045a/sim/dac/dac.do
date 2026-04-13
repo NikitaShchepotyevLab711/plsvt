@@ -6,6 +6,7 @@ vlog "../../src/dac045a.v"\
      "../../src/dac_codegen.v"\
      "../../src/sync2.v"         \
      "../../src/clk_divider3.v"\
+     "../../src/multiplier_16x3.v"\
      "../../tb/dac_tb.v"
 
 vsim -debugDB -fsmdebug -gui work.dac_tb

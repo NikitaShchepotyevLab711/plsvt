@@ -1,5 +1,5 @@
 //`define DEBUG_MODE
-// поправить сигнал о новом значении ЦАП и организовать запись в память значения ЦАП
+
 module top #(
     parameter UART_BIT_RATE     = 57600, // bit per second
     parameter UART_CLK_HZ       = 12_000_000, // Hz
@@ -652,6 +652,7 @@ mod_hertz_shift mod_hertz_shift_inst (
     .BIT_KBV_CORRECTION()
 );
 
+/*
 IS61WV204816 IS61WV204816_inst(
     .A      (A),      
     .IO     (IO),      
@@ -661,5 +662,6 @@ IS61WV204816 IS61WV204816_inst(
     .LB_n   (LB),
     .UB_n   (UB)
 );
+*/
 
 endmodule
