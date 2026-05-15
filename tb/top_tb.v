@@ -160,7 +160,7 @@ top dut (
     .dac045a_clrn_1(),
     .dac045a_ldac_1(),
     .dac045a_csn_1(),
-
+/*
     // 2 dac045a spi //
     .dac045a_sdo_2(),
     .dac045a_sdi_2(),
@@ -200,7 +200,7 @@ top dut (
     .dac045a_clrn_6(),
     .dac045a_ldac_6(),
     .dac045a_csn_6(),
-
+*/
     // adc733 serial port //
     .adc733_sclk(SCLK_733),
     .adc733_sdofs(SDOFS),
@@ -909,18 +909,7 @@ integer z;
 
 initial begin
     timecode_reg = 32'haabbccdd;
-    #1000000;
-    for (z = 0; z < 6 ; z = z + 1) begin
-        // Отправка команды "Код времени"
-        send_timemark();
-        #100000;
-        send_timecode(8'hA5, 8'h01, timecode_reg);
-        
-        timecode_reg = timecode_reg + 1'h1;
-        #10000000;
-    end
-
-    #26000000;
+    #5000000;
 
     forever begin
         
@@ -929,7 +918,7 @@ initial begin
         send_timecode(8'hA5, 8'h01, timecode_reg);
 
         timecode_reg = timecode_reg + 1'h1;
-        #10000000; 
+        #50000000; 
     end
 end
 

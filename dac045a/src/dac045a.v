@@ -42,7 +42,16 @@ module dac045a (
     output reg  [5:0]  LDAc,
     output reg  [5:0]  CSn
 );
-    
+/*
+wire [15:0] fixed_value1; // порог, равный по умолчанию 0хffff
+wire [15:0] fixed_value2;
+wire [15:0] fixed_value3;
+wire [15:0] fixed_value4;
+wire [15:0] fixed_value5;
+wire [15:0] fixed_value6;
+wire [15:0] limit;
+wire        cs;
+    */
 reg  [15:0] data_to_dac;
 wire [15:0] data_increment1;
 wire [15:0] data_increment2;
@@ -66,16 +75,21 @@ wire dac_rdy_delayed;
 
 assign dac_value = data_to_dac;
 
-always @(*) begin
-    case (dac_counter)
-        3'd0: data_to_dac = mode1 ? data_increment1 : fixed_value1; 
-        3'd1: data_to_dac = mode2 ? data_increment2 : fixed_value2; 
-        3'd2: data_to_dac = mode3 ? data_increment3 : fixed_value3; 
-        3'd3: data_to_dac = mode4 ? data_increment4 : fixed_value4; 
-        3'd4: data_to_dac = mode5 ? data_increment5 : fixed_value5; 
-        3'd5: data_to_dac = mode6 ? data_increment6 : fixed_value6; 
-        default: data_to_dac = fixed_value1;
-    endcase
+always @(posedge clk or negedge rst_l) begin
+    if (!rst_l) begin
+        data_to_dac <= 16'h0;
+    end
+    else begin
+        case (dac_counter)
+            3'd0: data_to_dac <= mode1 ? data_increment1 : fixed_value1; 
+            3'd1: data_to_dac <= mode2 ? data_increment2 : fixed_value2; 
+            3'd2: data_to_dac <= mode3 ? data_increment3 : fixed_value3; 
+            3'd3: data_to_dac <= mode4 ? data_increment4 : fixed_value4; 
+            3'd4: data_to_dac <= mode5 ? data_increment5 : fixed_value5; 
+            3'd5: data_to_dac <= mode6 ? data_increment6 : fixed_value6; 
+            default: data_to_dac <= fixed_value1;
+        endcase
+    end
 end
 
 always @(posedge clk or negedge rst_l) begin // счетчик АЦП. Выставляет сигнал all_channels_done по окончании счета

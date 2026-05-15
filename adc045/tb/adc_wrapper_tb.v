@@ -1,6 +1,6 @@
 `timescale 1ns / 1ns
 
-module adc_reader_tb();
+module adc_wrapper_tb();
 
 localparam CLK_PERIOD = 84; 
 localparam ADC_SAMPLE_RATE = 100000;
@@ -38,6 +38,8 @@ integer bit_counter;
 
 reg [5:0] DOUT;
 reg [5:0] DRDY;
+
+reg       ch_change;
 
 adc045_wrap uut (
     .clk(clk),
@@ -109,12 +111,14 @@ end
 always @(posedge adc_clk or negedge nRST) begin 
     if (!nRST) begin
         time_counter <= 0;
-        sin_value <= 0;
-        cos_value <= 0;
+        sin_value    <= 0;
+        cos_value    <= 0;
+        ch_change    <= 0;
     end
     else begin
         begin
             time_counter <= time_counter + dt;
+            ch_change <= ~ch_change;
             sin_value <= $sin(2 * 3.141592653589793 * SIGNAL_FREQ * time_counter);
             cos_value <= $cos(2 * 3.141592653589793 * SIGNAL_FREQ * time_counter);
             sin_signal <= sin_value * (2**23 - 1);
@@ -123,7 +127,7 @@ always @(posedge adc_clk or negedge nRST) begin
     end
 end
 
-assign ch1_sample = (uut.adc_inst.A_MUX == 0) ? sin_signal : cos_signal;
+assign ch1_sample = (!(^uut.channel_choice)) ? (ch_change ? sin_signal : cos_signal) : sin_signal;
 
 
 task send_adc_data;
@@ -137,9 +141,17 @@ task send_adc_data;
             
             if (i == 24) begin
                 drdy <= 1'b1;
-                dout = 1'b0;
-                @(posedge sclk); drdy <= 1'b0;
+                dout = 1'bz;
+                @(posedge sclk); 
+                drdy <= 1'b0;
+                dout = 1'bz;
             end
+
+            if (i == 0) begin
+                dout = 1'bz;
+                @(posedge adc_clk);
+            end
+
         end
     end
 endtask

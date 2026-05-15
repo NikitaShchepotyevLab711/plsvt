@@ -13,14 +13,14 @@ module adc045 (
     output reg         START,
     
     input  wire        enable,
-    input  wire        sync,           // сигнал синхронизации чтения данных (30 Гц)
+    input  wire        sync,           // сигнал, инициирующий одну операцию захвата данных АЦП
     input  wire [13:0] wreg_command,   // конфигурация АЦП (кроме битов отвечающих за номер канала)
     input  wire [1:0]  channel_choice, // номер канала. 0 и 3 - оба, 1 - первый, 2 - второй
     output wire        busy,           // сигнал активности модуля
     output reg  [23:0] data_o,         // данные
     output wire        ch_num,         // сигнал об активном канале
-    output wire        rd_en,           // сигнал готовности
-    output wire        dly
+    output wire        rd_en,          // сигнал готовности
+    output wire        dly             // сигнал о том, что на данный активна задержка согласно документации
 );
 
 localparam IDLE          = 4'd0;
@@ -81,7 +81,7 @@ end
 front_detector adc_733_front_detector_rden   (clk, rst_l, ready, rd_load_data_o); // 3 триггера и детектор перепада уровня
 sync2 i_sync2_channel (clk, rst_l, channel, ch_num); // 2 триггера
 sync2 i_sync2_ready   (clk, rst_l, rd_load_data_o, rd_en); // 2 триггера
-sync2 i_sync2_busy   (clk, rst_l, busy_reg, busy); // 2 триггера
+sync2 i_sync2_busy    (clk, rst_l, busy_reg, busy); // 2 триггера
 
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
@@ -97,7 +97,6 @@ always @(posedge SCLK or negedge rst_l) begin
         ready <= 1'b0;
     end
     else begin
-//        if (strb) begin
         case (state)
             IDLE: begin // по синхронизирующему сигналу sync начинается работа
                     hard_wreg <= 1'b0;
@@ -161,7 +160,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 START <= 1'b0;
             end
 
-            CH_START: begin // отправка команды START по DIN (два способа, позже решу какой лучше)
+            CH_START: begin // отправка команды START по DIN (два способа, при отладке решу, какой лучше)
 /*                if (cnt == 6'd23) begin
                     if (delay_done_reg) begin
                         if (DRDY) begin
@@ -201,7 +200,6 @@ always @(posedge SCLK or negedge rst_l) begin
                 end
                 else begin
                     START <= 1'b1;
-                    state <= CH_START;
                     hard_wreg <= 1'b0; 
                     load <= 1'b0; 
                     busy_reg <= 1'b1;
@@ -217,7 +215,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 set_delay_start <= 1'b0;
                 delay_start_done_reg <= 1'b0;
                 cnt_rst = 1'b1;
-                    if (delay_done) begin
+                    if (delay_done) begin        // согласно с.20 документации, ждем 1 мкс после отправки команды старт
                         delay_done_reg <= 1'b1;
                         state <= WAIT_FOR_DRDY;    
                     end          
@@ -308,7 +306,6 @@ always @(posedge SCLK or negedge rst_l) begin
                 ready <= 1'b0;
             end
         endcase
-//        end
     end
 end
 
@@ -384,7 +381,6 @@ counter cnt_inst (
     .strb(strb),
     .cnt(cnt)
 );
-
 
 assign dly = !delay_done;
 

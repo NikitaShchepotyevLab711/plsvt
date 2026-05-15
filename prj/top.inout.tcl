@@ -1,7 +1,7 @@
 ############################################################
 ###                                                         
 ###   Generated     X-Place v2.48.61                             
-###   Date/Time     08.04.2026 / 17:22:24                                 
+###   Date/Time     21.04.2026 / 16:58:07                                 
 ###                                                         
 ############################################################
 ###                                                         
@@ -122,29 +122,21 @@ set xc(inout) {
 	{ bb_gpio_in[0] bb_gpio_in[0] }
 	{ bb_clk_out bb_clk_out }
 	{ bb_clk_in bb_clk_in }
-	{ adc045_cs_1 IO[190] }
-	{ adc045_din_1 IO[189] }
-	{ adc045_sclk_1 IO[188] }
-	{ adc045_nrst_1 IO[187] }
-	{ adc045_start_1 IO[186] }
-	{ adc733_sdifs IO[185] }
-	{ adc733_sdi IO[184] }
-	{ adc733_se IO[183] }
-	{ adc045_cs_2 IO[182] }
-	{ adc045_din_2 IO[181] }
-	{ adc045_sclk_2 IO[180] }
-	{ adc045_nrst_2 IO[179] }
-	{ adc045_start_2 IO[178] }
-	{ adc045_cs_3 IO[177] }
-	{ adc045_din_3 IO[176] }
-	{ adc045_sclk_3 IO_GCLK[175] }
-	{ adc045_nrst_3 IO_GCLK[174] }
-	{ vsi_data1 IO_GCLK[173] }
-	{ vsi_data2 IO_GCLK[172] }
-	{ adc045_start_3 IO[171] }
-	{ adc045_cs_4 IO[170] }
-	{ adc045_din_4 IO[169] }
-	{ adc045_sclk_4 IO[168] }
+	{ IO[9] IO[190] }
+	{ IO[10] IO[189] }
+	{ IO[11] IO[188] }
+	{ IO[12] IO[187] }
+	{ IO[13] IO[186] }
+	{ IO[14] IO[185] }
+	{ IO[15] IO[184] }
+	{ adc045_din_6 IO_GCLK[175] }
+	{ adc045_sclk_6 IO_GCLK[174] }
+	{ adc045_nrst_6 IO_GCLK[173] }
+	{ adc045_start_6 IO_GCLK[172] }
+	{ adc8ch_sclk_1 IO[171] }
+	{ adc8ch_cs_adc_1 IO[170] }
+	{ adc8ch_cd_mux_1 IO[169] }
+	{ adc8ch_din_1 IO[168] }
 	{ adc045_nrst_4 IO[167] }
 	{ adc045_start_4 IO_GCLK[166] }
 	{ adc045_cs_5 IO_GCLK[165] }
@@ -153,54 +145,38 @@ set xc(inout) {
 	{ adc045_nrst_5 IO_GCLK[162] }
 	{ adc045_start_5 IO_GCLK[161] }
 	{ adc045_cs_6 IO_GCLK[160] }
-	{ adc045_din_6 IO_GCLK[159] }
-	{ adc045_sclk_6 IO_GCLK[158] }
-	{ adc045_nrst_6 IO_GCLK[157] }
-	{ adc045_start_6 IO_GCLK[156] }
-	{ adc8ch_sclk_1 IO_GCLK[155] }
-	{ adc8ch_cs_adc_1 IO_GCLK[154] }
-	{ adc8ch_cd_mux_1 IO_GCLK[153] }
-	{ adc8ch_din_1 IO_GCLK[152] }
-	{ adc8ch_sclk_2 IO_GCLK[151] }
-	{ adc8ch_cs_adc_2 IO_GCLK[150] }
-	{ adc8ch_cd_mux_2 IO_GCLK[149] }
-	{ adc8ch_din_2 IO_GCLK[148] }
-	{ adc8ch_sclk_3 IO_GCLK[147] }
-	{ adc8ch_cs_adc_3 IO_GCLK[146] }
-	{ adc8ch_cd_mux_3 IO_GCLK[145] }
-	{ adc8ch_din_3 IO_GCLK[144] }
-	{ dac045a_sdo_1 IO[143] }
-	{ dac045a_sck_1 IO[142] }
-	{ dac045a_clrn_1 IO[141] }
-	{ dac045a_ldac_1 IO[140] }
-	{ dac045a_csn_1 IO[139] }
-	{ dac045a_sdo_2 IO[138] }
-	{ dac045a_sck_2 IO[137] }
-	{ dac045a_clrn_2 IO[136] }
-	{ dac045a_sdo_4 IO[128] }
-	{ dac045a_csn_3 IO[129] }
-	{ dac045a_ldac_3 IO[130] }
-	{ dac045a_clrn_3 IO[131] }
-	{ dac045a_sck_3 IO[132] }
-	{ dac045a_sdo_3 IO[133] }
-	{ dac045a_csn_2 IO[134] }
-	{ dac045a_ldac_2 IO[135] }
-	{ dac045a_ldac_5 IO[120] }
-	{ dac045a_clrn_5 IO[121] }
-	{ dac045a_sck_5 IO[122] }
-	{ dac045a_sdo_5 IO[123] }
-	{ dac045a_csn_4 IO[124] }
-	{ dac045a_ldac_4 IO[125] }
-	{ dac045a_clrn_4 IO[126] }
-	{ dac045a_sck_4 IO[127] }
+	{ adc045_drdy_6 IO_GCLK[151] }
+	{ adc045_dout_6 IO_GCLK[150] }
+	{ adc8ch_dout_1 IO_GCLK[149] }
+	{ adc8ch_dout_2 IO_GCLK[148] }
+	{ adc8ch_dout_3 IO_GCLK[147] }
+	{ dac045a_sdi_1 IO_GCLK[146] }
+	{ adc733_sdofs IO_GCLK[145] }
+	{ UB IO_GCLK[144] }
+	{ adc733_se IO[128] }
+	{ adc045_cs_2 IO[129] }
+	{ adc045_din_2 IO[130] }
+	{ adc045_sclk_2 IO[131] }
+	{ adc045_nrst_2 IO[132] }
+	{ adc045_start_2 IO[133] }
+	{ adc045_cs_3 IO[134] }
+	{ adc045_din_3 IO[135] }
+	{ adc733_sdi IO[120] }
+	{ adc045_sclk_3 IO[121] }
+	{ adc045_nrst_3 IO[122] }
+	{ vsi_data1 IO[123] }
+	{ vsi_data2 IO[124] }
+	{ adc045_start_3 IO[125] }
+	{ adc045_cs_4 IO[126] }
+	{ adc045_din_4 IO[127] }
 	{ lvds_di IO[112] }
 	{ lvds_re IO[113] }
-	{ dac045a_csn_6 IO[114] }
-	{ dac045a_ldac_6 IO[115] }
-	{ dac045a_clrn_6 IO[116] }
-	{ dac045a_sck_6 IO[117] }
-	{ dac045a_sdo_6 IO[118] }
-	{ dac045a_csn_5 IO[119] }
+	{ adc045_cs_1 IO[114] }
+	{ adc045_din_1 IO[115] }
+	{ adc045_sclk_1 IO[116] }
+	{ adc045_nrst_1 IO[117] }
+	{ adc045_start_1 IO[118] }
+	{ adc733_sdifs IO[119] }
 	{ log_control[15] IO[104] }
 	{ log_control[16] IO[105] }
 	{ log_control[17] IO[106] }
@@ -249,43 +225,37 @@ set xc(inout) {
 	{ A[1] IO[69] }
 	{ A[2] IO[70] }
 	{ A[3] IO[71] }
-	{ UB IO[63] }
-	{ adc733_sdofs IO[40] }
-	{ adc733_sdo IO[41] }
-	{ vsi_com1 IO[42] }
-	{ vsi_com2 IO[43] }
-	{ adc045_dout_2 IO[32] }
-	{ adc045_drdy_3 IO[33] }
-	{ adc045_dout_3 IO[34] }
-	{ adc045_drdy_4 IO[35] }
-	{ adc045_dout_4 IO[36] }
-	{ adc045_drdy_5 IO[37] }
-	{ adc045_dout_5 IO[38] }
-	{ adc733_sclk IO[39] }
-	{ dac045a_sdi_4 IO[24] }
-	{ dac045a_sdi_5 IO[25] }
-	{ dac045a_sdi_6 IO[26] }
-	{ lvds_ro IO[27] }
-	{ rst_l IO[28] }
-	{ adc045_drdy_1 IO[29] }
-	{ adc045_dout_1 IO[30] }
-	{ adc045_drdy_2 IO[31] }
-	{ adc045_drdy_6 IO[16] }
-	{ adc045_dout_6 IO[17] }
-	{ adc8ch_dout_1 IO[18] }
-	{ adc8ch_dout_2 IO[19] }
-	{ adc8ch_dout_3 IO[20] }
-	{ dac045a_sdi_1 IO_GCLK[21] }
-	{ dac045a_sdi_2 IO_GCLK[22] }
-	{ dac045a_sdi_3 IO_GCLK[23] }
-	{ IO[8] IO[8] }
-	{ IO[9] IO[9] }
-	{ IO[10] IO[10] }
-	{ IO[11] IO[11] }
-	{ IO[12] IO[12] }
-	{ IO[13] IO[13] }
-	{ IO[14] IO[14] }
-	{ IO[15] IO[15] }
+	{ adc733_sdo IO[57] }
+	{ vsi_com1 IO[58] }
+	{ vsi_com2 IO[59] }
+	{ lvds_ro IO[60] }
+	{ rst_l IO[61] }
+	{ adc045_drdy_1 IO[62] }
+	{ adc045_dout_2 IO[63] }
+	{ adc8ch_sclk_2 IO[48] }
+	{ adc8ch_cs_adc_2 IO[49] }
+	{ adc8ch_cd_mux_2 IO[50] }
+	{ adc8ch_din_2 IO[51] }
+	{ adc8ch_sclk_3 IO[52] }
+	{ adc8ch_cs_adc_3 IO[53] }
+	{ adc8ch_cd_mux_3 IO[54] }
+	{ adc8ch_din_3 IO[55] }
+	{ IO[8] IO[40] }
+	{ adc045_drdy_3 IO[41] }
+	{ adc045_dout_3 IO[42] }
+	{ adc045_drdy_4 IO[43] }
+	{ adc045_dout_4 IO[44] }
+	{ adc045_drdy_5 IO[45] }
+	{ adc045_dout_5 IO[46] }
+	{ adc733_sclk IO[47] }
+	{ adc045_dout_1 IO[8] }
+	{ adc045_drdy_2 IO[9] }
+	{ dac045a_sdo_1 IO[10] }
+	{ dac045a_sck_1 IO[11] }
+	{ dac045a_clrn_1 IO[12] }
+	{ dac045a_ldac_1 IO[13] }
+	{ dac045a_csn_1 IO[14] }
+	{ adc045_sclk_4 IO[15] }
 	{ IO[0] IO[0] }
 	{ IO[1] IO[1] }
 	{ IO[2] IO[2] }
@@ -407,37 +377,13 @@ set xc(inout_type) {
 	{ bb_gpio_in[0] cpu_fpga_in a }
 	{ bb_clk_out cpu_clk_out x }
 	{ bb_clk_in cpu_clk_in a }
-	{ adc045_cs_1 xci2_ob x }
-	{ adc045_din_1 xci2_ob x }
-	{ adc045_sclk_1 xci2_ob x }
-	{ adc045_nrst_1 xci2_ob x }
-	{ adc045_start_1 xci2_ob x }
-	{ adc733_sdifs xci2_ob x }
-	{ adc733_sdi xci2_ob x }
-	{ adc733_se xci2_ob x }
-	{ adc045_cs_2 xci2_ob x }
-	{ adc045_din_2 xci2_ob x }
-	{ adc045_sclk_2 xci2_ob x }
-	{ adc045_nrst_2 xci2_ob x }
-	{ adc045_start_2 xci2_ob x }
-	{ adc045_cs_3 xci2_ob x }
-	{ adc045_din_3 xci2_ob x }
-	{ adc045_sclk_3 xci2_ob x }
-	{ adc045_nrst_3 xci2_ob x }
-	{ vsi_data1 xci2_ob x }
-	{ vsi_data2 xci2_ob x }
-	{ adc045_start_3 xci2_ob x }
-	{ adc045_cs_4 xci2_ob x }
-	{ adc045_din_4 xci2_ob x }
-	{ adc045_sclk_4 xci2_ob x }
-	{ adc045_nrst_4 xci2_ob x }
-	{ adc045_start_4 xci2_ob x }
-	{ adc045_cs_5 xci2_ob x }
-	{ adc045_din_5 xci2_ob x }
-	{ adc045_sclk_5 xci2_ob x }
-	{ adc045_nrst_5 xci2_ob x }
-	{ adc045_start_5 xci2_ob x }
-	{ adc045_cs_6 xci2_ob x }
+	{ IO[9] xci2_ib a }
+	{ IO[10] xci2_ib a }
+	{ IO[11] xci2_ib a }
+	{ IO[12] xci2_ib a }
+	{ IO[13] xci2_ib a }
+	{ IO[14] xci2_ib a }
+	{ IO[15] xci2_ib a }
 	{ adc045_din_6 xci2_ob x }
 	{ adc045_sclk_6 xci2_ob x }
 	{ adc045_nrst_6 xci2_ob x }
@@ -446,46 +392,46 @@ set xc(inout_type) {
 	{ adc8ch_cs_adc_1 xci2_ob x }
 	{ adc8ch_cd_mux_1 xci2_ob x }
 	{ adc8ch_din_1 xci2_ob x }
-	{ adc8ch_sclk_2 xci2_ob x }
-	{ adc8ch_cs_adc_2 xci2_ob x }
-	{ adc8ch_cd_mux_2 xci2_ob x }
-	{ adc8ch_din_2 xci2_ob x }
-	{ adc8ch_sclk_3 xci2_ob x }
-	{ adc8ch_cs_adc_3 xci2_ob x }
-	{ adc8ch_cd_mux_3 xci2_ob x }
-	{ adc8ch_din_3 xci2_ob x }
-	{ dac045a_sdo_1 xci2_ob x }
-	{ dac045a_sck_1 xci2_ob x }
-	{ dac045a_clrn_1 xci2_ob x }
-	{ dac045a_ldac_1 xci2_ob x }
-	{ dac045a_csn_1 xci2_ob x }
-	{ dac045a_sdo_2 xci2_ob x }
-	{ dac045a_sck_2 xci2_ob x }
-	{ dac045a_clrn_2 xci2_ob x }
-	{ dac045a_sdo_4 xci2_ob x }
-	{ dac045a_csn_3 xci2_ob x }
-	{ dac045a_ldac_3 xci2_ob x }
-	{ dac045a_clrn_3 xci2_ob x }
-	{ dac045a_sck_3 xci2_ob x }
-	{ dac045a_sdo_3 xci2_ob x }
-	{ dac045a_csn_2 xci2_ob x }
-	{ dac045a_ldac_2 xci2_ob x }
-	{ dac045a_ldac_5 xci2_ob x }
-	{ dac045a_clrn_5 xci2_ob x }
-	{ dac045a_sck_5 xci2_ob x }
-	{ dac045a_sdo_5 xci2_ob x }
-	{ dac045a_csn_4 xci2_ob x }
-	{ dac045a_ldac_4 xci2_ob x }
-	{ dac045a_clrn_4 xci2_ob x }
-	{ dac045a_sck_4 xci2_ob x }
+	{ adc045_nrst_4 xci2_ob x }
+	{ adc045_start_4 xci2_ob x }
+	{ adc045_cs_5 xci2_ob x }
+	{ adc045_din_5 xci2_ob x }
+	{ adc045_sclk_5 xci2_ob x }
+	{ adc045_nrst_5 xci2_ob x }
+	{ adc045_start_5 xci2_ob x }
+	{ adc045_cs_6 xci2_ob x }
+	{ adc045_drdy_6 xci2_ib a }
+	{ adc045_dout_6 xci2_ib a }
+	{ adc8ch_dout_1 xci2_ib a }
+	{ adc8ch_dout_2 xci2_ib a }
+	{ adc8ch_dout_3 xci2_ib a }
+	{ dac045a_sdi_1 xci2_ib a }
+	{ adc733_sdofs xci2_ib a }
+	{ UB xci2_ob x }
+	{ adc733_se xci2_ob x }
+	{ adc045_cs_2 xci2_ob x }
+	{ adc045_din_2 xci2_ob x }
+	{ adc045_sclk_2 xci2_ob x }
+	{ adc045_nrst_2 xci2_ob x }
+	{ adc045_start_2 xci2_ob x }
+	{ adc045_cs_3 xci2_ob x }
+	{ adc045_din_3 xci2_ob x }
+	{ adc733_sdi xci2_ob x }
+	{ adc045_sclk_3 xci2_ob x }
+	{ adc045_nrst_3 xci2_ob x }
+	{ vsi_data1 xci2_ob x }
+	{ vsi_data2 xci2_ob x }
+	{ adc045_start_3 xci2_ob x }
+	{ adc045_cs_4 xci2_ob x }
+	{ adc045_din_4 xci2_ob x }
 	{ lvds_di xci2_ob x }
 	{ lvds_re xci2_ob x }
-	{ dac045a_csn_6 xci2_ob x }
-	{ dac045a_ldac_6 xci2_ob x }
-	{ dac045a_clrn_6 xci2_ob x }
-	{ dac045a_sck_6 xci2_ob x }
-	{ dac045a_sdo_6 xci2_ob x }
-	{ dac045a_csn_5 xci2_ob x }
+	{ adc045_cs_1 xci2_ob x }
+	{ adc045_din_1 xci2_ob x }
+	{ adc045_sclk_1 xci2_ob x }
+	{ adc045_nrst_1 xci2_ob x }
+	{ adc045_start_1 xci2_ob x }
+	{ adc733_sdifs xci2_ob x }
 	{ log_control[15] xci2_ob x }
 	{ log_control[16] xci2_ob x }
 	{ log_control[17] xci2_ob x }
@@ -534,12 +480,22 @@ set xc(inout_type) {
 	{ A[1] xci2_ob x }
 	{ A[2] xci2_ob x }
 	{ A[3] xci2_ob x }
-	{ UB xci2_ob x }
-	{ adc733_sdofs xci2_ib a }
 	{ adc733_sdo xci2_ib a }
 	{ vsi_com1 xci2_ib a }
 	{ vsi_com2 xci2_ib a }
+	{ lvds_ro xci2_ib a }
+	{ rst_l xci2_ib a }
+	{ adc045_drdy_1 xci2_ib a }
 	{ adc045_dout_2 xci2_ib a }
+	{ adc8ch_sclk_2 xci2_ob x }
+	{ adc8ch_cs_adc_2 xci2_ob x }
+	{ adc8ch_cd_mux_2 xci2_ob x }
+	{ adc8ch_din_2 xci2_ob x }
+	{ adc8ch_sclk_3 xci2_ob x }
+	{ adc8ch_cs_adc_3 xci2_ob x }
+	{ adc8ch_cd_mux_3 xci2_ob x }
+	{ adc8ch_din_3 xci2_ob x }
+	{ IO[8] xci2_ib a }
 	{ adc045_drdy_3 xci2_ib a }
 	{ adc045_dout_3 xci2_ib a }
 	{ adc045_drdy_4 xci2_ib a }
@@ -547,30 +503,14 @@ set xc(inout_type) {
 	{ adc045_drdy_5 xci2_ib a }
 	{ adc045_dout_5 xci2_ib a }
 	{ adc733_sclk xci2_ib a }
-	{ dac045a_sdi_4 xci2_ib a }
-	{ dac045a_sdi_5 xci2_ib a }
-	{ dac045a_sdi_6 xci2_ib a }
-	{ lvds_ro xci2_ib a }
-	{ rst_l xci2_ib a }
-	{ adc045_drdy_1 xci2_ib a }
 	{ adc045_dout_1 xci2_ib a }
 	{ adc045_drdy_2 xci2_ib a }
-	{ adc045_drdy_6 xci2_ib a }
-	{ adc045_dout_6 xci2_ib a }
-	{ adc8ch_dout_1 xci2_ib a }
-	{ adc8ch_dout_2 xci2_ib a }
-	{ adc8ch_dout_3 xci2_ib a }
-	{ dac045a_sdi_1 xci2_ib a }
-	{ dac045a_sdi_2 xci2_ib a }
-	{ dac045a_sdi_3 xci2_ib a }
-	{ IO[8] xci2_ib a }
-	{ IO[9] xci2_ib a }
-	{ IO[10] xci2_ib a }
-	{ IO[11] xci2_ib a }
-	{ IO[12] xci2_ib a }
-	{ IO[13] xci2_ib a }
-	{ IO[14] xci2_ib a }
-	{ IO[15] xci2_ib a }
+	{ dac045a_sdo_1 xci2_ob x }
+	{ dac045a_sck_1 xci2_ob x }
+	{ dac045a_clrn_1 xci2_ob x }
+	{ dac045a_ldac_1 xci2_ob x }
+	{ dac045a_csn_1 xci2_ob x }
+	{ adc045_sclk_4 xci2_ob x }
 	{ IO[0] xci2_ib a }
 	{ IO[1] xci2_ib a }
 	{ IO[2] xci2_ib a }

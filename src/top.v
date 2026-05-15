@@ -1,4 +1,4 @@
-//`define DEBUG_MODE
+`define DEBUG_MODE
 
 module top #(
     parameter UART_BIT_RATE     = 57600, // bit per second
@@ -90,7 +90,7 @@ module top #(
     output wire        dac045a_csn_1,
 
     // 2 dac045a spi //
-    output wire        dac045a_sdo_2,
+/*    output wire        dac045a_sdo_2,
     input  wire        dac045a_sdi_2,
     output wire        dac045a_sck_2,
     output wire        dac045a_clrn_2,
@@ -127,7 +127,7 @@ module top #(
     output wire        dac045a_sck_6,
     output wire        dac045a_clrn_6,
     output wire        dac045a_ldac_6,
-    output wire        dac045a_csn_6,
+    output wire        dac045a_csn_6,*/
 
     // logic outputs //
     output wire [21:0] log_control,
@@ -181,6 +181,45 @@ module top #(
     output wire        LB,
     output wire        UB
 );
+
+wire        dac045a_sdo_2;
+wire        dac045a_sdi_2;
+wire        dac045a_sck_2;
+wire        dac045a_clrn_2;
+wire        dac045a_ldac_2;
+wire        dac045a_csn_2;
+
+// 3 dac045a spi //
+wire        dac045a_sdo_3;
+wire        dac045a_sdi_3;
+wire        dac045a_sck_3;
+wire        dac045a_clrn_3;
+wire        dac045a_ldac_3;
+wire        dac045a_csn_3;
+
+// 4 dac045a spi //
+wire        dac045a_sdo_4;
+wire        dac045a_sdi_4;
+wire        dac045a_sck_4;
+wire        dac045a_clrn_4;
+wire        dac045a_ldac_4;
+wire        dac045a_csn_4;
+
+// 5 dac045a spi //
+wire        dac045a_sdo_5;
+wire        dac045a_sdi_5;
+wire        dac045a_sck_5;
+wire        dac045a_clrn_5;
+wire        dac045a_ldac_5;
+wire        dac045a_csn_5;
+
+// 6 dac045a spi //
+wire        dac045a_sdo_6;
+wire        dac045a_sdi_6;
+wire        dac045a_sck_6;
+wire        dac045a_clrn_6;
+wire        dac045a_ldac_6;
+wire        dac045a_csn_6;
 
 assign bb_pslverr = 0;
 assign bb_apb_sync_clk=bb_clk_in;
@@ -288,7 +327,141 @@ wire        tail_of_pack;
 
 assign log_control = 22'habcde;
 
-always @(posedge bb_clk_in or negedge rst_l) begin // фиксация значений логических выходов
+wire clk_adc_045;
+wire clk_dac045a;
+wire clk_adc733;
+wire clk_adc_8ch;
+wire clk_uks_controller;
+wire clk_vsi;
+wire clk_lvds;
+wire clk_package_complectation;
+wire clk_apb;
+wire clk_sram_controller;
+wire clk_other;
+
+wire rstl_adc_045;
+wire rstl_dac045a;
+wire rstl_adc733;
+wire rstl_adc_8ch;
+wire rstl_uks_controller;
+wire rstl_vsi;
+wire rstl_lvds;
+wire rstl_package_complectation;
+wire rstl_apb;
+wire rstl_sram_controller;
+wire rstl_other;
+
+xci2_buf clk_buf1 (
+	.a(bb_clk_in),
+	.y(clk_adc_045)
+);
+
+xci2_buf clk_buf2 (
+	.a(bb_clk_in),
+	.y(clk_dac045a)
+);
+
+xci2_buf clk_buf3 (
+	.a(bb_clk_in),
+	.y(clk_adc733)
+);
+
+xci2_buf clk_buf4 (
+	.a(bb_clk_in),
+	.y(clk_adc_8ch)
+);
+
+xci2_buf clk_buf5 (
+	.a(bb_clk_in),
+	.y(clk_uks_controller)
+);
+
+xci2_buf clk_buf6 (
+	.a(bb_clk_in),
+	.y(clk_vsi)
+);
+
+xci2_buf clk_buf7 (
+	.a(bb_clk_in),
+	.y(clk_lvds)
+);
+
+xci2_buf clk_buf8 (
+	.a(bb_clk_in),
+	.y(clk_package_complectation)
+);
+
+xci2_buf clk_buf9 (
+	.a(bb_clk_in),
+	.y(clk_apb)
+);
+
+xci2_buf clk_buf10 (
+	.a(bb_clk_in),
+	.y(clk_sram_controller)
+);
+
+xci2_buf clk_buf11 (
+	.a(bb_clk_in),
+	.y(clk_other)
+);
+
+xci2_buf rstl_buf1 (
+	.a(rst_l),
+	.y(rstl_adc_045)
+);
+
+xci2_buf rstl_buf2 (
+	.a(rst_l),
+	.y(rstl_dac045a)
+);
+
+xci2_buf rstl_buf3 (
+	.a(rst_l),
+	.y(rstl_adc733)
+);
+
+xci2_buf rstl_buf4 (
+	.a(rst_l),
+	.y(rstl_adc_8ch)
+);
+
+xci2_buf rstl_buf5 (
+	.a(rst_l),
+	.y(rstl_uks_controller)
+);
+
+xci2_buf rstl_buf6 (
+	.a(rst_l),
+	.y(rstl_vsi)
+);
+
+xci2_buf rstl_buf7 (
+	.a(rst_l),
+	.y(rstl_lvds)
+);
+
+xci2_buf rstl_buf8 (
+	.a(rst_l),
+	.y(rstl_package_complectation)
+);
+
+xci2_buf rstl_buf9 (
+	.a(rst_l),
+	.y(rstl_apb)
+);
+
+xci2_buf rstl_buf10 (
+	.a(rst_l),
+	.y(rstl_sram_controller)
+);
+
+xci2_buf rstl_buf11 (
+	.a(rst_l),
+	.y(rstl_other)
+);
+
+always @(posedge clk_other or negedge rst_l) begin // фиксация значений логических выходов
     if (!rst_l) begin
         log_control_reg <= 22'b0;
     end
@@ -299,8 +472,8 @@ always @(posedge bb_clk_in or negedge rst_l) begin // фиксация знач�
 end
 
 adc045_wrap adc_045_inst (
-    .clk     (bb_clk_in),
-    .rst_l   (rst_l),
+    .clk     (clk_adc_045),
+    .rst_l   (rstl_adc_045),
 
     // interface to  1 adc//
     .DRDY    ({adc045_drdy_6, adc045_drdy_5, adc045_drdy_4, adc045_drdy_3, adc045_drdy_2, adc045_drdy_1}),           
@@ -318,8 +491,8 @@ adc045_wrap adc_045_inst (
 );
 
 dac045a dac_045_inst (
-    .clk         (bb_clk_in),
-    .rst_l       (rst_l),
+    .clk         (clk_dac045a),
+    .rst_l       (rstl_dac045a),
 
     .sync_300Hz  (sync),             // строб с частотой 300 Гц - частота обновления ЦАП
     .mode1       (DAC_mode[0]),      // 0 - установка фикс. значения, 1 - плавное изменение до порога. Поднять на уровень выше
@@ -362,8 +535,8 @@ dac045a dac_045_inst (
 );
 
 adc733_wrap adc_733_inst (
-    .clk    (bb_clk_in),
-    .rst_l  (rst_l),
+    .clk    (clk_adc733),
+    .rst_l  (rstl_adc733),
 
     // serial port //
     .SCLK   (adc733_sclk),
@@ -381,8 +554,8 @@ adc733_wrap adc_733_inst (
 );
 
 adc_8ch_wrap adc_8ch_wrap_inst (
-    .clk    (bb_clk_in),
-    .rst_l  (rst_l),
+    .clk    (clk_adc_8ch),
+    .rst_l  (rstl_adc_8ch),
 
     // serial interface //
     .DOUT   ({adc8ch_dout_3, adc8ch_dout_2, adc8ch_dout_1}),
@@ -399,8 +572,8 @@ adc_8ch_wrap adc_8ch_wrap_inst (
 );
 
 uks_controller uks_controller_inst(
-    .clk         (bb_clk_in),
-    .rst_l       (rst_l),
+    .clk         (clk_uks_controller),
+    .rst_l       (rstl_uks_controller),
     .marker      (uks_marker),
     .addr        (uks_addr),
     .data        (uks_data),
@@ -440,8 +613,8 @@ uks_controller uks_controller_inst(
 );
 
 vsi vsi_inst (
-    .bb_clk_in    (bb_clk_in),
-    .rst_l        (rst_l),
+    .bb_clk_in    (clk_vsi),
+    .rst_l        (rstl_vsi),
 
     .data_i       (data_to_vsi),
     .request      (vsi_request),
@@ -473,8 +646,8 @@ lvds_wrapper  #(
     .PAYLOAD_BITS(UART_PAYLOAD_BITS),
     .STOP_BITS   (UART_STOP_BITS)
 ) lvds_wrapper_inst (
-    .clk        (bb_clk_in),
-    .rst_l      (rst_l),
+    .clk        (clk_lvds),
+    .rst_l      (rstl_lvds),
     .sync       (sync),
 
     .RO         (lvds_ro),
@@ -488,15 +661,17 @@ lvds_wrapper  #(
 );
 
 sync_strobe sync_strobe_sync(
-    .clk        (bb_clk_in),
-    .rst_l      (rst_l),
+    .clk        (clk_other),
+    .rst_l      (rstl_other),
+    .sec_mark   (hz),
     .strobe     (sync)
 );
 
 // модуль для формирования пакета от ОБ //
 package_complectation package_complectation_inst(
-    .clk             (bb_clk_in),
-    .rst_l           (rst_l),
+    .clk             (clk_package_complectation),
+    .rst_l           (rstl_package_complectation),
+    .sync            (sync),
     
     // данные от АЦП, ЦАП и ДСС //
     .adc045_data     (adc045_data),
@@ -525,8 +700,8 @@ package_complectation package_complectation_inst(
 
 // байтовый поток преобр. в 4-байтовый для шины ПЛИС-процессор
 data_compressor compressor_inst (
-	.clk	   (bb_clk_in	  	  ),
-	.rst_l     (rst_l	  		  ),
+	.clk	   (clk_other	  	  ),
+	.rst_l     (rstl_other	  	  ),
 	.data_i	   (data_to_apb       ),
 	.next_word (package_rd_en     ),
 	.data_o	   (data_to_cpu		  ),
@@ -534,8 +709,8 @@ data_compressor compressor_inst (
 );
 
 apb_controller apb_controller_inst (
-    .rst_l           (rst_l),
-    .clk             (bb_clk_in),
+    .rst_l           (rstl_apb),
+    .clk             (clk_apb),
 
     // apb //
     .prdata          (bb_prdata),
@@ -571,8 +746,8 @@ apb_controller apb_controller_inst (
 );
 
 vsi_pack_counter vsi_pack_counter_inst (
-    .rst_l              (rst_l),
-    .clk                (bb_clk_in),
+    .rst_l              (rstl_other),
+    .clk                (clk_other),
 
     .data_i             (data_from_cpu),
     .word_valid         (vsi_word_rcvd),       // строб сопровождающий каждое слово
@@ -587,8 +762,8 @@ vsi_pack_counter vsi_pack_counter_inst (
 );
 
 sram_controller_wrap sram_controller_wrap_inst (
-    .rst_l               (rst_l),
-    .clk                 (bb_clk_in),
+    .rst_l               (rstl_sram_controller),
+    .clk                 (clk_sram_controller),
 
     .A                   (A),
     .IO                  (IO),
@@ -612,8 +787,8 @@ sram_controller_wrap sram_controller_wrap_inst (
 );
 
 vsi_controller vsi_controller_inst (
-    .clk            (bb_clk_in),
-    .rst_l          (rst_l),
+    .clk            (clk_other),
+    .rst_l          (rstl_other),
 
     .data_i         (data_from_sram),
     .rd_request     (vsi_request),            // запрос на пакет данных от модуля ВСИ
@@ -628,9 +803,9 @@ vsi_controller vsi_controller_inst (
 );
 
 mod_hertz_shift mod_hertz_shift_inst (
-    .CLK(bb_clk_in), 
+    .CLK(rstl_other), 
     // Общий ресет контроллера. GND - активный. (то есть при GND  всё в ресете.)
-    .RESET(rst_l),
+    .RESET(clk_other),
 
     // входные секунды
     .HZ_IN(hz),
@@ -652,16 +827,16 @@ mod_hertz_shift mod_hertz_shift_inst (
     .BIT_KBV_CORRECTION()
 );
 
-/*
-IS61WV204816 IS61WV204816_inst(
-    .A      (A),      
-    .IO     (IO),      
-    .CS_n   (CS), 
-    .OE_n   (OE), 
-    .WE_n   (WE),
-    .LB_n   (LB),
-    .UB_n   (UB)
-);
-*/
+`ifdef DEBUG_MODE
+    IS61WV204816 IS61WV204816_inst(
+        .A      (A),      
+        .IO     (IO),      
+        .CS_n   (CS), 
+        .OE_n   (OE), 
+        .WE_n   (WE),
+        .LB_n   (LB),
+        .UB_n   (UB)
+    );
+`endif
 
 endmodule

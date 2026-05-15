@@ -1,38 +1,34 @@
 onerror {resume}
-quietly virtual function -install /adc_reader_tb/uut/adc_inst -env /adc_reader_tb/uut/adc_inst { ( ~(bool)(rst_l ) )} dbgTemp18_144
-quietly virtual function -install /adc_reader_tb/uut/adc_inst -env /adc_reader_tb/uut/adc_inst { &{(load  ? 10'b0000010100 : shift_reg[22:13]) , (load  ? wreg_command[13:1] : shift_reg[12:0]) , (load  ? wreg_command[0] : 1'b0)}} dbgTemp8_shift_reg_3
-quietly virtual function -install /adc_reader_tb/uut/adc_inst -env /adc_reader_tb/uut/adc_inst { &{(load  ? 10'b0000100000 : shift_reg[22:13]) , (load  ? 13'b0000000000000 : shift_reg[12:0]) , (load  ? 1'b0 : 1'b0)}} dbgTemp8_shift_reg_4
-quietly virtual function -install /adc_reader_tb/uut/adc_inst -env /adc_reader_tb/uut/adc_inst { ( ~(bool)(rst_l ) )} dbgTemp19_144
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /adc_reader_tb/uut/clk
-add wave -noupdate /adc_reader_tb/adc_clk
-add wave -noupdate /adc_reader_tb/drdy
-add wave -noupdate /adc_reader_tb/uut/rst_l
-add wave -noupdate /adc_reader_tb/send_adc_data/i
-add wave -noupdate -expand /adc_reader_tb/uut/SCLK
-add wave -noupdate -expand /adc_reader_tb/uut/DIN
-add wave -noupdate /adc_reader_tb/uut/DRDY
-add wave -noupdate /adc_reader_tb/uut/adc_inst/DRDY
-add wave -noupdate -expand /adc_reader_tb/uut/DOUT
-add wave -noupdate -expand /adc_reader_tb/uut/START
-add wave -noupdate /adc_reader_tb/uut/sync
-add wave -noupdate /adc_reader_tb/uut/adc_inst/sync
-add wave -noupdate /adc_reader_tb/uut/all_channels_done
-add wave -noupdate -format Analog-Step -height 150 -max 16408400.0 -radix hexadecimal /adc_reader_tb/ch1_sample
-add wave -noupdate /adc_reader_tb/uut/adc_inst/channel_choice
-add wave -noupdate /adc_reader_tb/uut/adc_inst/busy
-add wave -noupdate /adc_reader_tb/uut/adc_inst/rd_en
-add wave -noupdate /adc_reader_tb/uut/adc_inst/channel
-add wave -noupdate -radix hexadecimal /adc_reader_tb/uut/adc_inst/data_o
-add wave -noupdate /adc_reader_tb/uut/adc_counter
-add wave -noupdate /adc_reader_tb/uut/work_frame
-add wave -noupdate /adc_reader_tb/uut/adc_inst/set_delay
-add wave -noupdate /adc_reader_tb/uut/adc_enable
+add wave -noupdate /adc_tb/dut/clk
+add wave -noupdate /adc_tb/dut/rst_l
+add wave -noupdate /adc_tb/ch1_sample
+add wave -noupdate /adc_tb/sin_signal
+add wave -noupdate /adc_tb/cos_signal
+add wave -noupdate /adc_tb/ch_change
+add wave -noupdate /adc_tb/adc_clk
+add wave -noupdate /adc_tb/dut/DRDY
+add wave -noupdate /adc_tb/dut/DOUT
+add wave -noupdate /adc_tb/dut/CS
+add wave -noupdate /adc_tb/dut/DIN
+add wave -noupdate /adc_tb/dut/SCLK
+add wave -noupdate /adc_tb/dut/nRST
+add wave -noupdate /adc_tb/dut/START
+add wave -noupdate /adc_tb/dut/enable
+add wave -noupdate /adc_tb/sync
+add wave -noupdate /adc_tb/dut/wreg_command
+add wave -noupdate /adc_tb/dut/channel_choice
+add wave -noupdate /adc_tb/dut/busy
+add wave -noupdate /adc_tb/dut/data_o
+add wave -noupdate /adc_tb/dut/ch_num
+add wave -noupdate /adc_tb/dut/rd_en
+add wave -noupdate /adc_tb/dut/dly
+add wave -noupdate /adc_tb/dut/state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {6466661 ns} 0} {{Cursor 3} {3135000 ns} 0} {{Cursor 3} {1063708 ns} 0}
-quietly wave cursor active 3
-configure wave -namecolwidth 273
-configure wave -valuecolwidth 173
+WaveRestoreCursors {{Cursor 1} {3001163 ns} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 185
+configure wave -valuecolwidth 116
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
 configure wave -snapdistance 10
@@ -43,6 +39,6 @@ configure wave -gridoffset 0
 configure wave -gridperiod 1
 configure wave -griddelta 40
 configure wave -timeline 0
-configure wave -timelineunits ps
+configure wave -timelineunits ns
 update
-WaveRestoreZoom {2903070 ns} {3374117 ns}
+WaveRestoreZoom {6492705 ns} {6500384 ns}

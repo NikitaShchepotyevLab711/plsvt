@@ -20,6 +20,7 @@ vlog "../tb/top_tb.v"                            \
      "../src/vsi_ramblock_wrap.v"                \
      "../src/mod_hertz_shift.v"                  \
      "../src/uks_controller.v"                   \
+     "../src/xci2_buf.v"                         \
      "../adc_8ch_045/src/adc_8ch_wrap.v"         \
      "../adc_8ch_045/src/adc_8ch_045.v"          \
      "../adc_8ch_045/src/clk_divider2.v"         \

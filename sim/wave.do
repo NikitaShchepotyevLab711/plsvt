@@ -28,6 +28,27 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /top_tb/dut/bb_clk_in
 add wave -noupdate /top_tb/dut/rst_l
 add wave -noupdate /top_tb/dut/adc_045_inst/sync
+add wave -noupdate /top_tb/ch1_sample
+add wave -noupdate /top_tb/dut/package_complectation_inst/adc045_data
+add wave -noupdate /top_tb/dut/package_complectation_inst/adc045_ready
+add wave -noupdate /top_tb/dut/package_complectation_inst/adc045_ready_reg
+add wave -noupdate /top_tb/dut/adc_045_inst/adc_inst/dly
+add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/SYNC
+add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/DATA_O
+add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/data_mode
+add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/state
+add wave -noupdate /top_tb/dut/package_complectation_inst/dac_value
+add wave -noupdate /top_tb/dut/package_complectation_inst/adc733_data
+add wave -noupdate /top_tb/dut/package_complectation_inst/adc_8ch_data
+add wave -noupdate /top_tb/dut/package_complectation_inst/dss_data
+add wave -noupdate /top_tb/dut/package_complectation_inst/wr_word_counter
+add wave -noupdate /top_tb/dut/package_complectation_inst/rd_word_counter
+add wave -noupdate /top_tb/dut/package_complectation_inst/waddr1
+add wave -noupdate /top_tb/dut/package_complectation_inst/raddr1
+add wave -noupdate /top_tb/dut/package_complectation_inst/state
+add wave -noupdate /top_tb/dut/package_complectation_inst/all_data_sent
+add wave -noupdate /top_tb/dut/package_complectation_inst/package_complete
+add wave -noupdate /top_tb/dut/package_complectation_inst/data_o
 add wave -noupdate /top_tb/dut/data_to_cpu
 add wave -noupdate /top_tb/dut/data_from_cpu
 add wave -noupdate /top_tb/dut/vsi_data1
@@ -39,6 +60,9 @@ add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/state1
 add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/state2
 add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup1_full
 add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup2_full
+add wave -noupdate /top_tb/dut/vsi_inst/rx_data
+add wave -noupdate /top_tb/dut/vsi_inst/hz
+add wave -noupdate /top_tb/dut/vsi_inst/timecode
 add wave -noupdate /top_tb/dut/vsi_inst/uks_marker
 add wave -noupdate /top_tb/dut/vsi_inst/uks_addr
 add wave -noupdate /top_tb/dut/vsi_inst/uks_data
@@ -53,11 +77,11 @@ add wave -noupdate /top_tb/dut/apb_controller_inst/pwdata
 add wave -noupdate -radix hexadecimal /top_tb/dut/apb_controller_inst/prdata
 add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/memblock_sel1
 add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/memblock_sel2
-add wave -noupdate /top_tb/dut/vsi_inst/hi_speed_protocol_rx_inst/mod_hi_speed_protocol_coder_inst/rs_coder_inst/reg_data_in
+add wave -noupdate -label Sent_by_vsi_word /top_tb/dut/vsi_inst/hi_speed_protocol_rx_inst/mod_hi_speed_protocol_coder_inst/rs_coder_inst/reg_data_in
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {4218811 ns} 0} {Trace {123076787 ns} 0}
-quietly wave cursor active 2
-configure wave -namecolwidth 497
+WaveRestoreCursors {{Cursor 1} {8499627 ns} 0} {Trace {96545774 ns} 0} {{Cursor 3} {169669634 ns} 0}
+quietly wave cursor active 3
+configure wave -namecolwidth 332
 configure wave -valuecolwidth 76
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -71,4 +95,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {158806855 ns} {170589113 ns}
+WaveRestoreZoom {169513698 ns} {170025595 ns}
