@@ -5,12 +5,9 @@ module vsi_pack_counter (
     input  wire [31:0] data_i,
     input  wire        pack_valid, // строб об окончании одного пакета 
     input  wire        word_valid, // строб сопровождающий каждое слово
-    input  wire        vsi_pack_writen,
 
     output reg  [15:0] data_o,              // 2байтовые слова для записи в ОЗУ 
-    output reg  [7:0]  pack_num,            // номер пакета 
     output wire        rdy,                 // строб о готовности 2байтового слова для записи в ОЗУ
-    output reg         vsi_data_ready,      // сигнал о том что 6 пакетов по 310 байт принято
     output reg         first_pack_incoming, // сигнал сообщает о том, что сейчас в обработке первый из шести пакетов
     input  wire        tail_of_pack
 );
@@ -34,7 +31,6 @@ always @(posedge clk or negedge rst_l) begin
         sec_half_rdy        <= 1'b0;
         first_half_rdy      <= 1'b0;
         pack_counter        <= 3'b0;
-        vsi_data_ready      <= 1'b0;
         first_pack_incoming <= 1'b0;
     end
     else begin
@@ -70,11 +66,9 @@ always @(posedge clk or negedge rst_l) begin
         if (pack_valid_pulse) begin  
             if (pack_counter == 3'd5) begin
                 pack_counter   <= 3'd0;
-                vsi_data_ready <= 1'b1;
             end
             else begin
                 pack_counter <= pack_counter + 1'b1;
-                vsi_data_ready <= 1'b0;
             end
         end
 

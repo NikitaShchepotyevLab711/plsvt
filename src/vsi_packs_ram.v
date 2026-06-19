@@ -46,7 +46,7 @@ reg  [1:0] data_load_counter1;
 reg  [7:0] data_o1;
 
 reg  [2:0] state2;
-localparam IDLE_2 		       = 0;
+localparam IDLE_2 		     = 0;
 localparam READ_2nd_CUP_1    = 1;
 localparam READ_2nd_CUP_2    = 2;
 localparam WRITE_2nd_CUP     = 3;
@@ -226,9 +226,9 @@ always @(posedge clk or negedge rst_l) begin // автомат для 1 стак
 	end
 end
 
-always @(posedge clk or negedge rst_l) begin // автомат для 1 блока памяти
+always @(posedge clk or negedge rst_l) begin // автомат для 2 блока памяти
 	if (!rst_l) begin
-		state2			     <= IDLE_1;
+		state2			     <= IDLE_2;
 		WRB2   			     <= 1'b1;
 		waddr2 			     <= 8'b0;
 		waddr2_reg 		     <= 8'b0;

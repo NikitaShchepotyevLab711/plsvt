@@ -9,38 +9,42 @@ module data_splitter_16_to_8 (
     output reg         rdy
 );
 
-reg byte_change;
-reg byte_change2;
-reg [7:0] data_o_reg;
+reg        state; 
+reg [7:0]  high_byte_reg;
+reg [7:0]  data_o_reg;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        byte_change  <= 1'b0;
-        byte_change2 <= 1'b0;
-        data_o_reg   <= 7'b0;
-        rdy          <= 1'b0;
+        state         <= 1'b0;
+        high_byte_reg <= 8'b0;
+        data_o_reg    <= 8'b0;
+        rdy           <= 1'b0;
     end
     else begin
-        if (enable) begin
-            byte_change  <= byte_change2;
-            if (byte_change) begin
-                data_o_reg   <= data_i[15:8];
-                byte_change  <= 1'b0;
-                byte_change2 <= 1'b0;
-                rdy          <= 1'b1;
-            end
-            else if (data_valid) begin
-                data_o_reg   <= data_i[7:0];
-                byte_change2 <= 1'b1;
-                rdy          <= 1'b1;
-            end
-            else
-                rdy          <= 1'b0;
-                
+        if (!enable) begin
+            state <= 1'b0;
+            rdy   <= 1'b0;
         end
         else begin
-            byte_change  <= 1'b0;
-            byte_change2 <= 1'b0;
+            case (state)
+                1'b0: begin
+                    if (data_valid) begin
+                        data_o_reg    <= data_i[7:0];   // Сразу выдаем младший байт
+                        high_byte_reg <= data_i[15:8];  // Буферизируем старший байт
+                        rdy           <= 1'b1;
+                        state         <= 1'b1;          // На следующем такте идем отдавать старший
+                    end
+                    else begin
+                        rdy           <= 1'b0;
+                    end
+                end
+
+                1'b1: begin
+                    data_o_reg <= high_byte_reg;        // Выдаем сохраненный старший байт
+                    rdy        <= 1'b1;
+                    state      <= 1'b0;                 // Возвращаемся в ожидание
+                end
+            endcase
         end
     end
 end

@@ -159,11 +159,8 @@ always @(posedge clk or negedge rst_l) begin
                                     state <= DAC_1BYTE;
                                     else if (dss_ready)
                                         state <= DSS_1BYTE;
-
-                    if (wr_word_counter == 6'd51)
-                        state <= WAIT_FOR_APB_TX;
-
-                    
+                                            if (wr_word_counter == 6'd51)
+                                                state <= WAIT_FOR_APB_TX;
 
                     data_to_ram      <= 8'b0;
                     memblock_sel     <= 2'd0;
@@ -602,9 +599,9 @@ xci2_buf clk_buf2 (
 
 assign data_o = DOut1[7:0];
 
-wire [7:0] waddr_buf;
-wire [7:0] raddr_buf;
-
+wire [7:0] waddr_buf = waddr;
+wire [7:0] raddr_buf = raddr;
+/*
 genvar i;
 generate
     for (i = 0; i < 8; i = i + 1) begin : addr_buf_gen_pck_cmplct
@@ -618,8 +615,8 @@ generate
                 .y(raddr_buf[i])     
             );
     end
-endgenerate
-
+endgenerate*/
+/*
 `ifdef DEBUG_MODE
     psevdo_ram_block ram0 (
         .rst_l(rst_l),
@@ -636,7 +633,7 @@ endgenerate
         .DO1(DOut1),
         .DO2()
     );
-`else
+`else*/
     ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
         .DIn({1'b0,data_to_ram}),
         .RADDR(raddr_buf),
@@ -651,6 +648,6 @@ endgenerate
         .DO1(DOut1),
         .DO2()
     );
-`endif
+//`endif
 
 endmodule

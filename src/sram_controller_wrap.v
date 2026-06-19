@@ -27,47 +27,51 @@ module sram_controller_wrap (
 parameter MARKER = 32'hb6;
 
 reg [15:0] data_to_sram;
-
 reg        wr_req_reg;   
 reg        rd_req_reg;
 
-reg [15:0] current_pack_quantity;
+reg [15:0] wr_vsi_pack_cnt; 
+reg [15:0] wr_word_counter;
+reg [15:0] rd_word_counter;
+
+reg [15:0] pack_fifo_count;
+
 wire       write_to_ram_pulse;
 wire       read_from_ram_pulse;
 
-// счётчики 
-reg [15:0] wr_vsi_pack_cnt; // считает записанные пакеты ВСИ (уже собранные, по 6 итоговых пакетов и дозаполненные нулями)
-reg [15:0] rd_vsi_pack_cnt; // считает записанные пакеты ВСИ
-reg [15:0] wr_word_counter;
-reg [15:0] rd_word_counter; // счетчик читаемых слов
+wire pack_written = (wr_en && (wr_word_counter == 21'd1015) && write_to_ram_pulse);
+wire pack_read    = (rd_word_counter == 16'd1015);
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        data_to_sram          <= 16'd0;
-        wr_word_counter       <= 16'b0;
-        rd_vsi_pack_cnt       <= 16'b0;
-        wr_vsi_pack_cnt       <= 16'b0;
-        wr_req_reg            <= 1'b0;
-        tail_of_pack          <= 1'b0;
-        rd_word_counter       <= 16'b0;
+        data_to_sram         <= 16'd0;
+        wr_word_counter      <= 16'b0;
+        wr_vsi_pack_cnt      <= 16'b0;
+        wr_req_reg           <= 1'b0;
+        tail_of_pack         <= 1'b0;
+        rd_word_counter      <= 16'b0;
+        
+        pack_fifo_count      <= 16'd0;
+        rd_flag              <= 1'b0; 
+        word_out_rdy         <= 1'b0;
     end
     else begin
         if (wr_en) begin
             if (wr_word_counter == 21'd1015) begin
                 wr_req_reg      <= 1'b0;
                 if (write_to_ram_pulse) begin
-                    wr_vsi_pack_cnt    <= wr_vsi_pack_cnt + 1'b1;    
+                    wr_vsi_pack_cnt <= wr_vsi_pack_cnt + 1'b1;    
                     tail_of_pack    <= 1'b0;
-                    wr_word_counter        <= 21'b0;
+                    wr_word_counter <= 21'b0;
                 end
             end
             else if (wr_word_counter >= 21'd938) begin
-                    wr_req_reg   <= 1'b1;
-                    if (write_to_ram_pulse) begin
-                        data_to_sram <= 16'd0;
-                        tail_of_pack    <= 1'b1;
-                        wr_word_counter <= wr_word_counter + 1'b1;
-                    end
+                wr_req_reg   <= 1'b1;
+                if (write_to_ram_pulse) begin
+                    data_to_sram <= 16'd0;
+                    tail_of_pack <= 1'b1;
+                    wr_word_counter <= wr_word_counter + 1'b1;
+                end
             end
             else if (first_pack_incoming) begin   
                 if (wr_word_counter == 21'h0) begin
@@ -104,18 +108,28 @@ always @(posedge clk or negedge rst_l) begin
 
         if (rd_word_counter == 16'd1015) begin
             rd_word_counter <= 16'h0;
-            rd_vsi_pack_cnt <= rd_vsi_pack_cnt + 1'b1;
         end
-        else if (read_from_ram_pulse) 
+        else if (read_from_ram_pulse) begin
             rd_word_counter <= rd_word_counter + 1'b1;
+        end
 
+        case ({pack_written, pack_read})
+            2'b10: pack_fifo_count <= pack_fifo_count + 1'b1;
+            2'b01: pack_fifo_count <= pack_fifo_count - 1'b1;
+            default: pack_fifo_count <= pack_fifo_count;
+        endcase
+
+        if (pack_written && !pack_read)
+            rd_flag <= 1'b1;
+        else if (!pack_written && pack_read)
+            rd_flag <= ((pack_fifo_count - 1'b1) != 16'd0);
+        else
+            rd_flag <= (pack_fifo_count != 16'd0);
     end
 end
 
 always @(*) begin
-    current_pack_quantity = wr_vsi_pack_cnt - rd_vsi_pack_cnt;
-    rd_flag               = (current_pack_quantity != 0);
-    rd_req_reg            = (current_pack_quantity != 0) ? rd_req : 1'b0;    
+    rd_req_reg = rd_flag ? rd_req : 1'b0;    
 end
 
 sram_controller sram_controller_inst (

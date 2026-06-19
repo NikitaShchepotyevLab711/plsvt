@@ -81,12 +81,13 @@ always @(posedge clk or negedge rst_l) begin
     end
     else begin
         case (dac_counter)
-            3'd0: data_to_dac <= mode1 ? data_increment1 : fixed_value1; 
-            3'd1: data_to_dac <= mode2 ? data_increment2 : fixed_value2; 
-            3'd2: data_to_dac <= mode3 ? data_increment3 : fixed_value3; 
-            3'd3: data_to_dac <= mode4 ? data_increment4 : fixed_value4; 
-            3'd4: data_to_dac <= mode5 ? data_increment5 : fixed_value5; 
-            3'd5: data_to_dac <= mode6 ? data_increment6 : fixed_value6; 
+            3'd0: data_to_dac <= 8'h0; 
+            3'd1: data_to_dac <= mode2 ? data_increment2 : fixed_value1; 
+            3'd2: data_to_dac <= mode3 ? data_increment3 : fixed_value2; 
+            3'd3: data_to_dac <= mode4 ? data_increment4 : fixed_value3; 
+            3'd4: data_to_dac <= mode5 ? data_increment5 : fixed_value4; 
+            3'd5: data_to_dac <= mode6 ? data_increment6 : fixed_value5; 
+            3'd6: data_to_dac <= mode6 ? data_increment6 : fixed_value6; 
             default: data_to_dac <= fixed_value1;
         endcase
     end

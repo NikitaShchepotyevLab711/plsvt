@@ -3,7 +3,7 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /adc_tb/dut/clk
 add wave -noupdate /adc_tb/dut/rst_l
 add wave -noupdate /adc_tb/ch1_sample
-add wave -noupdate /adc_tb/sin_signal
+add wave -noupdate -format Analog-Step -height 74 -max 8388441.0 -min -8388607.0 /adc_tb/sin_signal
 add wave -noupdate /adc_tb/cos_signal
 add wave -noupdate /adc_tb/ch_change
 add wave -noupdate /adc_tb/adc_clk
@@ -25,7 +25,7 @@ add wave -noupdate /adc_tb/dut/rd_en
 add wave -noupdate /adc_tb/dut/dly
 add wave -noupdate /adc_tb/dut/state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3001163 ns} 0}
+WaveRestoreCursors {{Cursor 1} {1657918 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 185
 configure wave -valuecolwidth 116
@@ -41,4 +41,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {6492705 ns} {6500384 ns}
+WaveRestoreZoom {0 ns} {6825 us}

@@ -138,7 +138,6 @@ always @(posedge SCLK or negedge rst_l) begin
                     cnt_en <= 1'b0;
                 end
                 else begin
-                    state <= WREG;
                     cnt_en <= 1'b1;
                     cnt_rst <= 1'b0;                    
                 end  
@@ -244,7 +243,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 case (channel_choice)
                     2'd0, 2'd2, 2'd3: state <= LOAD_WREG2;
                     2'd1: state <= IDLE;
-                    default: state <= CH1_RESULT;
+                    default: ;
                 endcase
                 ready <= 1'b1;
                 set_delay_start <= 1'b0;
@@ -254,16 +253,13 @@ always @(posedge SCLK or negedge rst_l) begin
             WAIT_FOR_SYNC: begin // ожидание следующего импульса Sync из верхнего модуля
                 if (sync) 
                     state <= WAIT_FOR_DRDY;
-                else
-                    state <= WAIT_FOR_SYNC;
+            
             end
 
             WAIT_FOR_DRDY: begin  // ожидание сигнала DRDY от АЦП
                 if (DRDY) begin
                     state <= CH_TX;
                 end
-                else
-                    state <= WAIT_FOR_DRDY;
 
                 hard_wreg <= 1'b0;
                 load <= 1'b0; 
@@ -288,7 +284,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 case (channel_choice)
                     2'd0, 2'd1, 2'd3: state <= IDLE;
                     2'd2: state <= WAIT_FOR_SYNC;
-                    default: state <= CH2_RESULT;
+                    default: ;
                 endcase
                 set_delay_start <= 1'b0;
                 ready <= 1'b1;

@@ -927,14 +927,14 @@ reg [7:0] MB1_UKS_marker = 8'ha1;
 reg [7:0] MB2_UKS_marker = 8'ha2;
 reg [7:0] MB3_UKS_marker = 8'ha3;
 reg [7:0] MB4_UKS_marker = 8'ha4;
-
+/*
 initial begin
     #2000000;
     send_UKS(8'hA5, 8'h02, OB_UKS_marker, 8'h3, 16'haabb);                 // выставляем фикс. значением 1 ЦАП аааа
     #2000000;
     send_UKS(8'hA5, 8'h02, MB2_UKS_marker, 8'h2, 16'b0000_0000_0000_0010); // выставляем фикс. значением 2 ЦАП в 2 МБ
 end
-
+*/
 // Функция расчета бита четности (нечет)
 function calculate_parity;
     input [7:0] data;

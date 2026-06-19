@@ -24,65 +24,64 @@ quietly virtual function -install /top_tb/dut/package_complectation_inst -env /t
 quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(rst_l ) )} dbgTemp3_8
 quietly virtual function -install /top_tb/dut/compressor_inst -env /top_tb/dut/compressor_inst { ( ~(bool)(rst_l ) )} dbgTemp0_2
 quietly virtual function -install /top_tb/dut/compressor_inst -env /top_tb/dut/compressor_inst { ( ~(bool)(rst_l ) )} dbgTemp2_2
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(rst_l ) )} dbgTemp1_300
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(apb_read ) )} dbgTemp10_300
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { (raddr4[7:0]  == waddr4[7:0] )} dbgTemp2_RDB_40
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ((bool)dbgTemp10_300  ? RDB : dbgTemp2_RDB_40)} dbgTemp2_RDB_42
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(apb_read ) )} dbgTemp11_300
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { (raddr3[7:0]  == waddr3[7:0] )} dbgTemp2_RDB_37
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ((bool)dbgTemp11_300  ? RDB : dbgTemp2_RDB_37)} dbgTemp2_RDB_39
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(apb_read ) )} dbgTemp12_300
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ((bool)dbgTemp12_300  ? RDB : 1'b0)} dbgTemp2_RDB_36
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(apb_read ) )} dbgTemp13_300
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { (raddr1[7:0]  == waddr1[7:0] )} dbgTemp2_RDB_27
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ((bool)dbgTemp13_300  ? RDB : dbgTemp2_RDB_27)} dbgTemp2_RDB_31
+quietly virtual function -install /top_tb/dut/package_complectation_inst -env /top_tb/dut/package_complectation_inst { ( ~(bool)(rst_l ) )} dbgTemp25_300
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /top_tb/dut/bb_clk_in
-add wave -noupdate /top_tb/dut/rst_l
-add wave -noupdate /top_tb/dut/adc_045_inst/sync
-add wave -noupdate /top_tb/ch1_sample
-add wave -noupdate /top_tb/dut/package_complectation_inst/adc045_data
-add wave -noupdate /top_tb/dut/package_complectation_inst/adc045_ready
-add wave -noupdate /top_tb/dut/package_complectation_inst/adc045_ready_reg
-add wave -noupdate /top_tb/dut/adc_045_inst/adc_inst/dly
-add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/SYNC
-add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/DATA_O
-add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/data_mode
-add wave -noupdate /top_tb/dut/adc_8ch_wrap_inst/adc_8ch_045_inst/state
-add wave -noupdate /top_tb/dut/package_complectation_inst/dac_value
-add wave -noupdate /top_tb/dut/package_complectation_inst/adc733_data
-add wave -noupdate /top_tb/dut/package_complectation_inst/adc_8ch_data
-add wave -noupdate /top_tb/dut/package_complectation_inst/dss_data
-add wave -noupdate /top_tb/dut/package_complectation_inst/wr_word_counter
+add wave -noupdate -color White -label clk /top_tb/dut/bb_clk_in
+add wave -noupdate -color White -label rst_l /top_tb/dut/rst_l
+add wave -noupdate -color White -label sync /top_tb/dut/adc_045_inst/sync
+add wave -noupdate -color White -label apb_penable /top_tb/dut/apb_controller_inst/penable
+add wave -noupdate -color White -label adc045_data /top_tb/dut/package_complectation_inst/adc045_data
+add wave -noupdate -color White -label dac_value /top_tb/dut/package_complectation_inst/dac_value
+add wave -noupdate -color White -label adc733_data /top_tb/dut/package_complectation_inst/adc733_data
+add wave -noupdate -color White -label adc_8ch_data /top_tb/dut/package_complectation_inst/adc_8ch_data
+add wave -noupdate -color White -label dss_data /top_tb/dut/package_complectation_inst/dss_data
+add wave -noupdate -color White -label wr_word_counter /top_tb/dut/package_complectation_inst/wr_word_counter
+add wave -noupdate -color White -label package_complectation_state /top_tb/dut/package_complectation_inst/state
+add wave -noupdate -color White -label all_data_sent /top_tb/dut/package_complectation_inst/all_data_sent
+add wave -noupdate -color White -label package_complete /top_tb/dut/package_complectation_inst/package_complete
+add wave -noupdate /top_tb/dut/package_complectation_inst/ram0/DIn
 add wave -noupdate /top_tb/dut/package_complectation_inst/rd_word_counter
-add wave -noupdate /top_tb/dut/package_complectation_inst/waddr1
-add wave -noupdate /top_tb/dut/package_complectation_inst/raddr1
-add wave -noupdate /top_tb/dut/package_complectation_inst/state
-add wave -noupdate /top_tb/dut/package_complectation_inst/all_data_sent
-add wave -noupdate /top_tb/dut/package_complectation_inst/package_complete
-add wave -noupdate /top_tb/dut/package_complectation_inst/data_o
-add wave -noupdate /top_tb/dut/data_to_cpu
-add wave -noupdate /top_tb/dut/data_from_cpu
-add wave -noupdate /top_tb/dut/vsi_data1
-add wave -noupdate /top_tb/dut/vsi_data2
-add wave -noupdate /top_tb/dut/vsi_com1
-add wave -noupdate /top_tb/dut/vsi_com2
-add wave -noupdate /top_tb/dut/vsi_inst/hi_speed_protocol_rx_inst/mod_hi_speed_protocol_coder_inst/reg_data
-add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/state1
-add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/state2
-add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup1_full
-add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup2_full
-add wave -noupdate /top_tb/dut/vsi_inst/rx_data
-add wave -noupdate /top_tb/dut/vsi_inst/hz
-add wave -noupdate /top_tb/dut/vsi_inst/timecode
-add wave -noupdate /top_tb/dut/vsi_inst/uks_marker
-add wave -noupdate /top_tb/dut/vsi_inst/uks_addr
-add wave -noupdate /top_tb/dut/vsi_inst/uks_data
-add wave -noupdate /top_tb/dut/vsi_inst/whole_uks
-add wave -noupdate /top_tb/dut/uks_controller_inst/valid
-add wave -noupdate /top_tb/dut/uks_controller_inst/data
-add wave -noupdate /top_tb/dut/mod_hertz_shift_inst/KBV_OUT
-add wave -noupdate /top_tb/dut/uks_controller_inst/MB_READY2
-add wave -noupdate /top_tb/dut/apb_controller_inst/penable
-add wave -noupdate /top_tb/dut/apb_controller_inst/paddr
-add wave -noupdate /top_tb/dut/apb_controller_inst/pwdata
-add wave -noupdate -radix hexadecimal /top_tb/dut/apb_controller_inst/prdata
-add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/memblock_sel1
-add wave -noupdate /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/memblock_sel2
-add wave -noupdate -label Sent_by_vsi_word /top_tb/dut/vsi_inst/hi_speed_protocol_rx_inst/mod_hi_speed_protocol_coder_inst/rs_coder_inst/reg_data_in
+add wave -noupdate /top_tb/dut/package_complectation_inst/WRB
+add wave -noupdate /top_tb/dut/package_complectation_inst/RDB
+add wave -noupdate /top_tb/dut/package_complectation_inst/ram0/DO1
+add wave -noupdate /top_tb/dut/package_complectation_inst/waddr3
+add wave -noupdate /top_tb/dut/package_complectation_inst/raddr3
+add wave -noupdate -color White -label data_o /top_tb/dut/package_complectation_inst/data_o
+add wave -noupdate -color White -label data_to_cpu /top_tb/dut/data_to_cpu
+add wave -noupdate -color White -label data_from_cpu /top_tb/dut/data_from_cpu
+add wave -noupdate -color White /top_tb/dut/vsi_pack_counter_inst/pack_counter
+add wave -noupdate -color White /top_tb/dut/vsi_pack_counter_inst/tail_of_pack
+add wave -noupdate -color White /top_tb/dut/vsi_pack_counter_inst/pack_valid
+add wave -noupdate -color White /top_tb/dut/vsi_pack_counter_inst/word_valid
+add wave -noupdate -color White /top_tb/dut/sram_controller_wrap_inst/wr_req_reg
+add wave -noupdate -color White /top_tb/dut/sram_controller_wrap_inst/rd_req_reg
+add wave -noupdate -color White /top_tb/dut/sram_controller_wrap_inst/IO
+add wave -noupdate -color White /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup1_full
+add wave -noupdate -color White /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup1_enable
+add wave -noupdate -color White /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup2_full
+add wave -noupdate -color White /top_tb/dut/vsi_controller_inst/vsi_packs_ram_inst/cup2_enable
+add wave -noupdate -color White /top_tb/dut/vsi_data1
+add wave -noupdate -color White /top_tb/dut/vsi_data2
+add wave -noupdate -color White /top_tb/dut/vsi_com1
+add wave -noupdate -color White /top_tb/dut/vsi_com2
+add wave -noupdate -color White /top_tb/dut/vsi_inst/hi_speed_protocol_rx_inst/mod_hi_speed_protocol_coder_inst/reg_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {8499627 ns} 0} {Trace {96545774 ns} 0} {{Cursor 3} {169669634 ns} 0}
-quietly wave cursor active 3
-configure wave -namecolwidth 332
-configure wave -valuecolwidth 76
+WaveRestoreCursors {{Cursor 1} {64827523 ns} 0} {Trace {115120026 ns} 0} {{Cursor 3} {169997195 ns} 0}
+quietly wave cursor active 2
+configure wave -namecolwidth 301
+configure wave -valuecolwidth 40
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
 configure wave -snapdistance 10
@@ -95,4 +94,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {169513698 ns} {170025595 ns}
+WaveRestoreZoom {169967781 ns} {170000538 ns}

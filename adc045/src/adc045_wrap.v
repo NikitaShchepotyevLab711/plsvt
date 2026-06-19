@@ -125,7 +125,15 @@ always @(*) begin
 end
 
 assign sync_i = (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ; // для первого ацп идет синхросигнал сверху, следующие запускаются сигналом busy_delayed_pulse от предыдущего ацп
-
+/*
+always @(posedge clk or negedge rst_l) begin
+    if (!rst_l) begin
+        sync_i <= 1'b0;
+    end
+    else
+        sync_i <= (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ;
+end
+*/
 sync2_toggle_to_pulse busy_toggle_to_pulse_inst (
     .clk(clk),
     .rst(rst_l),

@@ -43,7 +43,7 @@ reg ch_change;
 
 wire [13:0] wreg_command; // прошивка для АЦП
 
-wire [1:0] channel_choice = 2'b11; // 1&2 ch
+wire [1:0] channel_choice = 2'b00; // 1&2 ch
 //wire channel_choice = 2'b01; // 1 ch
 //wire channel_choice = 2'b10; // 2 ch
 //wire channel_choice = 2'b11; // 1&2 ch
@@ -133,7 +133,7 @@ always @(posedge adc_clk or negedge reset) begin
     end
 end
 
-assign ch1_sample = (!(^ch_num)) ? (ch_change ? sin_signal : cos_signal) : sin_signal;
+assign ch1_sample = (ch_change) ? (!(^ch_num) ? sin_signal : cos_signal) : sin_signal;
 
 task send_adc_data;
     input [23:0] ch1;
