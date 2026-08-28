@@ -1,197 +1,138 @@
-module adc045_wrap (
-
+module adc045_wrap #(
+    parameter integer CLK_FREQ_HZ  = 8_000_000,
+    parameter integer SYNC_FREQ_HZ = 300
+) (
     input  wire        clk,
     input  wire        rst_l,
 
-    // interface to adc (6 channels) //
-    input  wire [5:0]  DRDY,           
-    input  wire [5:0]  DOUT,    
-    output reg  [5:0]  CS,       
-    output reg  [5:0]  DIN,           
-    output reg  [5:0]  SCLK,
-    output reg  [5:0]  nRST,
-    output reg  [5:0]  START,
+    // Interface to one 5400TR045A-025 ADC.
+    input  wire        DRDY,
+    input  wire        DOUT,
+    output wire        CS,
+    output wire        DIN,
+    output wire        SCLK,
+    output wire        nRST,
+    output wire        START,
 
-    // others //
-    input wire         sync, 
+    // Captured ADC data.
     output wire [23:0] DATA_OUT,
-    output wire        RD_EN,
-    output reg         all_channels_done
+    output wire        RD_EN
 );
 
-wire [1:0] channel_choice = 2'b11; // 1&2 ch
-//wire channel_choice = 2'b01; // 1 ch
-//wire channel_choice = 2'b10; // 2 ch
-//wire channel_choice = 2'b11; // 1&2 ch
+// Both differential input channels are sampled in single-conversion mode.
+// adc045 accepts 2'b00 and 2'b11 as "both channels"; 2'b01 selects channel 1
+// and 2'b10 selects channel 2.
+wire [1:0] channel_choice;
+assign channel_choice = 2'b11;
 
-wire MODE; // режим (0 - каждый ацп принимает только в 1 канал, 1 - каждый ацп работает по обоим каналам)
+// Configuration register R[13:0]. A_MUX (R[15:14]) is supplied by adc045.
+wire        cfg_pol;
+wire [2:0]  cfg_gain;
+wire        cfg_ref;
+wire        cfg_mode;
+wire [1:0]  cfg_data_rate;
+wire [1:0]  cfg_tech_hi;
+wire        cfg_scale;
+wire        cfg_buf_dis;
+wire [1:0]  cfg_tech_lo;
+wire [13:0] wreg_command;
 
-wire POL = 0; // non inverted input channels
-//reg POL = 1; // inverted input channels
+assign cfg_pol       = 1'b0;   // Non-inverted differential inputs.
+assign cfg_gain      = 3'b000; // PGA bypassed, gain = 1.
+assign cfg_ref       = 1'b0;   // Internal 2.5 V reference.
+assign cfg_mode      = 1'b1;   // Single-conversion mode.
+assign cfg_data_rate = 2'b00;  // 1 ksample/s digital-filter setting.
+assign cfg_tech_hi   = 2'b00;  // Reserved: must be zero.
+assign cfg_scale     = 1'b0;   // 100% full scale.
+assign cfg_buf_dis   = 1'b0;   // Reference buffer enabled.
+assign cfg_tech_lo   = 2'b00;  // Reserved: must be zero.
 
-wire [2:0] GAIN = 3'b000; // no gain
-//wire [2:0] GAIN = 3'b100; // x2 gain
-//wire [2:0] GAIN = 3'b101; // x4 gain
-//wire [2:0] GAIN = 3'b110; // x8 gain
-//wire [2:0] GAIN = 3'b111; // x16 gain
+assign wreg_command = {
+    cfg_pol,
+    cfg_gain,
+    cfg_ref,
+    cfg_mode,
+    cfg_data_rate,
+    cfg_tech_hi,
+    cfg_scale,
+    cfg_buf_dis,
+    cfg_tech_lo
+};
 
-wire REF = 0; //internal reference voltage;
-//wire REF = 1; //external reference voltage;
+wire sync_pulse;
+wire sync_extended;
+wire adc_busy;
+wire adc_busy_done;
+wire adc_delay_active;
+wire adc_enable;
+wire adc_channel;
+reg  work_frame;
 
-assign MODE = ^channel_choice ? 1'b0 : 1'b1;
+// Free-running request pulse used by the stand-alone ADC test project.
+sync_strobe #(
+    .CLK_FREQ_HZ   (CLK_FREQ_HZ),
+    .STROBE_FREQ_HZ(SYNC_FREQ_HZ)
+) sync_strobe_inst (
+    .clk   (clk),
+    .rst_l (rst_l),
+    .strobe(sync_pulse)
+);
 
-wire [1:0] DR = 2'b00; // 1 kHz dig filter sampling
-//wire [1:0] DR = 2'b01; // 250 Hz dig filter sampling
-//wire [1:0] DR = 2'b10; // 62,5 Hz dig filter sampling
-//wire [1:0] DR = 2'b11; // 15,6 Hz dig filter sampling
+// Preserve the pulse-extension used by the multi-ADC version. It also gives
+// the local run-enable latch time to open before the controller samples SYNC.
+pulse_extender pulse_extender_inst (
+    .clk           (clk),
+    .rst_l         (rst_l),
+    .pulse         (sync_pulse),
+    .extended_pulse(sync_extended)
+);
 
-wire [1:0] Tech1 = 0; // technical bits
+// Convert the falling edge of adc_busy into a one-clk completion pulse for
+// the local run-enable latch.
+sync2_toggle_to_pulse busy_fall_detector_inst (
+    .clk       (clk),
+    .rst       (rst_l),
+    .toggle    (adc_busy),
+    .pulse     (adc_busy_done),
+    .out_toggle()
+);
 
-wire SCALE = 0; //full scale ADC
-//wire SCALE = 1; // 80% scale ADC
-
-wire BUF_DIS = 1; // reference voltage buffer on
-//wire BUF_DIS = 1; // reference voltage buffer off
-
-wire [1:0] Tech2 = 2'b01; // technical bits
-
-wire [13:0] wreg_command; // прошивка для АЦП
-assign wreg_command =  {POL, GAIN, REF, MODE, DR, Tech1, SCALE, BUF_DIS, Tech2};
-
-// сигналы к модулю захвата данных //
-reg  drdy;
-reg  dout;
-wire cs;
-wire din;
-wire sclk;
-wire nrst;
-wire start;
-
-
-reg [2:0] adc_counter; // счетчик для смены каждого из ацп
-
-wire work_frame; // сигнал активен, пока идет захват данных с шести ацп (от начала приема с первого до конца приема с шестого)
-
-wire sync_i;        // синхроимпульс, подаваемый на модуль захвата данных
-wire sync_extended; // синхроимпульс удвоенной длительности, чтобы тактируемый частотой 4 мгц модуль захвата данных реагировал
-wire adc_enable; // сигнал, включающий модуль приема даннных с АЦП. 
-
-wire delay_status; // сигнал, сигнализирующий об активности стартовой задержки
-wire end_delay_pulse; // строб, сигнализирующий об окончании стартовой задержки
-wire end_delay_toggle; // единица соответствует активному режиму работы (не задержка)
-
-wire ADC_BUSY;   // положение "1" сигнализирует о том, что идет прием данных с одного из ацп
-wire busy_pulse; // строб, сигнализирующий об окончании цикла работы с отдельным ацп
-wire busy_delayed_pulse; // задержанный на такт (чтобы прихоидлся на след. значение счетчика) строб окончания цикла работы с отдельным ацп
-
-always @(posedge clk or negedge rst_l) begin // счетчик АЦП. Выставляет сигнал all_channels_done по окончании счета
-    if (!rst_l) begin
-        adc_counter <= 3'd0;
-        all_channels_done    <= 1'b0;
-    end
-    else begin
-        if (adc_counter == 3'd6) begin
-            adc_counter <= 3'd0;
-            all_channels_done    <= 1'b1;
-        end
-        else begin
-            all_channels_done    <= 1'b0;
-            if (busy_pulse) 
-                adc_counter <= adc_counter + 1'd1;
-        end
-    end
-end
-
-always @(*) begin
-    drdy = DRDY[adc_counter];
-    dout = DOUT[adc_counter];
-end
-
-always @(*) begin
-    if (!end_delay_toggle) begin // пока не прошла задержка (она запускается на всех АЦП разом), идет работа со всеми АЦП одновременно
-        CS <= {6{cs}};
-        DIN <= {6{din}};
-        SCLK <= {6{sclk}};
-        nRST <= {6{nrst}};
-        START <= {6{start}};    
-    end
-    else begin // после задержки АЦП обрабатываются по очереди, в соответствии с счетчиком
-        CS[adc_counter]   <= cs;
-        DIN[adc_counter]  <= din;
-        SCLK[adc_counter] <= sclk;
-        nRST[adc_counter] <= nrst;
-        START[adc_counter] <= start;
-    end
-end
-
-assign sync_i = (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ; // для первого ацп идет синхросигнал сверху, следующие запускаются сигналом busy_delayed_pulse от предыдущего ацп
-/*
+// Keep the controller enabled for the complete pair of conversions. Physical
+// SCLK is generated only inside the 24-bit write and read states.
 always @(posedge clk or negedge rst_l) begin
-    if (!rst_l) begin
-        sync_i <= 1'b0;
-    end
-    else
-        sync_i <= (adc_counter == 3'b0) ? sync_extended : busy_delayed_pulse ;
+    if (!rst_l)
+        work_frame <= 1'b0;
+    else if (adc_busy_done)
+        work_frame <= 1'b0;
+    else if (sync_pulse)
+        work_frame <= 1'b1;
 end
-*/
-sync2_toggle_to_pulse busy_toggle_to_pulse_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .toggle(ADC_BUSY),
-    .pulse(busy_pulse)
-);
 
-sync2_toggle_to_pulse delay_toggle_to_pulse_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .toggle(delay_status),
-    .pulse(end_delay_pulse)
-);
+assign adc_enable = adc_delay_active | work_frame;
 
-pulse_to_toggle delay_pulse_to_toggle_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .pulse(end_delay_pulse),
-    .reset_toggle(1'b0),
-    .toggle(end_delay_toggle)
-);
+adc045 #(
+    .CLK_FREQ_HZ(CLK_FREQ_HZ)
+) adc_inst (
+    .clk           (clk),
+    .rst_l         (rst_l),
 
-pulse_to_toggle pulse_to_toggle_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .pulse(sync),
-    .reset_toggle(all_channels_done),
-    .toggle(work_frame)
-);
+    .DRDY          (DRDY),
+    .DOUT          (DOUT),
+    .CS            (CS),
+    .DIN           (DIN),
+    .SCLK          (SCLK),
+    .nRST          (nRST),
+    .START         (START),
 
-assign adc_enable = delay_status ? delay_status : work_frame;
-
-sync2 i_sync2_busy   (clk, rst_l, busy_pulse, busy_delayed_pulse); 
-
-pulse_extender pulse_ext_inst (clk, rst_l, sync, sync_extended);
-
-adc045 adc_inst(
-    .clk(clk),
-    .rst_l(rst_l),
-
-    // interface to adc//
-    .DRDY(drdy),           
-    .DOUT(dout),    
-    .CS(cs),       
-    .DIN(din),           
-    .SCLK(sclk),
-    .nRST(nrst),
-    .START(start),
-    
-    .enable(adc_enable),
-    .sync(sync_i),
-    .wreg_command(wreg_command),
+    .enable        (adc_enable),
+    .sync          (sync_extended),
+    .wreg_command  (wreg_command),
     .channel_choice(channel_choice),
-    .busy(ADC_BUSY),
-    .data_o(DATA_OUT),
-    .ch_num(),
-    .rd_en(RD_EN),
-    .dly(delay_status)
+    .busy          (adc_busy),
+    .data_o        (DATA_OUT),
+    .ch_num        (adc_channel),
+    .rd_en         (RD_EN),
+    .dly           (adc_delay_active)
 );
 
 endmodule

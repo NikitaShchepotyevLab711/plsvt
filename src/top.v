@@ -650,7 +650,7 @@ mod_hertz_shift mod_hertz_shift_inst (
     // строб - произошла коррекция времени.
     .BIT_KBV_CORRECTION()
 );
-/*
+
 `ifdef DEBUG_MODE
     IS61WV204816 IS61WV204816_inst(
         .A      (A),      
@@ -662,5 +662,5 @@ mod_hertz_shift mod_hertz_shift_inst (
         .UB_n   (UB)
     );
 `endif
-*/
+
 endmodule

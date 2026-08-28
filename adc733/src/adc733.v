@@ -1,8 +1,8 @@
 module adc733 (
-    input wire clk,
-    input wire rst_l,
+    input  wire        clk,
+    input  wire        rst_l,
 
-    // serial port //
+    // Serial port of 1273PV19T / AD73360.
     input  wire        SCLK,
     input  wire        SDOFS,
     input  wire        SDO,
@@ -10,245 +10,188 @@ module adc733 (
     output reg         SDI,
     output wire        SE,
 
-    input  wire        sync,            //импульс - команда для захвата данных с 6 каналов
-    input  wire [15:0] control_word,    //контрольное слово (конфигурация регистров АЦП)
-    output wire  [2:0] channel,         //номер канала, из которого выводится значение на данный момент
-    output wire        busy,            //сигнал активности модуля
-    output reg         rd_en,           //импульс, сообщающий о новом полученном значении
-    output reg         word_sent,       //импульс, сообщающий об отправленном значении
-    output reg         operation_mode,  //высокий уровень - режим захвата данных, низкий - режим программирования 
-    output reg  [15:0] captured_data    //полученное значение из АЦП
+    input  wire        sync,
+    input  wire [15:0] control_word,
+    output wire [2:0]  channel,
+    output wire        busy,
+    output reg         rd_en,
+    output reg         word_sent,
+    output reg         operation_mode,
+    output reg  [15:0] captured_data
 );
 
-reg [2:0]  state;
-reg [15:0] shift_reg;     // сдвиговый регистр последовательного интерфейса 
-reg        prog_mode;     // регистр, настравивающий сдвиг. регистр в режим отправки конфигурации в АЦП
-reg        start_capture; // регистр, настраивающи сдвиг. регистр в режим приема данных АЦП
-reg        load;          // инициирует загрузку контрольного слова в сдвиговый регистр
-reg [3:0]  bit_cnt;       // счётчик до 16 для отсчета отправляемых и принимаемых битов
-reg [3:0]  adc_regs_cnt;  // счетчик до 8, считает регистры АЦП при их поочередной конфигурации
-reg        second_cycle;  // сигнал, служащий для разделения загрузки сдвигового регистра и выставления SDIFS
-reg [2:0]  sdofs_counter; // постоянно считает импульсы sdofs для контроля номера канала
-reg [2:0]  rcvd_words;    // счётчик полученных значений (от 0 до 5)
+localparam [1:0] TX_WAIT_FRAME = 2'd0;
+localparam [1:0] TX_FRAME_SYNC = 2'd1;
+localparam [1:0] TX_SHIFT      = 2'd2;
 
-localparam IDLE            = 3'd0;
-localparam WREG_LOAD       = 3'd1;
-localparam WREG            = 3'd2;
-localparam WORK_MODE       = 3'd3;
-localparam WAIT_FOR_SDOFS  = 3'd4;
-localparam WAIT_FOR_SYNC   = 3'd5;
-localparam WAIT_FOR_1ST_CH = 3'd6;
+reg [1:0]  tx_state;
+reg [15:0] tx_shift;
+reg [15:0] tx_word;
+reg [4:0]  tx_bit_count;
+reg        sdofs_sampled;
 
-assign busy = SE;
-assign SE = 1'b1;
-assign channel = sdofs_counter;
+reg [15:0] rx_shift;
+reg [4:0]  rx_bit_count;
+reg        rx_active;
+reg [2:0]  next_channel;
+reg [2:0]  rx_channel;
+reg [2:0]  captured_channel;
+reg        capture_pending;
+reg        capture_active;
+reg        store_current_word;
 
-// конечный автомат управления захватом данных и их выдачей //
+assign SE      = 1'b1;
+assign channel = captured_channel;
+assign busy    = (tx_state != TX_WAIT_FRAME) | capture_active;
+
+// SDIFS is a one-SCLK-wide preamble: it is sampled one falling edge before
+// the falling edge that samples the first data bit (MSB). SDI is changed on
+// rising edges so that it is stable before every falling sampling edge.
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
-        state          <= 3'b0;
-        prog_mode      <= 1'b0; 
-        start_capture  <= 1'b0;
-        bit_cnt        <= 4'b0;
-        adc_regs_cnt   <= 4'h0;
-        rd_en          <= 1'b0;
-        load           <= 1'b0;
-        word_sent      <= 1'b0;
-        second_cycle   <= 1'b0;
-        operation_mode <= 1'b0;
-        rcvd_words     <= 3'd0;
+        tx_state       <= TX_WAIT_FRAME;
+        tx_shift       <= 16'd0;
+        tx_word        <= 16'd0;
+        tx_bit_count   <= 5'd0;
         SDIFS          <= 1'b0;
-    end
-    else begin
-        case (state)
-            IDLE: begin
-                state          <= SDOFS ? WREG_LOAD : IDLE;
-                prog_mode      <= 1'b0; 
-                start_capture  <= 1'b0; 
-                load           <= 1'b0;
-                bit_cnt        <= 4'b0;
-                adc_regs_cnt   <= 4'h0;
-                rd_en          <= 1'b0;
-                word_sent      <= 1'b0;
-                second_cycle   <= 1'b0;
-                SDIFS          <= 1'b0;
-                operation_mode <= 1'b0;
-            end 
+        SDI            <= 1'b0;
+        word_sent      <= 1'b0;
+        operation_mode <= 1'b0;
+    end else begin
+        word_sent <= 1'b0;
 
-            WREG_LOAD: begin
-                if (!second_cycle) begin
-                    second_cycle <= 1'b1;
-                    state <= WREG_LOAD;
-                    load          <= 1'b1;
-                    SDIFS         <= 1'b0;
+        case (tx_state)
+            TX_WAIT_FRAME: begin
+                SDIFS <= 1'b0;
+                SDI   <= 1'b0;
+
+                // SDOFS is sampled on the falling edge below, away from
+                // the edge on which the ADC changes this output.
+                if (!operation_mode && sdofs_sampled) begin
+                    // Do not put D15 on SDI yet. The ADC uses this complete
+                    // SCLK period only to recognize the frame sync.
+                    SDIFS    <= 1'b1;
+                    tx_state <= TX_FRAME_SYNC;
+                end
+            end
+
+            TX_FRAME_SYNC: begin
+                // Latch the word only after the frame-sync period. This also
+                // gives the wrapper time to advance config_index after the
+                // preceding word and prevents the first word being repeated.
+                SDIFS        <= 1'b0;
+                tx_shift     <= control_word;
+                tx_word      <= control_word;
+                tx_bit_count <= 5'd0;
+                SDI          <= control_word[15];
+                tx_state     <= TX_SHIFT;
+            end
+
+            TX_SHIFT: begin
+                SDIFS <= 1'b0;
+
+                if (tx_bit_count == 5'd15) begin
+                    tx_state  <= TX_WAIT_FRAME;
+                    SDI       <= 1'b0;
+                    word_sent <= 1'b1;
+
+                    // Check the latched word, not the live control_word bus:
+                    // config_index may already point at the following word.
+                    if (tx_word == 16'h8001)
+                        operation_mode <= 1'b1;
                 end else begin
-                    second_cycle <= 1'b0;
-                    state        <= WREG;
-                    load         <= 1'b0; 
-                    SDIFS        <= 1'b1;
+                    tx_shift     <= {tx_shift[14:0], 1'b0};
+                    tx_bit_count <= tx_bit_count + 1'b1;
+                    SDI          <= tx_shift[14];
                 end
-                
-                prog_mode     <= 1'b1; 
-                start_capture <= 1'b0;   
-                bit_cnt       <= 4'b0;  
-                rd_en         <= 1'b0;    
-                word_sent     <= 1'b0;
-                operation_mode <= 1'b0;
-            end
-
-            WREG: begin
-                SDIFS         <= 1'b0; 
-                start_capture <= 1'b0;        
-                load          <= 1'b0;
-                rd_en         <= 1'b0; 
-                prog_mode     <= 1'b1; 
-                if (adc_regs_cnt == 4'h8) begin // 9 раз повторяется это состояние вместе с предыдущим, записывая конфигурацию во все 8 регистров АЦП, а после переводя АЦП в Data mode
-                    if (bit_cnt == 4'hf) begin
-                        state     <= WAIT_FOR_SYNC;
-                        word_sent <= 1'b1;
-                        operation_mode <= 1'b0;
-                    end
-                    else begin
-                        bit_cnt       <= bit_cnt + 1'b1;
-                        word_sent     <= 1'b0;
-                        operation_mode <= 1'b0;
-                    end
-                end
-                else begin
-                    if (bit_cnt == 4'hf) begin
-                        state         <= WAIT_FOR_SDOFS;
-                        adc_regs_cnt  <= adc_regs_cnt + 1'b1;
-                        word_sent     <= 1'b1;
-                    end 
-                    else begin
-                        state        <= WREG;
-                        bit_cnt      <= bit_cnt + 1'b1;
-                        adc_regs_cnt <= adc_regs_cnt;
-                        word_sent    <= 1'b0;
-                    end
-                end
-            end
-
-            WORK_MODE: begin
-                if (bit_cnt == 4'hf) begin
-                    rd_en <= 1'b1;
-                    state         <= WAIT_FOR_SDOFS;
-                end
-                else begin
-                    rd_en <= 1'b0;
-                    bit_cnt       <= bit_cnt + 1'b1;
-                    state         <= WORK_MODE;
-                end
-
-                prog_mode      <= 1'b0; 
-                start_capture  <= 1'b1;        
-                load           <= 1'b0; 
-                word_sent      <= 1'b0;
-                operation_mode <= 1'b1;
-            end
-
-            WAIT_FOR_SYNC: begin
-                rd_en          <= 1'b0;
-                operation_mode <= 1'b1;
-                bit_cnt        <= 1'b0;
-                start_capture  <= 1'b0;
-                prog_mode      <= 1'b0;
-                word_sent      <= 1'b0;
-                state          <= sync ? WAIT_FOR_1ST_CH : WAIT_FOR_SYNC;
-            end
-
-            WAIT_FOR_1ST_CH: begin
-                rd_en          <= 1'b0;
-                operation_mode <= 1'b1;
-                bit_cnt        <= 1'b0;
-                start_capture  <= 1'b0;
-                prog_mode      <= 1'b0;
-                word_sent      <= 1'b0;
-                state          <= (sdofs_counter == 3'd5) ? WAIT_FOR_SDOFS : WAIT_FOR_1ST_CH;
-            end
-
-            WAIT_FOR_SDOFS: begin
-                bit_cnt        <= 1'b0;
-                if (SDOFS) begin
-                    if (operation_mode == 1'b0)
-                        state <= WREG_LOAD;
-                    else begin
-                        if (rcvd_words == 3'd6) begin
-                            state <= WAIT_FOR_SYNC;
-                            rcvd_words <= 3'd0;
-                            start_capture  <= 1'b0;
-                        end
-                        else begin
-                            state <= WORK_MODE;
-                            rcvd_words <= rcvd_words + 1'b1;
-                            start_capture  <= 1'b1;
-                        end
-                    end
-                end
-                rd_en          <= 1'b0;
-                word_sent      <= 1'b0;
             end
 
             default: begin
-                state          <= IDLE;
-                prog_mode      <= 1'b0; 
-                start_capture  <= 1'b0; 
-                load           <= 1'b0;
-                bit_cnt        <= 4'b0;
-                adc_regs_cnt   <= 4'h0;
-                rd_en          <= 1'b0;
-                word_sent      <= 1'b0;
-                operation_mode <= 1'b0;
+                tx_state <= TX_WAIT_FRAME;
+                SDIFS    <= 1'b0;
+                SDI      <= 1'b0;
             end
         endcase
     end
 end
 
-// счетчик по стробам sdofs для понимания номера канала //
-always @(posedge SCLK or negedge rst_l) begin
+// The ADC changes SDO and SDOFS after the rising edge of SCLK. SDOFS is a
+// one-SCLK preamble, therefore its falling sampling edge only arms the
+// receiver. D15 is sampled on the following falling edge.
+always @(negedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
-        sdofs_counter <= 3'd0;
-    end
-    else begin
-        if (operation_mode) begin
-            if (SDOFS) begin
-                if (sdofs_counter == 3'd5)
-                    sdofs_counter <= 3'd0;
-                else 
-                    sdofs_counter <= sdofs_counter + 1'd1;
-            end
-        end
-    end
-end
-
-// сдвиговый регистр последовтельного интерфейса и логика выдачи и приема данных //
-always @(posedge SCLK or negedge rst_l) begin
-    if (!rst_l) begin
-        shift_reg     <= 1'b0;
-        captured_data <= 1'b0;
-        SDI           <= 1'b0;
+        sdofs_sampled      <= 1'b0;
+        rx_shift           <= 16'd0;
+        rx_bit_count       <= 5'd0;
+        rx_active          <= 1'b0;
+        next_channel       <= 3'd0;
+        rx_channel         <= 3'd0;
+        captured_channel   <= 3'd0;
+        captured_data      <= 16'd0;
+        capture_pending    <= 1'b0;
+        capture_active     <= 1'b0;
+        store_current_word <= 1'b0;
+        rd_en              <= 1'b0;
     end else begin
+        sdofs_sampled <= SDOFS;
+        rd_en         <= 1'b0;
 
-        if (prog_mode) begin // приходит команда работы режима программирования АЦП
-            if (load) begin
-                shift_reg <= control_word; // загрузка программного слова в сдвиговый регистр последовательного интерфейса
-                SDI       <= 1'b0;
+        if (!operation_mode) begin
+            rx_shift           <= 16'd0;
+            rx_bit_count       <= 5'd0;
+            rx_active          <= 1'b0;
+            next_channel       <= 3'd0;
+            capture_pending    <= 1'b0;
+            capture_active     <= 1'b0;
+            store_current_word <= 1'b0;
+        end else begin
+            if (sync)
+                capture_pending <= 1'b1;
+
+            if (SDOFS) begin
+                rx_shift     <= 16'd0;
+                rx_bit_count <= 5'd0;
+                rx_active    <= 1'b1;
+                rx_channel   <= next_channel;
+
+                if (next_channel == 3'd5)
+                    next_channel <= 3'd0;
+                else
+                    next_channel <= next_channel + 1'b1;
+
+                // Start a six-channel acquisition only at channel 1.
+                if ((next_channel == 3'd0) &&
+                    (capture_pending || sync)) begin
+                    capture_pending    <= 1'b0;
+                    capture_active     <= 1'b1;
+                    store_current_word <= 1'b1;
+                end else begin
+                    store_current_word <= capture_active;
+                end
+            end else if (rx_active) begin
+                rx_shift <= {rx_shift[14:0], SDO};
+
+                if (rx_bit_count == 5'd15) begin
+                    rx_active <= 1'b0;
+
+                    if (store_current_word) begin
+                        captured_data    <= {rx_shift[14:0], SDO};
+                        captured_channel <= rx_channel;
+                        rd_en            <= 1'b1;
+
+                        if (rx_channel == 3'd5)
+                            capture_active <= 1'b0;
+                    end
+                end else begin
+                    rx_bit_count <= rx_bit_count + 1'b1;
+                end
             end
-            else begin
-                shift_reg <= {shift_reg[14:0], 1'b0}; // отправка программного слова в АЦП
-                SDI       <= shift_reg[15]; 
-            end
-        end
-        else if (start_capture) begin // приходит сигнал о начале приема данных от АЦП
-            SDI <= 0;                 // при этом в АЦП мы ничего не отправляем  
-            if (rd_en) begin  // по истечении 16 тактов выставляется сигнал rd_en, 16битное слово от АЦП сохраняется
-                shift_reg <= 16'b0;
-                captured_data <= shift_reg;
-            end
-            else
-                shift_reg <= SDOFS ? 16'b0 : {shift_reg[14:0], SDO};   
         end
     end
 end
+
+// clk is retained in the interface because this module is also instantiated
+// by the complete project; serial transfers themselves are clocked by SCLK.
+wire unused_clk = clk;
 
 endmodule

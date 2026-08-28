@@ -6,6 +6,7 @@ vlog "../tb/tb_adc733.v"   \
      "../src/sync2.v"\
      "../src/pulse_to_toggle.v"\
      "../src/sync2_toggle_to_pulse_bothedge.v"\
+     "../src/sync_strobe.v"\
      "../src/front_detector.v"\
      "../src/adc733.v"     
 

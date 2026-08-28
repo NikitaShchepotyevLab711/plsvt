@@ -1,334 +1,452 @@
-Startpoint: _398_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: RD_EN (output port)
+Startpoint: _531_ (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _398_/clk (xci2_dffcl)
-   0.053982    0.645153    2.330317    2.330317 ^ _398_/q (xci2_dffcl)
-   0.384242    1.631480    1.090299    3.420617 v ILAB1002.ILE0504.Iho1/out (sw_b_v2_inv_UCCLAB)
-   0.102703    0.711132    2.503139    5.923756 v _224_/y (xci2_and2ft)
-   0.458040    2.078208    1.468827    7.392583 ^ ILAB1002.ILE0507.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.691637    2.965391    2.152188    9.544770 v ILAB1002.ILE0107.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.094640    0.587588    1.161414   10.706184 ^ ILAB1002.ILE0107.I666/x (inv_8_UCCLAB)
-   0.289450    0.168446    0.463590   11.169775 ^ ILAB1002.I4376/x (buf4_12_UCCLAB)
-   2.200778    0.312623    0.985217   12.154992 ^ ILAB1002.I4448/x (buftd52C_UCCLAB)
-   2.014549    0.295313    1.336566   13.491558 ^ ILAB1001.I4772.I31/x (buftd52_UCCLAB)
-   2.641850    0.353818    1.056101   14.547660 ^ I1804.I30/x (buftd52C_UCCLAB)
-   2.120442    0.305232    1.035382   15.583041 ^ I3739.I30/x (buftd52C_UCCLAB)
-   0.026881    0.349809    0.311669   15.894710 v IIO10.I2.I16/x (mux2i_P_UCCLAB)
-   5.000000    3.595004    6.505442   22.400152 v XC_BUF_RD_EN/x (xci2_ob)
-               3.595004    0.000000   22.400152 v RD_EN (out)
-                                      22.400152   data arrival time
+               1.239377    0.000000    0.000000 ^ _531_/clk (xci2_dffcl)
+   0.078139    0.676538    2.632333    2.632333 v _531_/q (xci2_dffcl)
+   1.114724    4.963354    3.021771    5.654104 ^ ILAB0503.ILE0401.Iho2/out (sw_b_v2_inv_UCCLAB)
+   0.055192    0.515765    3.796523    9.450627 ^ _334_/y (xci2_or2)
+   0.247833    1.080265    0.762929   10.213556 v ILAB0503.ILE0504.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.055102    0.576379    2.289570   12.503127 ^ _336_/y (xci2_and3fft)
+   0.300440    1.291582    0.893711   13.396838 v ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094540    0.357062    0.622129   14.018967 ^ ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299450    0.167349    0.395444   14.414411 ^ ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.020728    0.295841    0.971693   15.386104 ^ ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.625849    0.352279    1.374715   16.760818 ^ ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.169878    0.309842    1.038576   17.799395 ^ I1814.I31/x (buftd52C_UCCLAB)
+   2.464566    0.337248    1.368429   19.167824 ^ ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165332    0.401900    0.377199   19.545023 v ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041695    0.470209    2.097806   21.642828 v resetn_watch_buf/y (xci2_buf)
+   0.113640    0.254232    0.353642   21.996471 ^ ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291851    0.162974    0.352205   22.348677 ^ ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.292850    0.321201    0.990301   23.338978 ^ ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667778    0.263019    0.992634   24.331612 ^ I1844.I40/x (buftd52C_UCCLAB)
+   1.770850    0.272603    1.299128   25.630739 ^ ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.151850    0.308123    1.013307   26.644047 ^ I1823.I41/x (buftd52C_UCCLAB)
+   1.751636    0.270831    0.994797   27.638844 ^ I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.349600    0.305644   27.944487 v IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    3.595008    6.505376   34.449863 v XC_BUF_resetn_watch/x (xci2_ob)
+               3.595008    0.000000   34.449863 v resetn_watch (out)
+                                      34.449863   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -22.400152   data arrival time
+                                      25.000000   data required time
+                                     -34.449863   data arrival time
 ---------------------------------------------------------------------------------------
-                                       2.599844   slack (MET)
+                                      -9.449863   slack (VIOLATED)
 
 
-Startpoint: _399_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: RD_EN (output port)
+Startpoint: _531_ (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _399_/clk (xci2_dffcl)
-   0.054174    0.582531    2.036899    2.036899 v _399_/q (xci2_dffcl)
-   0.195935    0.936827    0.786908    2.823807 ^ ILAB1002.ILE0506.Iho3/out (sw_b_v2_inv_UCCLAB)
-   0.102703    0.711132    2.394025    5.217832 v _224_/y (xci2_and2ft)
-   0.458040    2.078208    1.468827    6.686658 ^ ILAB1002.ILE0507.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.691637    2.965391    2.152188    8.838846 v ILAB1002.ILE0107.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.094640    0.587588    1.161414   10.000260 ^ ILAB1002.ILE0107.I666/x (inv_8_UCCLAB)
-   0.289450    0.168446    0.463590   10.463851 ^ ILAB1002.I4376/x (buf4_12_UCCLAB)
-   2.200778    0.312623    0.985217   11.449068 ^ ILAB1002.I4448/x (buftd52C_UCCLAB)
-   2.014549    0.295313    1.336566   12.785634 ^ ILAB1001.I4772.I31/x (buftd52_UCCLAB)
-   2.641850    0.353818    1.056101   13.841735 ^ I1804.I30/x (buftd52C_UCCLAB)
-   2.120442    0.305232    1.035382   14.877117 ^ I3739.I30/x (buftd52C_UCCLAB)
-   0.026881    0.349809    0.311669   15.188786 v IIO10.I2.I16/x (mux2i_P_UCCLAB)
-   5.000000    3.595004    6.505442   21.694227 v XC_BUF_RD_EN/x (xci2_ob)
-               3.595004    0.000000   21.694227 v RD_EN (out)
-                                      21.694227   data arrival time
+               1.239377    0.000000    0.000000 ^ _531_/clk (xci2_dffcl)
+   0.077874    0.749322    2.935437    2.935437 ^ _531_/q (xci2_dffcl)
+   1.114692    4.576943    2.651780    5.587217 v ILAB0503.ILE0401.Iho2/out (sw_b_v2_inv_UCCLAB)
+   0.055324    0.487850    4.125045    9.712262 v _334_/y (xci2_or2)
+   0.247874    1.154865    0.878056   10.590319 ^ ILAB0503.ILE0504.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.055234    0.527261    2.164490   12.754808 v _336_/y (xci2_and3fft)
+   0.300460    1.384137    1.020286   13.775094 ^ ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094526    0.376121    0.483071   14.258165 v ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299556    0.156745    0.419142   14.677308 v ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.021010    0.283275    0.929929   15.607237 v ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.626130    0.335269    1.358584   16.965820 v ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.170054    0.296129    1.003931   17.969753 v I1814.I31/x (buftd52C_UCCLAB)
+   2.464716    0.321411    1.354076   19.323828 v ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165386    0.423197    0.414135   19.737963 ^ ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041704    0.517910    2.202608   21.940571 ^ resetn_watch_buf/y (xci2_buf)
+   0.113626    0.262844    0.311108   22.251678 v ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291956    0.152320    0.362737   22.614416 v ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.293130    0.306642    0.947200   23.561615 v ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667954    0.253035    0.958902   24.520517 v I1844.I40/x (buftd52C_UCCLAB)
+   1.771130    0.261870    1.283617   25.804134 v ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.152130    0.294568    0.976508   26.780642 v I1823.I41/x (buftd52C_UCCLAB)
+   1.751872    0.260230    0.960418   27.741060 v I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.362792    0.355543   28.096603 ^ IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    2.603686    5.636954   33.733559 ^ XC_BUF_resetn_watch/x (xci2_ob)
+               2.603686    0.000000   33.733559 ^ resetn_watch (out)
+                                      33.733559   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -21.694227   data arrival time
+                                      25.000000   data required time
+                                     -33.733559   data arrival time
 ---------------------------------------------------------------------------------------
-                                       3.305768   slack (MET)
+                                      -8.733558   slack (VIOLATED)
 
 
-Startpoint: _398_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: RD_EN (output port)
+Startpoint: _534_ (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _398_/clk (xci2_dffcl)
-   0.054114    0.582296    2.036689    2.036689 v _398_/q (xci2_dffcl)
-   0.384320    1.753202    1.242107    3.278796 ^ ILAB1002.ILE0504.Iho1/out (sw_b_v2_inv_UCCLAB)
-   0.102305    0.774682    2.493731    5.772528 ^ _224_/y (xci2_and2ft)
-   0.458294    1.933521    1.285088    7.057615 v ILAB1002.ILE0507.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.691409    3.168075    2.504830    9.562446 ^ ILAB1002.ILE0107.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.094626    0.632556    0.836529   10.398974 v ILAB1002.ILE0107.I666/x (inv_8_UCCLAB)
-   0.289556    0.160144    0.524089   10.923063 v ILAB1002.I4376/x (buf4_12_UCCLAB)
-   2.200954    0.298729    0.943604   11.866668 v ILAB1002.I4448/x (buftd52C_UCCLAB)
-   2.014830    0.282790    1.324246   13.190913 v ILAB1001.I4772.I31/x (buftd52_UCCLAB)
-   2.642130    0.336627    1.017941   14.208855 v I1804.I30/x (buftd52C_UCCLAB)
-   2.120670    0.291893    1.000991   15.209846 v I3739.I30/x (buftd52C_UCCLAB)
-   0.026881    0.368184    0.374744   15.584590 ^ IIO10.I2.I16/x (mux2i_P_UCCLAB)
-   5.000000    2.603659    5.638409   21.223000 ^ XC_BUF_RD_EN/x (xci2_ob)
-               2.603659    0.000000   21.223000 ^ RD_EN (out)
-                                      21.223000   data arrival time
+               2.694195    0.000000    0.000000 ^ _534_/clk (xci2_dffcl)
+   0.077739    0.674966    3.144474    3.144474 v _534_/q (xci2_dffcl)
+   0.195635    0.939921    0.821158    3.965632 ^ ILAB0503.ILE0303.Iho3/out (sw_b_v2_inv_UCCLAB)
+   0.054554    0.524725    2.252913    6.218546 v _335_/y (xci2_and2ft)
+   0.246933    1.151591    0.890145    7.108691 ^ ILAB0503.ILE0304.Ivo1/out (sw_b_v2_inv_UCCLAB)
+   0.055102    0.576379    2.502832    9.611523 ^ _336_/y (xci2_and3fft)
+   0.300440    1.291582    0.893711   10.505234 v ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094540    0.357062    0.622129   11.127362 ^ ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299450    0.167349    0.395444   11.522806 ^ ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.020728    0.295841    0.971692   12.494498 ^ ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.625849    0.352279    1.374715   13.869214 ^ ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.169878    0.309842    1.038576   14.907789 ^ I1814.I31/x (buftd52C_UCCLAB)
+   2.464566    0.337248    1.368429   16.276218 ^ ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165332    0.401900    0.377199   16.653418 v ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041695    0.470209    2.097806   18.751223 v resetn_watch_buf/y (xci2_buf)
+   0.113640    0.254232    0.353642   19.104866 ^ ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291851    0.162974    0.352205   19.457071 ^ ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.292850    0.321201    0.990301   20.447372 ^ ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667778    0.263019    0.992634   21.440006 ^ I1844.I40/x (buftd52C_UCCLAB)
+   1.770850    0.272603    1.299128   22.739134 ^ ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.151850    0.308123    1.013307   23.752441 ^ I1823.I41/x (buftd52C_UCCLAB)
+   1.751636    0.270831    0.994797   24.747238 ^ I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.349600    0.305644   25.052881 v IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    3.595008    6.505374   31.558256 v XC_BUF_resetn_watch/x (xci2_ob)
+               3.595008    0.000000   31.558256 v resetn_watch (out)
+                                      31.558256   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -21.223000   data arrival time
+                                      25.000000   data required time
+                                     -31.558256   data arrival time
 ---------------------------------------------------------------------------------------
-                                       3.776997   slack (MET)
+                                      -6.558256   slack (VIOLATED)
 
 
-Startpoint: _399_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: RD_EN (output port)
+Startpoint: SCLK (input port)
+Endpoint: sclk_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _399_/clk (xci2_dffcl)
-   0.054042    0.645413    2.330552    2.330552 ^ _399_/q (xci2_dffcl)
-   0.195889    0.886467    0.685500    3.016052 v ILAB1002.ILE0506.Iho3/out (sw_b_v2_inv_UCCLAB)
-   0.102305    0.774682    2.580297    5.596348 ^ _224_/y (xci2_and2ft)
-   0.458294    1.933521    1.285088    6.881436 v ILAB1002.ILE0507.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.691409    3.168075    2.504830    9.386267 ^ ILAB1002.ILE0107.Ivi7/out (sw_b_v2_inv_UCCLAB)
-   0.094626    0.632556    0.836529   10.222795 v ILAB1002.ILE0107.I666/x (inv_8_UCCLAB)
-   0.289556    0.160144    0.524089   10.746884 v ILAB1002.I4376/x (buf4_12_UCCLAB)
-   2.200954    0.298729    0.943604   11.690489 v ILAB1002.I4448/x (buftd52C_UCCLAB)
-   2.014830    0.282790    1.324246   13.014734 v ILAB1001.I4772.I31/x (buftd52_UCCLAB)
-   2.642130    0.336627    1.017941   14.032676 v I1804.I30/x (buftd52C_UCCLAB)
-   2.120670    0.291893    1.000991   15.033668 v I3739.I30/x (buftd52C_UCCLAB)
-   0.026881    0.368184    0.374744   15.408411 ^ IIO10.I2.I16/x (mux2i_P_UCCLAB)
-   5.000000    2.603659    5.638409   21.046820 ^ XC_BUF_RD_EN/x (xci2_ob)
-               2.603659    0.000000   21.046820 ^ RD_EN (out)
-                                      21.046820   data arrival time
+                           0.000000    0.000000 ^ input external delay
+  10.077061    2.800000    0.000000    0.000000 ^ SCLK (in)
+   0.037174    0.267644    3.409201    3.409201 ^ XC_BUF_SCLK/x (xci2_ib)
+   0.030433    0.377181    0.320375    3.729576 v IIO16.I1.I25/x (mux2i_P_UCCLAB)
+   2.165649    0.309402    1.277085    5.006660 ^ IIO16.I1.I26/x (invtd52_AVDD)
+   2.619607    0.351754    1.058755    6.065416 ^ I3751.I27/x (buftd52C_UCCLAB)
+   2.164335    0.309325    1.038024    7.103440 ^ I1822.I27/x (buftd52C_UCCLAB)
+   1.703650    0.266342    1.312490    8.415931 ^ ILAB0807.I4801.I26/x (buftd52_UCCLAB)
+   2.372765    0.328714    1.027584    9.443515 ^ I3528.I26/x (buftd52C_UCCLAB)
+   0.142595    0.353426    0.346703    9.790217 v ILAB0802.ILE1606.I710/x (inv_4_UCCLAB)
+   0.103244    0.219103    0.295615   10.085833 ^ ILAB0802.ILE1606.I666/x (inv_8_UCCLAB)
+   0.417523    0.536205    0.648492   10.734324 ^ ILAB0802.I215/x (buftd4_UCCLAB)
+   0.025880    0.560103    0.090068   10.824393 ^ ILAB0802.I5605.I4/x (mux2p_2_UCCLAB)
+   0.359412    0.166197    0.704085   11.528478 v ILAB0802.I5605.I5/x (invd16_seth_UCCLAB)
+   0.011138    0.215061    0.338255   11.866733 v ILAB0802.I5366.I79/x (mux2d1i_1_P_UCCLAB)
+   1.229250    0.234045    0.953427   12.820160 ^ ILAB0802.I5366.I75/x (invd52_UCCLAB)
+   4.773172    0.719760    1.081338   13.901497 v ILAB0802.I5591.I2/x (invd32_UCCLAB)
+   0.054314    0.520900    2.280119   16.181616 v sclk_watch_buf/y (xci2_buf)
+   0.138768    0.690017    0.623361   16.804977 ^ ILAB0802.ILE0511.Iho1/out (sw_b_v2_inv_UCCLAB)
+   0.317480    1.363772    0.964260   17.769238 v ILAB0802.ILE0515.Iho1/out (sw_b_v2_inv_UCCLAB)
+   0.116990    0.402611    0.683489   18.452726 ^ ILAB0803.ILE0501.I666/x (inv_8_UCCLAB)
+   0.300703    0.168771    0.409695   18.862421 ^ ILAB0803.I4367/x (buf4_12_UCCLAB)
+   1.948449    0.289011    0.973806   19.836227 ^ ILAB0803.I4469/x (buftid52C_UCCLAB)
+   2.362749    0.327794    1.033744   20.869970 ^ I1813.I18/x (buftd52C_UCCLAB)
+   1.911378    0.285735    1.012479   21.882450 ^ I3743.I18/x (buftd52C_UCCLAB)
+   2.136849    0.306711    1.334907   23.217358 ^ ILAB0203.I4772.I18/x (buftd52_UCCLAB)
+   1.567342    0.253367    0.980076   24.197433 ^ I3029.I19/x (buftd52C_UCCLAB)
+   0.026881    0.346446    0.296467   24.493900 v IIO18.I7.I16/x (mux2i_P_UCCLAB)
+   5.000000    3.595071    6.504397   30.998299 v XC_BUF_sclk_watch/x (xci2_ob)
+               3.595071    0.000000   30.998299 v sclk_watch (out)
+                                      30.998299   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -21.046820   data arrival time
+                                      25.000000   data required time
+                                     -30.998299   data arrival time
 ---------------------------------------------------------------------------------------
-                                       3.953176   slack (MET)
+                                      -5.998299   slack (VIOLATED)
 
 
-Startpoint: _412_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: DATA_O[9] (output port)
+Startpoint: _535_ (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _412_/clk (xci2_dffcl)
-   0.054944    0.585550    2.039592    2.039592 v _412_/q (xci2_dffcl)
-   0.298157    1.374563    1.037815    3.077407 ^ ILAB0902.ILE0807.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.317041    1.422736    1.159847    4.237254 v ILAB0902.ILE0803.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.115740    0.409271    0.700989    4.938244 ^ ILAB0902.ILE0801.I666/x (inv_8_UCCLAB)
-   0.361703    0.191787    0.426507    5.364750 ^ ILAB0902.I4374/x (buf4_12_UCCLAB)
-   1.943649    0.288582    0.980059    6.344810 ^ ILAB0902.I4467/x (buftid52C_UCCLAB)
-   2.239778    0.316330    1.024606    7.369415 ^ I1816.I37/x (buftd52C_UCCLAB)
-   2.076778    0.301112    1.342588    8.712004 ^ ILAB0502.I4775.I37/x (buftd52_UCCLAB)
-   2.245849    0.316868    1.348962   10.060966 ^ ILAB0504.I4801.I36/x (buftd52_UCCLAB)
-   1.964436    0.290676    1.013042   11.074008 ^ I3745.I37/x (buftd52C_UCCLAB)
-   0.026881    0.350849    0.311243   11.385250 v IIO13.I0.I16/x (mux2i_P_UCCLAB)
-   5.000000    3.594983    6.505765   17.891016 v XC_BUF_DATA_O[9]/x (xci2_ob)
-               3.594983    0.000000   17.891016 v DATA_O[9] (out)
-                                      17.891016   data arrival time
+               1.489227    0.000000    0.000000 ^ _535_/clk (xci2_dffcl)
+   0.078784    0.753394    3.026891    3.026891 ^ _535_/q (xci2_dffcl)
+   0.173254    0.808032    0.664402    3.691293 v ILAB0503.ILE0305.Ihi5/out (sw_b_v2_inv_UCCLAB)
+   0.054554    0.524725    1.961388    5.652681 v _335_/y (xci2_and2ft)
+   0.246933    1.151591    0.890145    6.542826 ^ ILAB0503.ILE0304.Ivo1/out (sw_b_v2_inv_UCCLAB)
+   0.055102    0.576379    2.502831    9.045657 ^ _336_/y (xci2_and3fft)
+   0.300440    1.291582    0.893711    9.939368 v ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094540    0.357062    0.622129   10.561497 ^ ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299450    0.167349    0.395444   10.956941 ^ ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.020728    0.295841    0.971692   11.928633 ^ ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.625849    0.352279    1.374715   13.303349 ^ ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.169878    0.309842    1.038576   14.341924 ^ I1814.I31/x (buftd52C_UCCLAB)
+   2.464566    0.337248    1.368429   15.710353 ^ ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165332    0.401900    0.377199   16.087551 v ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041695    0.470209    2.097806   18.185358 v resetn_watch_buf/y (xci2_buf)
+   0.113640    0.254232    0.353642   18.539000 ^ ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291851    0.162974    0.352205   18.891205 ^ ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.292850    0.321201    0.990301   19.881506 ^ ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667778    0.263019    0.992634   20.874140 ^ I1844.I40/x (buftd52C_UCCLAB)
+   1.770850    0.272603    1.299128   22.173267 ^ ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.151850    0.308123    1.013307   23.186575 ^ I1823.I41/x (buftd52C_UCCLAB)
+   1.751636    0.270831    0.994797   24.181372 ^ I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.349600    0.305644   24.487017 v IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    3.595008    6.505374   30.992390 v XC_BUF_resetn_watch/x (xci2_ob)
+               3.595008    0.000000   30.992390 v resetn_watch (out)
+                                      30.992390   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -17.891016   data arrival time
+                                      25.000000   data required time
+                                     -30.992390   data arrival time
 ---------------------------------------------------------------------------------------
-                                       7.108980   slack (MET)
+                                      -5.992391   slack (VIOLATED)
 
 
-Startpoint: _410_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: DATA_O[7] (output port)
+Startpoint: _534_ (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _410_/clk (xci2_dffcl)
-   0.054984    0.585707    2.039730    2.039730 v _410_/q (xci2_dffcl)
-   0.298667    1.376805    1.039094    3.078824 ^ ILAB0902.ILE0608.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.310961    1.398760    1.147679    4.226504 v ILAB0902.ILE0604.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.115740    0.405756    0.693010    4.919514 ^ ILAB0902.ILE0601.I666/x (inv_8_UCCLAB)
-   0.313803    0.173750    0.413831    5.333344 ^ ILAB0902.I4412/x (buf4_12_UCCLAB)
-   1.743150    0.269880    0.960206    6.293551 ^ ILAB0902.I4457/x (buftid52C_UCCLAB)
-   2.009850    0.294884    1.002078    7.295629 ^ I1816.I5/x (buftd52C_UCCLAB)
-   1.714078    0.267323    0.988017    8.283646 ^ I3741.I5/x (buftd52C_UCCLAB)
-   2.265778    0.318727    1.337082    9.620728 ^ ILAB0102.I4772.I5/x (buftd52_UCCLAB)
-   1.619636    0.258513    1.310049   10.930777 ^ ILAB0103.I4773.I4/x (buftd52_UCCLAB)
-   0.026881    0.348824    0.302169   11.232945 v IIO12.I6.I16/x (mux2i_P_UCCLAB)
-   5.000000    3.595023    6.505136   17.738081 v XC_BUF_DATA_O[7]/x (xci2_ob)
-               3.595023    0.000000   17.738081 v DATA_O[7] (out)
-                                      17.738081   data arrival time
+               2.694195    0.000000    0.000000 ^ _534_/clk (xci2_dffcl)
+   0.077474    0.748208    3.447414    3.447414 ^ _534_/q (xci2_dffcl)
+   0.195589    0.892164    0.713789    4.161203 v ILAB0503.ILE0303.Iho3/out (sw_b_v2_inv_UCCLAB)
+   0.054422    0.573354    2.424845    6.586048 ^ _335_/y (xci2_and2ft)
+   0.246841    1.078814    0.778003    7.364052 v ILAB0503.ILE0304.Ivo1/out (sw_b_v2_inv_UCCLAB)
+   0.055234    0.527261    2.496942    9.860994 v _336_/y (xci2_and3fft)
+   0.300460    1.384137    1.020286   10.881280 ^ ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094526    0.376121    0.483071   11.364351 v ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299556    0.156745    0.419142   11.783494 v ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.021010    0.283275    0.929928   12.713422 v ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.626130    0.335269    1.358583   14.072005 v ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.170054    0.296129    1.003930   15.075935 v I1814.I31/x (buftd52C_UCCLAB)
+   2.464716    0.321411    1.354076   16.430012 v ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165386    0.423197    0.414135   16.844147 ^ ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041704    0.517910    2.202608   19.046755 ^ resetn_watch_buf/y (xci2_buf)
+   0.113626    0.262844    0.311108   19.357862 v ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291956    0.152320    0.362737   19.720598 v ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.293130    0.306642    0.947200   20.667799 v ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667954    0.253035    0.958902   21.626701 v I1844.I40/x (buftd52C_UCCLAB)
+   1.771130    0.261870    1.283617   22.910318 v ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.152130    0.294568    0.976508   23.886826 v I1823.I41/x (buftd52C_UCCLAB)
+   1.751872    0.260230    0.960418   24.847242 v I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.362792    0.355543   25.202785 ^ IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    2.603686    5.636954   30.839741 ^ XC_BUF_resetn_watch/x (xci2_ob)
+               2.603686    0.000000   30.839741 ^ resetn_watch (out)
+                                      30.839741   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -17.738081   data arrival time
+                                      25.000000   data required time
+                                     -30.839741   data arrival time
 ---------------------------------------------------------------------------------------
-                                       7.261914   slack (MET)
+                                      -5.839741   slack (VIOLATED)
 
 
-Startpoint: _407_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: DATA_O[4] (output port)
+Startpoint: _532__1 (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _407_/clk (xci2_dffcl)
-   0.078839    0.679257    2.121986    2.121986 v _407_/q (xci2_dffcl)
-   0.140498    0.709403    0.685549    2.807536 ^ ILAB0902.ILE0708.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.287440    1.243332    0.907303    3.714838 v ILAB0902.ILE0704.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.115840    0.383127    0.641453    4.356291 ^ ILAB0902.ILE0701.I666/x (inv_8_UCCLAB)
-   0.349803    0.186798    0.415604    4.771895 ^ ILAB0902.I4395/x (buf4_12_UCCLAB)
-   2.075750    0.300890    0.988297    5.760192 ^ ILAB0902.I4455/x (buftid52C_UCCLAB)
-   2.521849    0.342635    1.049010    6.809202 ^ I1816.I33/x (buftd52C_UCCLAB)
-   2.041678    0.297891    1.026518    7.835720 ^ I3741.I33/x (buftd52C_UCCLAB)
-   2.124778    0.305585    1.338822    9.174542 ^ ILAB0202.I4772.I33/x (buftd52_UCCLAB)
-   2.044642    0.298118    1.335991   10.510533 ^ ILAB0203.I4772.I32/x (buftd52_UCCLAB)
-   0.026881    0.349348    0.309583   10.820117 v IIO12.I3.I16/x (mux2i_P_UCCLAB)
-   5.000000    3.595013    6.505300   17.325417 v XC_BUF_DATA_O[4]/x (xci2_ob)
-               3.595013    0.000000   17.325417 v DATA_O[4] (out)
-                                      17.325417   data arrival time
+               1.275252    0.000000    0.000000 ^ _532__1/clk (xci2_dffcl)
+   0.041754    0.589123    2.800369    2.800369 ^ _532__1/q (xci2_dffcl)
+   0.184156    0.367386    0.416883    3.217252 v ILAB0503.ILE0405.I666/x (inv_8_UCCLAB)
+   0.120087    0.324618    0.377724    3.594975 ^ ILAB0503.ILE0504.I715/x (inv_4_UCCLAB)
+   0.055192    0.515765    2.067351    5.662326 ^ _334_/y (xci2_or2)
+   0.247833    1.080265    0.762930    6.425256 v ILAB0503.ILE0504.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.055102    0.576379    2.289571    8.714827 ^ _336_/y (xci2_and3fft)
+   0.300440    1.291582    0.893711    9.608538 v ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094540    0.357062    0.622129   10.230666 ^ ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299450    0.167349    0.395444   10.626110 ^ ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.020728    0.295841    0.971692   11.597802 ^ ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.625849    0.352279    1.374715   12.972518 ^ ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.169878    0.309842    1.038576   14.011093 ^ I1814.I31/x (buftd52C_UCCLAB)
+   2.464566    0.337248    1.368429   15.379522 ^ ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165332    0.401900    0.377199   15.756721 v ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041695    0.470209    2.097806   17.854527 v resetn_watch_buf/y (xci2_buf)
+   0.113640    0.254232    0.353642   18.208170 ^ ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291851    0.162974    0.352205   18.560375 ^ ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.292850    0.321201    0.990301   19.550676 ^ ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667778    0.263019    0.992634   20.543310 ^ I1844.I40/x (buftd52C_UCCLAB)
+   1.770850    0.272603    1.299128   21.842438 ^ ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.151850    0.308123    1.013307   22.855745 ^ I1823.I41/x (buftd52C_UCCLAB)
+   1.751636    0.270831    0.994797   23.850542 ^ I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.349600    0.305644   24.156185 v IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    3.595008    6.505376   30.661562 v XC_BUF_resetn_watch/x (xci2_ob)
+               3.595008    0.000000   30.661562 v resetn_watch (out)
+                                      30.661562   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -17.325417   data arrival time
+                                      25.000000   data required time
+                                     -30.661562   data arrival time
 ---------------------------------------------------------------------------------------
-                                       7.674580   slack (MET)
+                                      -5.661562   slack (VIOLATED)
 
 
-Startpoint: _412_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: DATA_O[9] (output port)
+Startpoint: SCLK (input port)
+Endpoint: sclk_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _412_/clk (xci2_dffcl)
-   0.054812    0.648749    2.333561    2.333561 ^ _412_/q (xci2_dffcl)
-   0.298246    1.284982    0.911321    3.244882 v ILAB0902.ILE0807.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.317060    1.496793    1.356973    4.601855 ^ ILAB0902.ILE0803.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.115726    0.426694    0.543196    5.145051 v ILAB0902.ILE0801.I666/x (inv_8_UCCLAB)
-   0.361809    0.179523    0.453905    5.598956 v ILAB0902.I4374/x (buf4_12_UCCLAB)
-   1.943930    0.276607    0.922608    6.521564 v ILAB0902.I4467/x (buftid52C_UCCLAB)
-   2.239954    0.302110    0.987853    7.509418 v I1816.I37/x (buftd52C_UCCLAB)
-   2.076954    0.288122    1.330310    8.839727 v ILAB0502.I4775.I37/x (buftd52_UCCLAB)
-   2.246130    0.302647    1.334765   10.174493 v ILAB0504.I4801.I36/x (buftd52_UCCLAB)
-   1.964672    0.278495    0.978051   11.152544 v I3745.I37/x (buftd52C_UCCLAB)
-   0.026881    0.363327    0.362803   11.515347 ^ IIO13.I0.I16/x (mux2i_P_UCCLAB)
-   5.000000    2.603683    5.637098   17.152445 ^ XC_BUF_DATA_O[9]/x (xci2_ob)
-               2.603683    0.000000   17.152445 ^ DATA_O[9] (out)
-                                      17.152445   data arrival time
+                           0.000000    0.000000 v input external delay
+  10.077061    2.800000    0.000000    0.000000 v SCLK (in)
+   0.037296    0.259427    3.497435    3.497435 v XC_BUF_SCLK/x (xci2_ib)
+   0.030433    0.393260    0.372554    3.869989 ^ IIO16.I1.I25/x (mux2i_P_UCCLAB)
+   2.165930    0.295730    1.196938    5.066927 v IIO16.I1.I26/x (invtd52_AVDD)
+   2.619890    0.334720    1.021019    6.087946 v I3751.I27/x (buftd52C_UCCLAB)
+   2.164514    0.295654    1.003351    7.091297 v I1822.I27/x (buftd52C_UCCLAB)
+   1.703930    0.256100    1.301101    8.392398 v ILAB0807.I4801.I26/x (buftd52_UCCLAB)
+   2.372916    0.313517    0.989754    9.382153 v I3528.I26/x (buftd52C_UCCLAB)
+   0.142604    0.369759    0.380357    9.762509 ^ ILAB0802.ILE1606.I710/x (inv_4_UCCLAB)
+   0.103296    0.221849    0.258082   10.020592 v ILAB0802.ILE1606.I666/x (inv_8_UCCLAB)
+   0.421995    0.496869    0.598567   10.619159 v ILAB0802.I215/x (buftd4_UCCLAB)
+   0.025917    0.505022    0.104711   10.723869 v ILAB0802.I5605.I4/x (mux2p_2_UCCLAB)
+   0.359409    0.181400    0.730668   11.454537 ^ ILAB0802.I5605.I5/x (invd16_seth_UCCLAB)
+   0.011140    0.223571    0.361238   11.815775 ^ ILAB0802.I5366.I79/x (mux2d1i_1_P_UCCLAB)
+   1.229238    0.218572    0.959107   12.774883 v ILAB0802.I5366.I75/x (invd52_UCCLAB)
+   4.773227    0.811481    1.149771   13.924654 ^ ILAB0802.I5591.I2/x (invd32_UCCLAB)
+   0.054182    0.572389    2.376485   16.301138 ^ sclk_watch_buf/y (xci2_buf)
+   0.138890    0.661054    0.538739   16.839878 v ILAB0802.ILE0511.Iho1/out (sw_b_v2_inv_UCCLAB)
+   0.317500    1.460270    1.113790   17.953667 ^ ILAB0802.ILE0515.Iho1/out (sw_b_v2_inv_UCCLAB)
+   0.116976    0.423177    0.537765   18.491432 v ILAB0803.ILE0501.I666/x (inv_8_UCCLAB)
+   0.300809    0.158421    0.439082   18.930515 v ILAB0803.I4367/x (buf4_12_UCCLAB)
+   1.948730    0.277012    0.914877   19.845392 v ILAB0803.I4469/x (buftid52C_UCCLAB)
+   2.363030    0.312673    0.996529   20.841921 v I1813.I18/x (buftd52C_UCCLAB)
+   1.911554    0.273941    0.977945   21.819866 v I3743.I18/x (buftd52C_UCCLAB)
+   2.137130    0.293290    1.319844   23.139709 v ILAB0203.I4772.I18/x (buftd52_UCCLAB)
+   1.567569    0.244111    0.946347   24.086056 v I3029.I19/x (buftd52C_UCCLAB)
+   0.026881    0.366878    0.356573   24.442631 ^ IIO18.I7.I16/x (mux2i_P_UCCLAB)
+   5.000000    2.603666    5.638055   30.080685 ^ XC_BUF_sclk_watch/x (xci2_ob)
+               2.603666    0.000000   30.080685 ^ sclk_watch (out)
+                                      30.080685   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -17.152445   data arrival time
+                                      25.000000   data required time
+                                     -30.080685   data arrival time
 ---------------------------------------------------------------------------------------
-                                       7.847550   slack (MET)
+                                      -5.080686   slack (VIOLATED)
 
 
-Startpoint: _410_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: DATA_O[7] (output port)
+Startpoint: _535_ (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _410_/clk (xci2_dffcl)
-   0.054852    0.648923    2.333717    2.333717 ^ _410_/q (xci2_dffcl)
-   0.298756    1.287043    0.912440    3.246157 v ILAB0902.ILE0608.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.310980    1.470423    1.343263    4.589420 ^ ILAB0902.ILE0604.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.115726    0.422703    0.537682    5.127102 v ILAB0902.ILE0601.I666/x (inv_8_UCCLAB)
-   0.313909    0.162922    0.441752    5.568854 v ILAB0902.I4412/x (buf4_12_UCCLAB)
-   1.743430    0.259393    0.902368    6.471222 v ILAB0902.I4457/x (buftid52C_UCCLAB)
-   2.010130    0.282379    0.965780    7.437002 v I1816.I5/x (buftd52C_UCCLAB)
-   1.714254    0.256996    0.953463    8.390466 v I3741.I5/x (buftd52C_UCCLAB)
-   2.265954    0.304351    1.319968    9.710434 v ILAB0102.I4772.I5/x (buftd52_UCCLAB)
-   1.619872    0.248884    1.299792   11.010226 v ILAB0103.I4773.I4/x (buftd52_UCCLAB)
-   0.026881    0.362459    0.351033   11.361259 ^ IIO12.I6.I16/x (mux2i_P_UCCLAB)
-   5.000000    2.603688    5.636864   16.998123 ^ XC_BUF_DATA_O[7]/x (xci2_ob)
-               2.603688    0.000000   16.998123 ^ DATA_O[7] (out)
-                                      16.998123   data arrival time
+               1.489227    0.000000    0.000000 ^ _535_/clk (xci2_dffcl)
+   0.079049    0.680118    2.723418    2.723418 v _535_/q (xci2_dffcl)
+   0.173332    0.846848    0.767593    3.491011 ^ ILAB0503.ILE0305.Ihi5/out (sw_b_v2_inv_UCCLAB)
+   0.054422    0.573354    1.990444    5.481454 ^ _335_/y (xci2_and2ft)
+   0.246841    1.078814    0.778003    6.259458 v ILAB0503.ILE0304.Ivo1/out (sw_b_v2_inv_UCCLAB)
+   0.055234    0.527261    2.496942    8.756400 v _336_/y (xci2_and3fft)
+   0.300460    1.384137    1.020286    9.776687 ^ ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094526    0.376121    0.483071   10.259758 v ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299556    0.156745    0.419142   10.678900 v ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.021010    0.283275    0.929928   11.608828 v ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.626130    0.335269    1.358583   12.967411 v ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.170054    0.296129    1.003931   13.971343 v I1814.I31/x (buftd52C_UCCLAB)
+   2.464716    0.321411    1.354077   15.325419 v ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165386    0.423197    0.414135   15.739554 ^ ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041704    0.517910    2.202608   17.942162 ^ resetn_watch_buf/y (xci2_buf)
+   0.113626    0.262844    0.311108   18.253269 v ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291956    0.152320    0.362737   18.616007 v ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.293130    0.306642    0.947200   19.563208 v ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667954    0.253035    0.958902   20.522110 v I1844.I40/x (buftd52C_UCCLAB)
+   1.771130    0.261870    1.283617   21.805725 v ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.152130    0.294568    0.976508   22.782234 v I1823.I41/x (buftd52C_UCCLAB)
+   1.751872    0.260230    0.960418   23.742651 v I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.362792    0.355543   24.098194 ^ IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    2.603686    5.636954   29.735149 ^ XC_BUF_resetn_watch/x (xci2_ob)
+               2.603686    0.000000   29.735149 ^ resetn_watch (out)
+                                      29.735149   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -16.998123   data arrival time
+                                      25.000000   data required time
+                                     -29.735149   data arrival time
 ---------------------------------------------------------------------------------------
-                                       8.001873   slack (MET)
+                                      -4.735149   slack (VIOLATED)
 
 
-Startpoint: _407_ (rising edge-triggered flip-flop clocked by clk')
-Endpoint: DATA_O[4] (output port)
+Startpoint: _532__1 (rising edge-triggered flip-flop)
+Endpoint: resetn_watch (output port)
 Path Group: path delay
 Path Type: max
 
         Cap        Slew       Delay        Time   Description
 ---------------------------------------------------------------------------------------
-               0.000000    0.000000    0.000000 ^ _407_/clk (xci2_dffcl)
-   0.078574    0.751593    2.425320    2.425320 ^ _407_/q (xci2_dffcl)
-   0.140620    0.684430    0.589633    3.014954 v ILAB0902.ILE0708.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.287460    1.328495    1.051358    4.066312 ^ ILAB0902.ILE0704.Ihi7/out (sw_b_v2_inv_UCCLAB)
-   0.115826    0.401377    0.508173    4.574485 v ILAB0902.ILE0701.I666/x (inv_8_UCCLAB)
-   0.349909    0.174791    0.440700    5.015185 v ILAB0902.I4395/x (buf4_12_UCCLAB)
-   2.076030    0.287943    0.929955    5.945140 v ILAB0902.I4455/x (buftid52C_UCCLAB)
-   2.522130    0.326329    1.011461    6.956601 v I1816.I33/x (buftd52C_UCCLAB)
-   2.041854    0.285127    0.991850    7.948451 v I3741.I33/x (buftd52C_UCCLAB)
-   2.124954    0.292244    1.324811    9.273261 v ILAB0202.I4772.I33/x (buftd52_UCCLAB)
-   2.044869    0.285369    1.322960   10.596221 v ILAB0203.I4772.I32/x (buftd52_UCCLAB)
-   0.026881    0.368006    0.372264   10.968485 ^ IIO12.I3.I16/x (mux2i_P_UCCLAB)
-   5.000000    2.603660    5.638359   16.606844 ^ XC_BUF_DATA_O[4]/x (xci2_ob)
-               2.603660    0.000000   16.606844 ^ DATA_O[4] (out)
-                                      16.606844   data arrival time
+               1.275252    0.000000    0.000000 ^ _532__1/clk (xci2_dffcl)
+   0.041745    0.530935    2.511367    2.511367 v _532__1/q (xci2_dffcl)
+   0.184177    0.360159    0.459495    2.970863 ^ ILAB0503.ILE0405.I666/x (inv_8_UCCLAB)
+   0.120057    0.312525    0.331919    3.302781 v ILAB0503.ILE0504.I715/x (inv_4_UCCLAB)
+   0.055324    0.487850    2.018256    5.321038 v _334_/y (xci2_or2)
+   0.247874    1.154865    0.878055    6.199093 ^ ILAB0503.ILE0504.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.055234    0.527261    2.164490    8.363583 v _336_/y (xci2_and3fft)
+   0.300460    1.384137    1.020286    9.383869 ^ ILAB0503.ILE0404.Ivi7/out (sw_b_v2_inv_UCCLAB)
+   0.094526    0.376121    0.483071    9.866940 v ILAB0503.ILE0104.I666/x (inv_8_UCCLAB)
+   0.299556    0.156745    0.419142   10.286082 v ILAB0503.I4378/x (buf4_12_UCCLAB)
+   2.021010    0.283275    0.929928   11.216011 v ILAB0503.I4448/x (buftd52C_UCCLAB)
+   2.626130    0.335269    1.358583   12.574594 v ILAB0503.I4773.I31/x (buftd52_UCCLAB)
+   2.170054    0.296129    1.003931   13.578526 v I1814.I31/x (buftd52C_UCCLAB)
+   2.464716    0.321411    1.354076   14.932601 v ILAB1003.I4801.I30/x (buftd52_UCCLAB)
+   0.165386    0.423197    0.414135   15.346736 ^ ILAB1001.ILE1603.I712/x (inv_4_UCCLAB)
+   0.041704    0.517910    2.202608   17.549343 ^ resetn_watch_buf/y (xci2_buf)
+   0.113626    0.262844    0.311108   17.860451 v ILAB1001.ILE1603.I666/x (inv_8_UCCLAB)
+   0.291956    0.152320    0.362739   18.223190 v ILAB1001.I4358/x (buf4_12_UCCLAB)
+   2.293130    0.306642    0.947200   19.170391 v ILAB1001.I4415/x (buftd52C_UCCLAB)
+   1.667954    0.253035    0.958902   20.129293 v I1844.I40/x (buftd52C_UCCLAB)
+   1.771130    0.261870    1.283617   21.412909 v ILAB1006.I4801.I40/x (buftd52_UCCLAB)
+   2.152130    0.294568    0.976508   22.389418 v I1823.I41/x (buftd52C_UCCLAB)
+   1.751872    0.260230    0.960418   23.349834 v I3749.I41/x (buftd52C_UCCLAB)
+   0.026881    0.362792    0.355543   23.705378 ^ IIO15.I3.I16/x (mux2i_P_UCCLAB)
+   5.000000    2.603686    5.636954   29.342333 ^ XC_BUF_resetn_watch/x (xci2_ob)
+               2.603686    0.000000   29.342333 ^ resetn_watch (out)
+                                      29.342333   data arrival time
 
                           25.000000   25.000000   max_delay
-                           0.000000   24.999996   output external delay
-                                      24.999996   data required time
+                           0.000000   25.000000   output external delay
+                                      25.000000   data required time
 ---------------------------------------------------------------------------------------
-                                      24.999996   data required time
-                                     -16.606844   data arrival time
+                                      25.000000   data required time
+                                     -29.342333   data arrival time
 ---------------------------------------------------------------------------------------
-                                       8.393151   slack (MET)
+                                      -4.342333   slack (VIOLATED)
 
 

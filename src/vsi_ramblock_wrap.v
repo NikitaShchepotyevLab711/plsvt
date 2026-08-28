@@ -518,7 +518,7 @@ xci2_buf buf_clk3 (
     .a(clk),       
     .y(clk3)     
 );
-/*
+
 `ifdef DEBUG_MODE
     psevdo_ram_block vsi_ram0 (
         .rst_l(rst_l),
@@ -583,7 +583,7 @@ xci2_buf buf_clk3 (
         .DO1(DOut3),
         .DO2()
     );
-`else*/
+`else
     ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance1 (
         .DIn({1'b0,data_to_ram0}),
         .RADDR(raddr0_buf),
@@ -643,6 +643,6 @@ xci2_buf buf_clk3 (
         .DO1(DOut3),
         .DO2()
     );
-//`endif
+`endif
 
 endmodule

@@ -24,8 +24,7 @@ adc733_wrap dut (
     .SDO(SDO),
     .SDIFS(SDIFS),
     .SDI(SDI),
-    .SE(SE),
-    .SYNC(sync)
+    .SE(SE)
 ); 
 
 reg adc_clk;

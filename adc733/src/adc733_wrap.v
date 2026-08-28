@@ -1,203 +1,216 @@
-module adc733_wrap (
-    input wire         clk,
-    input wire         rst_l,
+module adc733_wrap #(
+    parameter integer CLK_FREQ_HZ  = 8_000_000,
+    parameter integer SYNC_FREQ_HZ = 300,
+    parameter integer RESET_CYCLES = 16
+) (
+    input  wire        clk,
+    input  wire        rst_l,
 
-    // serial port //
+    // Dedicated connections to DD26 (1273PV19T).
     input  wire        SCLK,
     input  wire        SDOFS,
     input  wire        SDO,
     output wire        SDIFS,
     output wire        SDI,
-    output wire        SE,  
+    output wire        SE,
+    output wire        MCLK,
+    output wire        RESETn,
 
-    input  wire        SYNC,    //импульс - команда для захвата данных с 6 каналов
-    output reg  [15:0] DATA_O,  //полученное значение из АЦП
-    output wire        RD_EN,   //импульс, сообщающий о новом полученном значении
-    output wire        OP_MODE, //высокий уровень - режим захвата данных, низкий - режим программирования 
-    output reg  [2:0]  CHANNEL  //номер канала, из которого выводится значение на данный момент
+    // Debug outputs.
+    output reg  [15:0] DATA_O,
+    output reg         RD_EN,
+    output wire        OP_MODE,
+    output reg  [2:0]  CHANNEL,
+
+    // Copies of all eight DD26 interface lines for a logic analyzer.
+    output wire        sclk_watch,
+    output wire        sdofs_watch,
+    output wire        sdo_watch,
+    output wire        sdifs_watch,
+    output wire        sdi_watch,
+    output wire        se_watch,
+    output wire        mclk_watch,
+    output wire        resetn_watch
 );
 
-// регистры и провода для конфигурирования АЦП //
-wire [15:0] control_word;
-reg  [7:0]  register_data;
-wire [7:0] CRA;
-wire [7:0] CRB;
-wire [7:0] CRC;
-wire [7:0] CRD;
-wire [7:0] CRE;
-wire [7:0] CRF;
-wire [7:0] CRG;
-wire [7:0] CRH;
-wire [7:0] DATAMODE_SET;
+localparam integer RESET_COUNTER_WIDTH = $clog2(RESET_CYCLES + 1);
 
-assign CRA          = 8'h0;
-assign CRB          = 8'h1; //деление внешней MCLK на 2 и получение SCLK = 16.384/2 = 8.192 МГц
-assign CRC          = 8'h2;
-assign CRD          = 8'h3;
-assign CRE          = 8'h4;
-assign CRF          = 8'h5;
-assign CRG          = 8'h6;// узнать про режим
-assign CRH          = 8'h7; 
-assign DATAMODE_SET = 8'h8;
+reg [RESET_COUNTER_WIDTH-1:0] reset_counter;
 
-/*
-assign CRA          = 8'b0;
-assign CRB          = 8'h8; //деление внешней MCLK на 2 и получение SCLK = 16.384/2 = 8.192 МГц
-assign CRC          = 8'b1;
-assign CRD          = 8'b0;
-assign CRE          = 8'b0;
-assign CRF          = 8'b0;
-assign CRG          = 8'b0;// узнать про режим
-assign CRH          = 8'b0; 
-assign DATAMODE_SET = 8'b1;
-*/
-
-// регистры и провода для захвата данных и контроля работы модуля adc733 //
-reg         op_mode; // 0 = programm, 1 = data_mode
+wire        adc_logic_rst_l;
+wire        sync_300hz;
+wire        sync_toggle;
+wire        sync_pulse;
+wire        sync_toggle_sclk;
+reg  [3:0]  config_index;
+reg  [15:0] control_word;
 wire        word_sent;
 wire [15:0] captured_data;
 wire        adc_rd_en;
 wire        adc_operation_mode;
 wire        adc_busy;
 wire [2:0]  adc_channel;
-reg  [3:0]  state;
+wire        adc_rd_en_pulse;
+reg         adc_rd_en_r;
 
-localparam IDLE          = 2'd0;
-localparam SEND_WORD     = 2'd1;
-localparam SEND_DATAMODE = 2'd2;
+// DD26 uses the FPGA test clock as MCLK. Hold RESET# low for considerably
+// longer than the four MCLK cycles required by the specification.
+assign MCLK            = clk;
+assign RESETn          = (reset_counter == RESET_CYCLES);
+//assign adc_logic_rst_l = rst_l & RESETn;
+assign adc_logic_rst_l = 1'b1 & RESETn;
 
-reg [3:0] reg_counter;
-reg adc_rd_en_r;
+// Dedicated vendor buffers keep every analyzer output on a separate physical
+// path while preserving the logic level of the corresponding DD26 line.
+xci2_buf sclk_watch_buf (
+    .a(SCLK),
+    .y(sclk_watch)
+);
 
-wire sync_toggle;
-wire sync_pulse;
+xci2_buf sdofs_watch_buf (
+    .a(SDOFS),
+    .y(sdofs_watch)
+);
 
-assign control_word = {op_mode, 1'b1, 6'b000, register_data};
+xci2_buf sdo_watch_buf (
+    .a(SDO),
+    .y(sdo_watch)
+);
 
-// пересинхронизация импульса sync в домен SCLK из clk //
+xci2_buf sdifs_watch_buf (
+    .a(SDIFS),
+    .y(sdifs_watch)
+);
+
+xci2_buf sdi_watch_buf (
+    .a(SDI),
+    .y(sdi_watch)
+);
+
+xci2_buf se_watch_buf (
+    .a(SE),
+    .y(se_watch)
+);
+
+xci2_buf mclk_watch_buf (
+    .a(MCLK),
+    .y(mclk_watch)
+);
+
+xci2_buf resetn_watch_buf (
+    .a(RESETn),
+    .y(resetn_watch)
+);
+
+always @(posedge clk or negedge rst_l) begin
+    if (!rst_l)
+        reset_counter <= {RESET_COUNTER_WIDTH{1'b0}};
+    else if (reset_counter != RESET_CYCLES)
+        reset_counter <= reset_counter + 1'b1;
+end
+
+// Periodic request to capture the next complete set of six channels.
+sync_strobe #(
+    .CLK_FREQ_HZ   (CLK_FREQ_HZ),
+    .STROBE_FREQ_HZ(SYNC_FREQ_HZ)
+) sync_strobe_inst (
+    .clk   (clk),
+    .rst_l (adc_logic_rst_l),
+    .strobe(sync_300hz)
+);
+
 pulse_to_toggle pulse_to_toggle_inst (
-    .clk(clk),
-    .rst(rst_l),
-    .pulse(SYNC),
+    .clk         (clk),
+    .rst         (adc_logic_rst_l),
+    .pulse       (sync_300hz),
     .reset_toggle(1'b0),
-    .toggle(sync_toggle)
+    .toggle      (sync_toggle)
 );
 
 sync2_toggle_to_pulse_bothedge toggle_to_pulse_inst (
-    .clk(SCLK),
-    .rst(rst_l),
-    .toggle(sync_toggle),
-    .pulse(sync_pulse)
+    .clk       (SCLK),
+    .rst       (adc_logic_rst_l),
+    .toggle    (sync_toggle),
+    .pulse     (sync_pulse),
+    .out_toggle(sync_toggle_sclk)
 );
 
-// пересинхронизация rd_en и op_mode в домен clk из SCLK //
-front_detector adc_733_front_detector_rden   (clk, rst_l, adc_rd_en_r, RD_EN); // 3 триггера и детектор перепада уровня
-sync2 i_sync2_opmode (clk, rst_l, adc_operation_mode, OP_MODE); // 2 триггера
-
-// пересинхронизация данных и канала в домен clk из SCLK //
-always @(posedge clk or negedge rst_l) begin
-    if (!rst_l) begin
-        DATA_O      <= 16'd0;
-        CHANNEL     <= 3'b0;
-    end
-    else if (RD_EN) begin
-        DATA_O  <= captured_data;
-        CHANNEL <= adc_channel;
-    end
+// Control-word format: D/C=1, W/R=0, device address=000,
+// register address, register data. DD26 is powered from 3.3 V.
+always @(*) begin
+    case (config_index)
+        4'd0: control_word = 16'h8000; // CRA: program mode, one device
+        4'd1: control_word = 16'h8108; // CRB: SCLK=MCLK/2, fs=MCLK/2048
+        4'd2: control_word = 16'h8241; // CRC: all channels and REFOUT on
+        4'd3: control_word = 16'h8300; // CRD: channels 1/2, gain 0 dB
+        4'd4: control_word = 16'h8400; // CRE: channels 3/4, gain 0 dB
+        4'd5: control_word = 16'h8500; // CRF: channels 5/6, gain 0 dB
+        4'd6: control_word = 16'h8600; // CRG: differential inputs
+        4'd7: control_word = 16'h8700; // CRH: normal polarity
+        default: control_word = 16'h8001; // CRA: enter data mode
+    endcase
 end
 
-// задержка на такт rd_en, чтобы в домене clk этот сигнал не опережал данные //
-always @(posedge SCLK or negedge rst_l) begin
-    if (!rst_l)
+always @(posedge SCLK or negedge adc_logic_rst_l) begin
+    if (!adc_logic_rst_l)
+        config_index <= 4'd0;
+    else if (word_sent && (config_index != 4'd8))
+        config_index <= config_index + 1'b1;
+end
+
+// Delay the event by one SCLK period, then synchronize it into clk. The
+// captured word and channel remain stable throughout this interval.
+always @(posedge SCLK or negedge adc_logic_rst_l) begin
+    if (!adc_logic_rst_l)
         adc_rd_en_r <= 1'b0;
     else
         adc_rd_en_r <= adc_rd_en;
 end
 
-// конечный автомат, задающий порядок действий прошивки АЦП и перехода в рабочий режим //
+front_detector adc733_front_detector_rden (
+    .clk       (clk),
+    .rst_l     (adc_logic_rst_l),
+    .pulse_slow(adc_rd_en_r),
+    .pulse_fast(adc_rd_en_pulse)
+);
 
-always @(posedge SCLK or negedge rst_l) begin
-    if (!rst_l) begin
-        state       <= IDLE;
-        reg_counter <= 4'd0;
-        op_mode     <= 1'b0;
-    end else begin
-        case (state)
-            IDLE: begin
-                reg_counter <= 4'd0;
-                op_mode     <= 1'b0;
-                state       <= SEND_WORD;
-            end
-            
-            SEND_WORD: begin
-                if (word_sent) begin
-                    if (reg_counter == 4'd7) begin
-                        state <= SEND_DATAMODE;
-                        op_mode <= 1'b1;
-                    end else begin
-                        reg_counter <= reg_counter + 1;
-                        op_mode <= 1'b0;
-                    end
-                end
-            end
-            
-            SEND_DATAMODE: op_mode <= 1'b1;
-            
-            default: begin
-                state <= IDLE;
-                op_mode <= 1'b0;
-                reg_counter <= 1'b0;
-            end
-            
-        endcase
-    end
-end
+sync2 adc733_sync2_opmode (
+    .clk(clk),
+    .rst(adc_logic_rst_l),
+    .in (adc_operation_mode),
+    .out(OP_MODE)
+);
 
-// Выбор данных регистра //
-always @(posedge SCLK or negedge rst_l) begin
-    if (!rst_l) begin
-        register_data <= 8'd0;
+always @(posedge clk or negedge adc_logic_rst_l) begin
+    if (!adc_logic_rst_l) begin
+        DATA_O  <= 16'd0;
+        CHANNEL <= 3'd0;
+        RD_EN   <= 1'b0;
     end else begin
-        if (state == SEND_DATAMODE) begin
-            register_data <= DATAMODE_SET;
-        end else if (state == SEND_WORD) begin
-            case (reg_counter)
-                4'd0: register_data <= CRA;
-                4'd1: register_data <= CRB;
-                4'd2: register_data <= CRC;
-                4'd3: register_data <= CRD;
-                4'd4: register_data <= CRE;
-                4'd5: register_data <= CRF;
-                4'd6: register_data <= CRG;
-                4'd7: register_data <= CRH;
-                default: register_data <= 8'd0;
-            endcase
+        RD_EN <= adc_rd_en_pulse;
+        if (adc_rd_en_pulse) begin
+            DATA_O  <= captured_data;
+            CHANNEL <= adc_channel;
         end
     end
 end
 
 adc733 adc_inst (
-    .clk           (clk               ),
-    .rst_l         (rst_l             ),
-
-    // serial port //
-    .SCLK          (SCLK              ),
-    .SDOFS         (SDOFS             ),
-    .SDO           (SDO               ),
-    .SDIFS         (SDIFS             ),
-    .SDI           (SDI               ),
-    .SE            (SE                ),
-
-    // internal signals //
-    .sync          (sync_pulse        ),
-    .control_word  (control_word      ),
-    .word_sent     (word_sent         ),
-    .captured_data (captured_data     ),
-
-    // output signals //
-    .channel       (adc_channel       ),
-    .busy          (adc_busy          ),
-    .rd_en         (adc_rd_en         ),
+    .clk           (clk),
+    .rst_l         (adc_logic_rst_l),
+    .SCLK          (SCLK),
+    .SDOFS         (SDOFS),
+    .SDO           (SDO),
+    .SDIFS         (SDIFS),
+    .SDI           (SDI),
+    .SE            (SE),
+    .sync          (sync_pulse),
+    .control_word  (control_word),
+    .word_sent     (word_sent),
+    .captured_data (captured_data),
+    .channel       (adc_channel),
+    .busy          (adc_busy),
+    .rd_en         (adc_rd_en),
     .operation_mode(adc_operation_mode)
 );
 

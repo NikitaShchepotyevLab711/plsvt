@@ -616,7 +616,7 @@ generate
             );
     end
 endgenerate*/
-/*
+
 `ifdef DEBUG_MODE
     psevdo_ram_block ram0 (
         .rst_l(rst_l),
@@ -633,7 +633,7 @@ endgenerate*/
         .DO1(DOut1),
         .DO2()
     );
-`else*/
+`else
     ramblock_4x_swrite_sread ramblock_4x_swrite_sread_instance (
         .DIn({1'b0,data_to_ram}),
         .RADDR(raddr_buf),
@@ -648,6 +648,6 @@ endgenerate*/
         .DO1(DOut1),
         .DO2()
     );
-//`endif
+`endif
 
 endmodule
