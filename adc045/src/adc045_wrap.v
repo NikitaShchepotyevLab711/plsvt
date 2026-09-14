@@ -1,6 +1,9 @@
 module adc045_wrap #(
     parameter integer CLK_FREQ_HZ  = 8_000_000,
-    parameter integer SYNC_FREQ_HZ = 300
+    parameter integer SCLK_FREQ_HZ = 4_000_000,
+    parameter integer SYNC_FRE
+    
+    Q_HZ = 300
 ) (
     input  wire        clk,
     input  wire        rst_l,
@@ -111,7 +114,8 @@ end
 assign adc_enable = adc_delay_active | work_frame;
 
 adc045 #(
-    .CLK_FREQ_HZ(CLK_FREQ_HZ)
+    .CLK_FREQ_HZ (CLK_FREQ_HZ),
+    .SCLK_FREQ_HZ(SCLK_FREQ_HZ)
 ) adc_inst (
     .clk           (clk),
     .rst_l         (rst_l),

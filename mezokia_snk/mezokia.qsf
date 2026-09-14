@@ -1,0 +1,131 @@
+# Minimal MEZOKIA project: FTDI USB and DAC control only.
+
+set_global_assignment -name FAMILY "Cyclone III"
+set_global_assignment -name DEVICE EP3C40F484C6
+set_global_assignment -name TOP_LEVEL_ENTITY mezokia
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
+set_global_assignment -name LAST_QUARTUS_VERSION 13.1
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name DEVICE_FILTER_PIN_COUNT 484
+set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 6
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF
+set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
+
+# 8 MHz system clock from test point TP3.
+set_location_assignment PIN_J6 -to TP_3
+
+# FTDI FT2232H synchronous FIFO interface.
+set_location_assignment PIN_G1 -to FCLK_OUT
+set_location_assignment PIN_G4 -to FU_D[1]
+set_location_assignment PIN_G3 -to FU_D[2]
+set_location_assignment PIN_B2 -to FUSB_nRES
+set_location_assignment PIN_B1 -to FPWREN
+set_location_assignment PIN_E4 -to FVBUS
+set_location_assignment PIN_E3 -to FU_D[0]
+set_location_assignment PIN_C2 -to FODD
+set_location_assignment PIN_C1 -to FOE
+set_location_assignment PIN_D2 -to FSIWU
+set_location_assignment PIN_J4 -to FU_D[3]
+set_location_assignment PIN_H2 -to FRXF
+set_location_assignment PIN_H1 -to FU_D[7]
+set_location_assignment PIN_J3 -to FU_D[4]
+set_location_assignment PIN_J1 -to FU_D[5]
+set_location_assignment PIN_J2 -to FU_D[6]
+set_location_assignment PIN_F1 -to FTXE
+set_location_assignment PIN_F2 -to FRD
+set_location_assignment PIN_E1 -to FWR
+
+# Debug test points.
+set_location_assignment PIN_H7 -to TP_1
+set_location_assignment PIN_J5 -to TP_2
+set_location_assignment PIN_K8 -to TP_4
+
+# Compact serial link: the MEZOKIA block carrying DP_IN_N[19..22]
+# mates with the leftmost MVEC-PVSK block X74.2.
+# MEZOKIA net      Cyclone pin   Contact   5510 board net / FPGA pin
+# DP_IN_P[19]      PIN_T10       51        F_MEZO_14 / IO[127] (RESET_N)
+# DP_IN_N[19]      PIN_T11       52        F_MEZO_13 / IO_GCLK[152]
+# DP_IN_N[20]      PIN_T9        54        F_MEZO_9  / IO[133]
+# DP_IN_N[21]      PIN_U20       56        F_MEZO_5  / IO[131]
+# DP_IN_N[22]      PIN_R18       58        F_MEZO_1  / IO_GCLK[162]
+# DP_IN_P[21]      PIN_U19       55        F_MEZO_6  / IO[178] (CSn watch)
+# DP_IN_P[22]      PIN_R19       57        F_MEZO_2  / IO[190] (LDACn watch)
+set_location_assignment PIN_T11 -to CLK_TO_5510
+set_location_assignment PIN_T9 -to CFG_DATA
+set_location_assignment PIN_U20 -to CFG_FRAME
+set_location_assignment PIN_R18 -to DAC_SYNC
+set_location_assignment PIN_T10 -to RESET_N_TO_5510
+set_location_assignment PIN_U19 -to CSN_WATCH_FROM_5510
+set_location_assignment PIN_R19 -to LDAC_WATCH_FROM_5510
+
+# HDL and the only generated IP required by the dual-clock FTDI FIFOs.
+set_global_assignment -name VERILOG_FILE src/verilog/umio_fifo_w16_r8.v
+set_global_assignment -name VERILOG_FILE src/verilog/umio_fifo.v
+set_global_assignment -name VERILOG_FILE src/verilog/ftdi_encoder_sdram.v
+set_global_assignment -name VERILOG_FILE src/verilog/ftdi_disconnect.v
+set_global_assignment -name VERILOG_FILE src/verilog/ftdi_decoder.v
+set_global_assignment -name VERILOG_FILE src/verilog/ftdi_controller_sdram.v
+set_global_assignment -name VERILOG_FILE src/verilog/fifo_w16_r16_beio.v
+set_global_assignment -name VERILOG_FILE src/verilog/crc8_ftdi.v
+set_global_assignment -name VERILOG_FILE src/verilog/rd_addr_controller.v
+set_global_assignment -name VERILOG_FILE src/verilog/programmable_sync.v
+set_global_assignment -name VERILOG_FILE src/verilog/dac_config_tx.v
+set_global_assignment -name QIP_FILE src/ip/fifo_gen/fifo_gen.qip
+set_global_assignment -name SDC_FILE src/mezokia.sdc
+set_global_assignment -name VERILOG_FILE src/verilog/mezokia.v
+
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_DATA1_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_FLASH_NCE_AFTER_CONFIGURATION "USE AS REGULAR IO"
+
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CFG_DATA
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CFG_FRAME
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLK_TO_5510
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_SYNC
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RESET_N_TO_5510
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LDAC_WATCH_FROM_5510
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CSN_WATCH_FROM_5510
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FCLK_OUT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FODD
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FOE
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FPWREN
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FRD
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FRXF
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FSIWU
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FTXE
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FUSB_nRES
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FVBUS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FWR
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TP_1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TP_2
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TP_3
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TP_4
+
+
+
+
+
+
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
