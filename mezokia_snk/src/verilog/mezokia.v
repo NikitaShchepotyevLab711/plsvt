@@ -7,8 +7,6 @@
  * Register map:
  *   0x10, 1 byte: STEP_COEFF[2:0]
  *   0x11, 2 bytes: DAC_LIMIT[15:8], DAC_LIMIT[7:0]
- *   0x12, 1 byte: SYNC_CONTROL; bit 0 = enable,
- *                                      bit 1 = 0: 30 Hz, 1: 300 Hz
  */
 module mezokia #(
     parameter integer CLK_FREQ_HZ      = 8_000_000,
@@ -36,18 +34,11 @@ module mezokia #(
     output wire        CLK_TO_5510,
     output wire        CFG_DATA,
     output wire        CFG_FRAME,
-    output wire        DAC_SYNC,
-    output wire        RESET_N_TO_5510,
-
-    // Debug test points. TP3 is occupied by the input clock.
-    output wire        TP_1,
-    output wire        TP_2,
-    output wire        TP_4
+    output wire        RESET_N_TO_5510
 );
 
 localparam [7:0] ADDR_STEP_COEFF   = 8'h10;
 localparam [7:0] ADDR_DAC_LIMIT    = 8'h11;
-localparam [7:0] ADDR_SYNC_CONTROL = 8'h12;
 
 wire clk = TP_3;
 
@@ -95,8 +86,6 @@ assign RESET_N_TO_5510 = reset_n_to_5510;
 reg [2:0]  step_coeff  = 3'd1;
 reg [15:0] dac_limit   = 16'hFFFF;
 reg [7:0]  dac_limit_high_staging = 8'hFF;
-reg        sync_enable = 1'b1;
-reg        sync_300hz  = 1'b1;
 
 // Forward the same 8 MHz clock that drives the transmitter. Serial data and
 // frame change on its falling edge and are sampled on its rising edge.
@@ -186,8 +175,6 @@ always @(posedge clk or negedge rst_n) begin
         step_coeff  <= 3'd1;
         dac_limit   <= 16'hFFFF;
         dac_limit_high_staging <= 8'hFF;
-        sync_enable <= 1'b1;
-        sync_300hz  <= 1'b1;
     end else if (write_data_valid) begin
         case (write_addr)
             ADDR_STEP_COEFF: begin
@@ -204,37 +191,13 @@ always @(posedge clk or negedge rst_n) begin
                 end
             end
 
-            ADDR_SYNC_CONTROL: begin
-                if ((write_size == 16'd1) && (write_byte_number == 16'd0)) begin
-                    sync_enable <= write_data[0];
-                    sync_300hz  <= write_data[1];
-                end
-            end
-
             default: begin
                 step_coeff  <= step_coeff;
                 dac_limit   <= dac_limit;
-                sync_enable <= sync_enable;
-                sync_300hz  <= sync_300hz;
             end
         endcase
     end
 end
-
-// -------------------------------------------------------------------------
-// Programmable 30/300 Hz SYNC generator
-// -------------------------------------------------------------------------
-wire sync_internal;
-
-programmable_sync #(
-    .CLK_FREQ_HZ(CLK_FREQ_HZ)
-) programmable_sync_inst (
-    .clk       (clk),
-    .rst_n     (reset_n_to_5510),
-    .enable    (sync_enable),
-    .select_300(sync_300hz),
-    .sync_out  (sync_internal)
-);
 
 // STEP_COEFF and DAC_LIMIT are sent together as one atomic 19-bit frame.
 dac_config_tx #(
@@ -249,18 +212,8 @@ dac_config_tx #(
     .cfg_frame (CFG_FRAME)
 );
 
-reg dac_sync_out = 1'b0;
-assign DAC_SYNC = reset_n_to_5510 ? dac_sync_out : 1'b0;
-
-always @(negedge clk or negedge reset_n_to_5510) begin
-    if (!reset_n_to_5510)
-        dac_sync_out       <= 1'b0;
-    else
-        dac_sync_out       <= sync_internal;
-end
-
 // -------------------------------------------------------------------------
-// Periodic cyclic register readback: 0x10 -> 0x11 -> 0x12
+// Periodic cyclic register readback: 0x10 -> 0x11
 // -------------------------------------------------------------------------
 localparam integer READBACK_PERIOD = CLK_FREQ_HZ / READBACK_FREQ_HZ;
 localparam integer READBACK_COUNTER_WIDTH = 32;
@@ -290,7 +243,7 @@ wire [15:0] read_byte_number;
 
 rd_addr_controller #(
     .FIRST_ADDR(ADDR_STEP_COEFF),
-    .LAST_ADDR (ADDR_SYNC_CONTROL)
+    .LAST_ADDR (ADDR_DAC_LIMIT)
 ) rd_addr_controller_inst (
     .clk         (clk),
     .rst_n       (usb_rst_n),
@@ -313,9 +266,6 @@ always @(*) begin
             read_data_byte = (read_byte_number == 16'd0) ?
                              dac_limit[15:8] : dac_limit[7:0];
 
-        ADDR_SYNC_CONTROL:
-            read_data_byte = {6'b000000, sync_300hz, sync_enable};
-
         default:
             read_data_byte = 8'h00;
     endcase
@@ -336,10 +286,5 @@ ftdi_encoder_sdram ftdi_encoder_inst (
     .be_o         (encoder_to_ftdi_be),
     .rcv_rdy      (ftdi_encoder_ready)
 );
-
-// Useful slow/status signals for an oscilloscope or logic analyser.
-assign TP_1 = sync_enable;
-assign TP_2 = sync_300hz;
-assign TP_4 = DAC_SYNC;
 
 endmodule

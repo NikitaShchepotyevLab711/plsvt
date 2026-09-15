@@ -103,7 +103,7 @@ always @(posedge clk or negedge rst_l) begin
                 state <= LDAC_WAIT;
             end
 
-            // Two clk periods give an LDACn low pulse of about 168 ns.
+            // Two clk periods give an LDACn low pulse of 250 ns at 8 MHz.
             LDAC_WAIT: begin
                 LDAc  <= 1'b0;
                 state <= LDAC_DISABLE;
