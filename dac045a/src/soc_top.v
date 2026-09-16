@@ -2,7 +2,7 @@
 // instantiated here without changing the tested single-DAC submodule.
 module soc_top #(
     parameter integer CLK_FREQ_HZ  = 8_000_000,
-    parameter integer SYNC_FREQ_HZ = 300,
+    parameter integer SYNC_FREQ_HZ = 32,
     parameter integer RESET_PRE_MS = 10,
     parameter integer RESET_HOLD_MS = 100
 ) (

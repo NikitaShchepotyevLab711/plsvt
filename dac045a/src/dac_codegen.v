@@ -1,6 +1,7 @@
-// Area-oriented sawtooth/triangle generator. One 898-SYNC period contains
-// 897 calculated samples and one wrap sample. A serial adder and restoring
-// divider are reused for both rising and falling slopes; no multiplier is used.
+// Area-oriented sawtooth/triangle generator. At 32 Hz SYNC the rising edge
+// always occupies 96 updates (3 seconds). The triangle falling edge occupies
+// the number of updates selected by the fall-rate table below. A serial adder
+// and restoring divider are reused for both slopes; no multiplier is used.
 module dac_codegen (
     input wire clk,
     input wire rst_l,
@@ -20,6 +21,7 @@ reg [9:0] sample_count;
 reg new_period;
 reg [2:0] interval_count;
 reg publish_pending;
+reg cycle_end_pending;
 reg [15:0] amplitude;
 reg [15:0] ramp;
 reg active_triangle;
@@ -39,35 +41,25 @@ wire add_a = (state == SUM) ? work_reg[0] : ramp[0];
 wire add_b = (state == SUM) ? amplitude[0] :
              (falling_reg ? ~work_reg[0] : work_reg[0]);
 wire [1:0] bit_sum = {1'b0, add_a} + {1'b0, add_b} + carry;
-// Approximate the requested fall/rise ratio with whole SYNC intervals.
-// rise_length + fall_length = 897; the 898th SYNC wraps the waveform.
-reg [9:0] rise_length;
+localparam [9:0] RISE_LENGTH = 10'd96;
+
+// Falling-time gradation in whole 1/32-second intervals.
 reg [9:0] fall_length;
 always @(*) begin
     case (active_fall_rate)
-        3'd0: begin rise_length = 10'd449; fall_length = 10'd448; end
-        3'd1: begin rise_length = 10'd598; fall_length = 10'd299; end
-        3'd2: begin rise_length = 10'd673; fall_length = 10'd224; end
-        3'd3: begin rise_length = 10'd718; fall_length = 10'd179; end
-        3'd4: begin rise_length = 10'd747; fall_length = 10'd150; end
-        3'd5: begin rise_length = 10'd769; fall_length = 10'd128; end
-        3'd6: begin rise_length = 10'd785; fall_length = 10'd112; end
-        3'd7: begin rise_length = 10'd797; fall_length = 10'd100; end
+        3'd0: fall_length = 10'd96;
+        3'd1: fall_length = 10'd85;
+        3'd2: fall_length = 10'd60;
+        3'd3: fall_length = 10'd45;
+        3'd4: fall_length = 10'd30;
+        3'd5: fall_length = 10'd20;
+        3'd6: fall_length = 10'd10;
+        3'd7: fall_length = 10'd5;
     endcase
 end
-reg [9:0] next_rise_length;
-always @(*) begin
-    case (fall_rate)
-        3'd0: next_rise_length = 10'd449;
-        3'd1: next_rise_length = 10'd598;
-        3'd2: next_rise_length = 10'd673;
-        3'd3: next_rise_length = 10'd718;
-        3'd4: next_rise_length = 10'd747;
-        3'd5: next_rise_length = 10'd769;
-        3'd6: next_rise_length = 10'd785;
-        3'd7: next_rise_length = 10'd797;
-    endcase
-end
+wire [9:0] period_length = active_triangle ?
+    (RISE_LENGTH + fall_length) : RISE_LENGTH;
+wire cycle_last = (sample_count == period_length - 1'b1);
 // Load the rise divisor only at the period boundary and the fall divisor
 // only at the turning point. It stays registered throughout each segment,
 // instead of carrying a phase compare into every division iteration.
@@ -96,10 +88,11 @@ always @(posedge clk or negedge rst_l) begin
         new_period <= 1;
         interval_count <= 0;
         publish_pending <= 0;
+        cycle_end_pending <= 0;
         ramp <= 0;
         active_triangle <= 0;
         active_fall_rate <= 0;
-        divisor_reg <= 10'd898;
+        divisor_reg <= RISE_LENGTH;
         falling_reg <= 0;
         work_reg <= 0;
         remainder_reg <= 0;
@@ -113,10 +106,11 @@ always @(posedge clk or negedge rst_l) begin
         new_period <= 1;
         interval_count <= 0;
         publish_pending <= 0;
+        cycle_end_pending <= 0;
         ramp <= 0;
         active_triangle <= 0;
         active_fall_rate <= 0;
-        divisor_reg <= 10'd898;
+        divisor_reg <= RISE_LENGTH;
         falling_reg <= 0;
         work_reg <= 0;
         remainder_reg <= 0;
@@ -127,44 +121,43 @@ always @(posedge clk or negedge rst_l) begin
     end else begin
         case (state)
             IDLE: if (start) begin
-                if (sample_count == 10'd897) begin
-                    // Always wrap after 898 SYNCs, including a partial last
-                    // staircase interval when K does not divide 898.
+                if (new_period) begin
+                    new_period <= 0;
+                    active_triangle <= wave_triangle;
+                    active_fall_rate <= fall_rate;
+                    divisor_reg <= RISE_LENGTH;
+                    falling_reg <= 0;
+                end else if (active_triangle &&
+                             (sample_count == RISE_LENGTH)) begin
+                    divisor_reg <= fall_length;
+                    falling_reg <= 1;
+                end
+
+                cycle_end_pending <= cycle_last;
+                if (cycle_last) begin
                     sample_count <= 0;
                     new_period <= 1;
                     interval_count <= 0;
-                    ramp <= 0;
-                    remainder_reg <= 0;
-                    data <= 0;
                 end else begin
-                    if (new_period) begin
-                        new_period <= 0;
-                        active_triangle <= wave_triangle;
-                        active_fall_rate <= fall_rate;
-                        divisor_reg <= wave_triangle ? next_rise_length : 10'd898;
-                        falling_reg <= 0;
-                    end else if (active_triangle &&
-                                 (sample_count == rise_length)) begin
-                        divisor_reg <= fall_length;
-                        falling_reg <= 1;
-                    end
                     sample_count <= sample_count + 1'b1;
-                    // In triangle mode always publish the peak and the last
-                    // falling sample, even when the staircase interval does
-                    // not divide the segment length.
-                    publish_pending <= (interval_count >= interval - 1'b1) ||
-                        (active_triangle &&
-                         ((sample_count == rise_length - 1'b1) ||
-                          (sample_count == 10'd896)));
                     if (interval_count >= interval - 1'b1)
                         interval_count <= 0;
                     else
                         interval_count <= interval_count + 1'b1;
-                    work_reg <= {7'd0, remainder_reg};
-                    bit_count <= 0;
-                    carry <= 0;
-                    state <= SUM;
                 end
+
+                // STEP_COEFF controls the rising staircase. Publish every
+                // falling sample: short, steep falls otherwise end with a
+                // large held-code jump when their length is below a few K
+                // intervals. Peak and endpoint are always published too.
+                publish_pending <= (interval_count >= interval - 1'b1) ||
+                    (active_triangle &&
+                     (sample_count >= RISE_LENGTH)) ||
+                    (sample_count == RISE_LENGTH - 1'b1) || cycle_last;
+                work_reg <= {7'd0, remainder_reg};
+                bit_count <= 0;
+                carry <= 0;
+                state <= SUM;
             end
             SUM: begin
                 // The same separate amplitude register rotates and restores
@@ -207,6 +200,10 @@ always @(posedge clk or negedge rst_l) begin
             end
             PUBLISH: begin
                 if (publish_pending) data <= ramp;
+                if (cycle_end_pending) begin
+                    ramp <= 0;
+                    remainder_reg <= 0;
+                end
                 state <= IDLE;
             end
             default: state <= IDLE;

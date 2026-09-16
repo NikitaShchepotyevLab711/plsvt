@@ -1,6 +1,6 @@
 module sync_strobe #(
     parameter integer CLK_FREQ_HZ    = 12_000_000,
-    parameter integer STROBE_FREQ_HZ = 300
+    parameter integer STROBE_FREQ_HZ = 32
 ) (
     input  wire clk,
     input  wire rst_l,
