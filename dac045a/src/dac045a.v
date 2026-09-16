@@ -22,6 +22,8 @@ module dac045a (
 wire [15:0] generated_code;
 wire [2:0]  step_coeff;
 wire [15:0] dac_limit;
+wire        wave_triangle;
+wire [2:0]  fall_rate;
 wire        dac_rdy;
 wire        dac_value_valid;
 
@@ -33,7 +35,9 @@ dac_config_rx dac_config_rx_inst (
     .cfg_data  (cfg_data),
     .cfg_frame (cfg_frame),
     .step_coeff(step_coeff),
-    .dac_limit (dac_limit)
+    .dac_limit (dac_limit),
+    .wave_triangle(wave_triangle),
+    .fall_rate (fall_rate)
 );
 
 dac_codegen dac_codegen_inst (
@@ -44,6 +48,8 @@ dac_codegen dac_codegen_inst (
     .enable          (1'b1),
     .start           (sync_i),
     .step_coefficent (step_coeff),
+    .wave_triangle   (wave_triangle),
+    .fall_rate       (fall_rate),
     .data            (generated_code)
 );
 

@@ -1,5 +1,5 @@
 # MEZOKIA minimal design clocks.
-create_clock -name {core_clk_8mhz} -period 125.000 [get_ports {TP_3}]
+create_clock -name {core_clk_8mhz} -period 125.000 [get_ports {CLK_FROM_5510}]
 create_clock -name {ftdi_clk_60mhz} -period 16.667 [get_ports {FCLK_OUT}]
 
 # The two domains communicate only through generated asynchronous FIFOs.

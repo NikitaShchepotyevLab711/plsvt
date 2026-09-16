@@ -5,7 +5,7 @@
  */
 module rd_addr_controller #(
     parameter [7:0] FIRST_ADDR = 8'h10,
-    parameter [7:0] LAST_ADDR  = 8'h11
+    parameter [7:0] LAST_ADDR  = 8'h13
 ) (
     input  wire        clk,
     input  wire        rst_n,
@@ -28,6 +28,8 @@ always @(*) begin
     case (addr)
         8'h10: data_size = 16'd1;
         8'h11: data_size = 16'd2;
+        8'h12: data_size = 16'd1;
+        8'h13: data_size = 16'd1;
         default: data_size = 16'd1;
     endcase
 end

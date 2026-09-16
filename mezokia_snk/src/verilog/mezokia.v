@@ -7,14 +7,17 @@
  * Register map:
  *   0x10, 1 byte: STEP_COEFF[2:0]
  *   0x11, 2 bytes: DAC_LIMIT[15:8], DAC_LIMIT[7:0]
+ *   0x12, 1 byte: WAVE_TRIANGLE[0] (0=sawtooth, 1=triangle)
+ *   0x13, 1 byte: FALL_RATE[2:0] (fall/rise slope = 1..8)
  */
 module mezokia #(
     parameter integer CLK_FREQ_HZ      = 8_000_000,
-    parameter integer READBACK_FREQ_HZ = 10,
-    parameter integer RESET_HOLD_MS    = 100
+    parameter integer READBACK_FREQ_HZ = 10
 ) (
-    // The external 8 MHz clock is connected to test point TP3.
-    input  wire        TP_3,
+    // Common 8 MHz clock from the 5510TC028 FPGA, inter-board contact 52.
+    input  wire        CLK_FROM_5510,
+    // Active-low POR generated in soc_top, inter-board contact 51.
+    input  wire        RESET_N_FROM_5510,
 
     // FTDI FT2232H synchronous FIFO interface.
     output wire        FUSB_nRES,
@@ -31,24 +34,30 @@ module mezokia #(
     input  wire        FVBUS,
 
     // Compact serial connection to the 5510TS028 FPGA.
-    output wire        CLK_TO_5510,
     output wire        CFG_DATA,
-    output wire        CFG_FRAME,
-    output wire        RESET_N_TO_5510
+    output wire        CFG_FRAME
 );
 
 localparam [7:0] ADDR_STEP_COEFF   = 8'h10;
 localparam [7:0] ADDR_DAC_LIMIT    = 8'h11;
+localparam [7:0] ADDR_WAVE_MODE    = 8'h12;
+localparam [7:0] ADDR_FALL_RATE    = 8'h13;
 
-wire clk = TP_3;
+wire clk = CLK_FROM_5510;
 
 // Cyclone III supports deterministic register power-up. Keeping these shift
 // registers initialised to zero creates POR in both clock domains.
 reg [3:0] core_reset_pipe = 4'b0000;
 reg [3:0] ftdi_reset_pipe = 4'b0000;
 
-always @(posedge clk)
-    core_reset_pipe <= {core_reset_pipe[2:0], 1'b1};
+// Assert asynchronously from 5510TC028 and release synchronously in the
+// MEZOKIA clock domain four cycles after the inter-board reset rises.
+always @(posedge clk or negedge RESET_N_FROM_5510) begin
+    if (!RESET_N_FROM_5510)
+        core_reset_pipe <= 4'b0000;
+    else
+        core_reset_pipe <= {core_reset_pipe[2:0], 1'b1};
+end
 
 always @(posedge FCLK_OUT)
     ftdi_reset_pipe <= {ftdi_reset_pipe[2:0], FUSB_nRES};
@@ -57,39 +66,15 @@ wire rst_n      = core_reset_pipe[3];
 wire ftdi_rst_n = ftdi_reset_pipe[3];
 assign FUSB_nRES = rst_n;
 
-// Keep the 5510TS028 in reset long enough for both FPGAs to complete their
-// power-up configuration. No USB command is required to release this reset.
-localparam integer RESET_HOLD_CYCLES_RAW =
-    (CLK_FREQ_HZ / 1000) * RESET_HOLD_MS;
-localparam integer RESET_HOLD_CYCLES =
-    (RESET_HOLD_CYCLES_RAW < 1) ? 1 : RESET_HOLD_CYCLES_RAW;
-
-reg [31:0] reset_hold_counter = 32'd0;
-reg        reset_n_to_5510    = 1'b0;
-
-always @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-        reset_hold_counter <= 32'd0;
-        reset_n_to_5510    <= 1'b0;
-    end else if (!reset_n_to_5510) begin
-        if (reset_hold_counter == RESET_HOLD_CYCLES - 1) begin
-            reset_n_to_5510 <= 1'b1;
-        end else begin
-            reset_hold_counter <= reset_hold_counter + 1'b1;
-        end
-    end
-end
-
-assign RESET_N_TO_5510 = reset_n_to_5510;
-
 // Restore the values used during the stand-alone DAC test after power-up.
 reg [2:0]  step_coeff  = 3'd1;
 reg [15:0] dac_limit   = 16'hFFFF;
+reg        wave_triangle = 1'b0;
+reg [2:0]  fall_rate = 3'd0;
 reg [7:0]  dac_limit_high_staging = 8'hFF;
 
-// Forward the same 8 MHz clock that drives the transmitter. Serial data and
-// frame change on its falling edge and are sampled on its rising edge.
-assign CLK_TO_5510 = clk;
+// CFG_DATA and CFG_FRAME change on this clock's falling edge and are sampled
+// by the 5510TC028 on its rising edge. Both devices now share one source.
 
 // -------------------------------------------------------------------------
 // USB disconnect monitor
@@ -174,6 +159,8 @@ always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         step_coeff  <= 3'd1;
         dac_limit   <= 16'hFFFF;
+        wave_triangle <= 1'b0;
+        fall_rate <= 3'd0;
         dac_limit_high_staging <= 8'hFF;
     end else if (write_data_valid) begin
         case (write_addr)
@@ -191,15 +178,22 @@ always @(posedge clk or negedge rst_n) begin
                 end
             end
 
-            default: begin
-                step_coeff  <= step_coeff;
-                dac_limit   <= dac_limit;
+            ADDR_WAVE_MODE: begin
+                if ((write_size == 16'd1) && (write_byte_number == 16'd0))
+                    wave_triangle <= write_data[0];
             end
+
+            ADDR_FALL_RATE: begin
+                if ((write_size == 16'd1) && (write_byte_number == 16'd0))
+                    fall_rate <= write_data[2:0];
+            end
+
+            default: ;
         endcase
     end
 end
 
-// STEP_COEFF and DAC_LIMIT are sent together as one atomic 19-bit frame.
+// All four controls are sent together as one atomic 23-bit frame.
 dac_config_tx #(
     .CLK_FREQ_HZ     (CLK_FREQ_HZ),
     .REFRESH_FREQ_HZ(1000)
@@ -208,12 +202,14 @@ dac_config_tx #(
     .rst_n     (rst_n),
     .step_coeff(step_coeff),
     .dac_limit (dac_limit),
+    .wave_triangle(wave_triangle),
+    .fall_rate (fall_rate),
     .cfg_data  (CFG_DATA),
     .cfg_frame (CFG_FRAME)
 );
 
 // -------------------------------------------------------------------------
-// Periodic cyclic register readback: 0x10 -> 0x11
+// Periodic cyclic register readback: 0x10 -> 0x11 -> 0x12 -> 0x13
 // -------------------------------------------------------------------------
 localparam integer READBACK_PERIOD = CLK_FREQ_HZ / READBACK_FREQ_HZ;
 localparam integer READBACK_COUNTER_WIDTH = 32;
@@ -243,7 +239,7 @@ wire [15:0] read_byte_number;
 
 rd_addr_controller #(
     .FIRST_ADDR(ADDR_STEP_COEFF),
-    .LAST_ADDR (ADDR_DAC_LIMIT)
+    .LAST_ADDR (ADDR_FALL_RATE)
 ) rd_addr_controller_inst (
     .clk         (clk),
     .rst_n       (usb_rst_n),
@@ -265,6 +261,12 @@ always @(*) begin
         ADDR_DAC_LIMIT:
             read_data_byte = (read_byte_number == 16'd0) ?
                              dac_limit[15:8] : dac_limit[7:0];
+
+        ADDR_WAVE_MODE:
+            read_data_byte = {7'b0000000, wave_triangle};
+
+        ADDR_FALL_RATE:
+            read_data_byte = {5'b00000, fall_rate};
 
         default:
             read_data_byte = 8'h00;
