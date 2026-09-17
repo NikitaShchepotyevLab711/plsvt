@@ -3,7 +3,6 @@
 module soc_top #(
     parameter integer CLK_FREQ_HZ  = 8_000_000,
     parameter integer SYNC_FREQ_HZ = 32,
-    parameter integer RESET_PRE_MS = 10,
     parameter integer RESET_HOLD_MS = 100
 ) (
     // The processor supplies the common 8 MHz clock through the dedicated
@@ -30,18 +29,17 @@ module soc_top #(
 
 wire sync_pulse;
 
-localparam integer RESET_PRE_CYCLES_RAW =
-    (CLK_FREQ_HZ / 1000) * RESET_PRE_MS;
-localparam integer RESET_PRE_CYCLES =
-    (RESET_PRE_CYCLES_RAW < 1) ? 1 : RESET_PRE_CYCLES_RAW;
 localparam integer RESET_HOLD_CYCLES_RAW =
     (CLK_FREQ_HZ / 1000) * RESET_HOLD_MS;
 localparam integer RESET_HOLD_CYCLES =
     (RESET_HOLD_CYCLES_RAW < 1) ? 1 : RESET_HOLD_CYCLES_RAW;
+localparam integer RESET_COUNTER_WIDTH = $clog2(RESET_HOLD_CYCLES + 1);
+localparam [RESET_COUNTER_WIDTH-1:0] RESET_LAST_COUNT =
+    RESET_HOLD_CYCLES - 1;
 
-reg [31:0] reset_counter = 32'd0;
-reg [1:0]  reset_state   = 2'd0;
-reg        rst_l         = 1'b0;
+reg [RESET_COUNTER_WIDTH-1:0] reset_counter =
+    {RESET_COUNTER_WIDTH{1'b0}};
+reg rst_l = 1'b0;
 
 assign bb_clk_out      = bb_clk_in;
 assign bb_apb_sync_clk = bb_clk_in;
@@ -60,37 +58,19 @@ xci2_buf reset_to_mezokia_buf (
     .y(reset_n_to_mezokia)
 );
 
-// Local high-low-high POR sequence. It starts when the processor clock first
-// reaches the FPGA: 10 ms released, 100 ms asserted, then released forever.
+// Fail-safe power-on reset. Normally reset stays low for RESET_HOLD_MS and
+// then rises permanently. With any unexpected initial counter value it still
+// reaches RESET_LAST_COUNT within one counter wrap, so reset cannot remain
+// asserted for minutes as it could with the old 32-bit exact-count FSM.
 always @(posedge bb_clk_in) begin
-    case (reset_state)
-        2'd0: begin
+    if (!rst_l) begin
+        if (reset_counter == RESET_LAST_COUNT) begin
+            reset_counter <= {RESET_COUNTER_WIDTH{1'b0}};
             rst_l <= 1'b1;
-            if (reset_counter == RESET_PRE_CYCLES - 1) begin
-                reset_counter <= 32'd0;
-                reset_state   <= 2'd1;
-                rst_l         <= 1'b0;
-            end else begin
-                reset_counter <= reset_counter + 1'b1;
-            end
+        end else begin
+            reset_counter <= reset_counter + 1'b1;
         end
-
-        2'd1: begin
-            rst_l <= 1'b0;
-            if (reset_counter == RESET_HOLD_CYCLES - 1) begin
-                reset_counter <= 32'd0;
-                reset_state   <= 2'd2;
-                rst_l         <= 1'b1;
-            end else begin
-                reset_counter <= reset_counter + 1'b1;
-            end
-        end
-
-        default: begin
-            reset_counter <= 32'd0;
-            rst_l         <= 1'b1;
-        end
-    endcase
+    end
 end
 
 sync_strobe #(
@@ -102,7 +82,10 @@ sync_strobe #(
     .strobe(sync_pulse)
 );
 
-dac045a dac045a_inst (
+dac045a #(
+    .CLK_FREQ_HZ (CLK_FREQ_HZ),
+    .SYNC_FREQ_HZ(SYNC_FREQ_HZ)
+) dac045a_inst (
     .clk      (bb_clk_in),
     .rst_l    (rst_l),
     .cfg_data (cfg_data),

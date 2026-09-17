@@ -2,6 +2,7 @@
  * Receiver for the compact MEZOKIA -> 5510TS028 DAC configuration link.
  * The 23-bit frame is {STEP_COEFF[2:0], DAC_LIMIT[15:0],
  * WAVE_TRIANGLE, FALL_RATE[2:0]}, MSB first.
+ * STEP_COEFF value 0 selects one update/SYNC; value 1 selects ten.
  * A malformed (short or long) frame is ignored, and both values are updated
  * together only after a complete valid frame.
  */
@@ -10,7 +11,7 @@ module dac_config_rx (
     input  wire        rst_l,
     input  wire        cfg_data,
     input  wire        cfg_frame,
-    output reg  [2:0]  step_coeff,
+    output reg         step_coeff,
     output reg  [15:0] dac_limit,
     output reg         wave_triangle,
     output reg  [2:0]  fall_rate
@@ -25,7 +26,7 @@ reg                  frame_error;
 
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l) begin
-        step_coeff <= 3'd1;
+        step_coeff <= 1'b0;
         dac_limit  <= 16'hFFFF;
         wave_triangle <= 1'b0;
         fall_rate <= 3'd0;
@@ -49,7 +50,8 @@ always @(posedge clk or negedge rst_l) begin
             end
         end else if (frame_d) begin
             if ((bit_count == FRAME_BITS) && !frame_error) begin
-                step_coeff <= shift_reg[22:20];
+                // MEZOKIA sends STEP_COEFF as 3'b000 or 3'b001.
+                step_coeff <= shift_reg[20];
                 dac_limit  <= shift_reg[19:4];
                 wave_triangle <= shift_reg[3];
                 fall_rate <= shift_reg[2:0];

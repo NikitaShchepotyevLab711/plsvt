@@ -5,7 +5,7 @@
  *   5E 4D ADDR NUMH NUML CRC8H DATA... CRC8D
  *
  * Register map:
- *   0x10, 1 byte: STEP_COEFF[2:0]
+ *   0x10, 1 byte: STEP_COEFF[0] (0=1, 1=10 updates/SYNC)
  *   0x11, 2 bytes: DAC_LIMIT[15:8], DAC_LIMIT[7:0]
  *   0x12, 1 byte: WAVE_TRIANGLE[0] (0=sawtooth, 1=triangle)
  *   0x13, 1 byte: FALL_RATE[2:0] (fall/rise slope = 1..8)
@@ -67,7 +67,7 @@ wire ftdi_rst_n = ftdi_reset_pipe[3];
 assign FUSB_nRES = rst_n;
 
 // Restore the values used during the stand-alone DAC test after power-up.
-reg [2:0]  step_coeff  = 3'd1;
+reg        step_coeff  = 1'b0;
 reg [15:0] dac_limit   = 16'hFFFF;
 reg        wave_triangle = 1'b0;
 reg [2:0]  fall_rate = 3'd0;
@@ -157,7 +157,7 @@ ftdi_decoder ftdi_decoder_inst (
 // a multi-byte register.
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        step_coeff  <= 3'd1;
+        step_coeff  <= 1'b0;
         dac_limit   <= 16'hFFFF;
         wave_triangle <= 1'b0;
         fall_rate <= 3'd0;
@@ -166,7 +166,7 @@ always @(posedge clk or negedge rst_n) begin
         case (write_addr)
             ADDR_STEP_COEFF: begin
                 if ((write_size == 16'd1) && (write_byte_number == 16'd0))
-                    step_coeff <= write_data[2:0];
+                    step_coeff <= write_data[0];
             end
 
             ADDR_DAC_LIMIT: begin
@@ -200,7 +200,7 @@ dac_config_tx #(
 ) dac_config_tx_inst (
     .clk       (clk),
     .rst_n     (rst_n),
-    .step_coeff(step_coeff),
+    .step_coeff({2'b00, step_coeff}),
     .dac_limit (dac_limit),
     .wave_triangle(wave_triangle),
     .fall_rate (fall_rate),
@@ -256,7 +256,7 @@ reg [7:0] read_data_byte;
 always @(*) begin
     case (read_addr)
         ADDR_STEP_COEFF:
-            read_data_byte = {5'b00000, step_coeff};
+            read_data_byte = {7'b0000000, step_coeff};
 
         ADDR_DAC_LIMIT:
             read_data_byte = (read_byte_number == 16'd0) ?
