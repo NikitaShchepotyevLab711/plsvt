@@ -68,6 +68,7 @@ set_global_assignment -name VERILOG_FILE src/verilog/ftdi_controller_sdram.v
 set_global_assignment -name VERILOG_FILE src/verilog/fifo_w16_r16_beio.v
 set_global_assignment -name VERILOG_FILE src/verilog/crc8_ftdi.v
 set_global_assignment -name VERILOG_FILE src/verilog/rd_addr_controller.v
+set_global_assignment -name VERILOG_FILE src/verilog/umio_timer.v
 set_global_assignment -name VERILOG_FILE src/verilog/adc_result_rx.v
 set_global_assignment -name VERILOG_FILE src/verilog/dac_config_tx.v
 set_global_assignment -name QIP_FILE src/ip/fifo_gen/fifo_gen.qip
@@ -112,6 +113,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FVBUS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FWR
+
 
 
 
