@@ -1,5 +1,5 @@
 /*
- * Minimal MEZOKIA firmware for USB control of the 5400TR045A-022 DAC.
+ * MEZOKIA: DAC configuration and ADC readback via FTDI.
  *
  * FTDI packet format is implemented by the existing encoder/decoder:
  *   5E 4D ADDR NUMH NUML CRC8H DATA... CRC8D
@@ -14,10 +14,11 @@ module mezokia #(
     parameter integer CLK_FREQ_HZ      = 8_000_000,
     parameter integer READBACK_FREQ_HZ = 10
 ) (
-    // Common 8 MHz clock from the 5510TC028 FPGA, inter-board contact 52.
+    // Independent 8 MHz POR clock on TP3; system clock is from 5510TC028.
+    input  wire        POR_CLK_8MHZ,
     input  wire        CLK_FROM_5510,
-    // Active-low POR generated in soc_top, inter-board contact 51.
-    input  wire        RESET_N_FROM_5510,
+    // User-logic reset to 5510 FPGA IO126, not processor resetn.
+    output wire        RESET_N_TO_5510,
 
     // FTDI FT2232H synchronous FIFO interface.
     output wire        FUSB_nRES,
@@ -35,25 +36,45 @@ module mezokia #(
 
     // Compact serial connection to the 5510TS028 FPGA.
     output wire        CFG_DATA,
-    output wire        CFG_FRAME
+    output wire        CFG_FRAME,
+    input  wire        ADC_SERIAL_DATA,
+    input  wire        ADC_SERIAL_FRAME
 );
 
 localparam [7:0] ADDR_STEP_COEFF   = 8'h10;
 localparam [7:0] ADDR_DAC_LIMIT    = 8'h11;
 localparam [7:0] ADDR_WAVE_MODE    = 8'h12;
 localparam [7:0] ADDR_FALL_RATE    = 8'h13;
+localparam [7:0] ADDR_ADC_VALUE    = 8'h20;
 
 wire clk = CLK_FROM_5510;
 
-// Cyclone III supports deterministic register power-up. Keeping these shift
-// registers initialised to zero creates POR in both clock domains.
+// Hold reset long enough for the independently configured 5510 FPGA to
+// become ready. The requested eight-stage zero-initialized release pipe then
+// gives eight extra 8 MHz edges of active-low reset (1 us).
+localparam integer POR_HOLD_CYCLES = CLK_FREQ_HZ / 2; // 500 ms at 8 MHz
+localparam integer POR_COUNT_WIDTH = $clog2(POR_HOLD_CYCLES + 1);
+reg [POR_COUNT_WIDTH-1:0] por_counter = {POR_COUNT_WIDTH{1'b0}};
+reg por_hold_done = 1'b0;
+reg [7:0] release_pipe = 8'b0;
+always @(posedge POR_CLK_8MHZ) begin
+    if (!por_hold_done) begin
+        if (por_counter == POR_HOLD_CYCLES - 1)
+            por_hold_done <= 1'b1;
+        else
+            por_counter <= por_counter + 1'b1;
+    end else begin
+        release_pipe <= {release_pipe[6:0], 1'b1};
+    end
+end
+assign RESET_N_TO_5510 = release_pipe[7];
+
 reg [3:0] core_reset_pipe = 4'b0000;
 reg [3:0] ftdi_reset_pipe = 4'b0000;
 
-// Assert asynchronously from 5510TC028 and release synchronously in the
-// MEZOKIA clock domain four cycles after the inter-board reset rises.
-always @(posedge clk or negedge RESET_N_FROM_5510) begin
-    if (!RESET_N_FROM_5510)
+// Reset local core after POR; use the processor clock for normal operation.
+always @(posedge clk or negedge RESET_N_TO_5510) begin
+    if (!RESET_N_TO_5510)
         core_reset_pipe <= 4'b0000;
     else
         core_reset_pipe <= {core_reset_pipe[2:0], 1'b1};
@@ -65,6 +86,17 @@ always @(posedge FCLK_OUT)
 wire rst_n      = core_reset_pipe[3];
 wire ftdi_rst_n = ftdi_reset_pipe[3];
 assign FUSB_nRES = rst_n;
+
+wire [15:0] adc_latest_value;
+wire [2:0] adc_latest_channel;
+wire adc_latest_valid;
+adc_result_rx adc_result_rx_inst (
+    .clk(clk), .rst_n(rst_n),
+    .serial_data(ADC_SERIAL_DATA), .serial_frame(ADC_SERIAL_FRAME),
+    .sample_data(adc_latest_value),
+    .sample_channel(adc_latest_channel),
+    .sample_valid(adc_latest_valid)
+);
 
 // Restore the values used during the stand-alone DAC test after power-up.
 reg        step_coeff  = 1'b0;
@@ -209,7 +241,7 @@ dac_config_tx #(
 );
 
 // -------------------------------------------------------------------------
-// Periodic cyclic register readback: 0x10 -> 0x11 -> 0x12 -> 0x13
+// Periodic readback: 0x10 -> 0x11 -> 0x12 -> 0x13 -> 0x20.
 // -------------------------------------------------------------------------
 localparam integer READBACK_PERIOD = CLK_FREQ_HZ / READBACK_FREQ_HZ;
 localparam integer READBACK_COUNTER_WIDTH = 32;
@@ -239,7 +271,7 @@ wire [15:0] read_byte_number;
 
 rd_addr_controller #(
     .FIRST_ADDR(ADDR_STEP_COEFF),
-    .LAST_ADDR (ADDR_FALL_RATE)
+    .LAST_ADDR (ADDR_ADC_VALUE)
 ) rd_addr_controller_inst (
     .clk         (clk),
     .rst_n       (usb_rst_n),
@@ -251,6 +283,15 @@ rd_addr_controller #(
     .data_size   (read_size),
     .byte_number (read_byte_number)
 );
+
+// Keep both bytes of the 0x20 packet from the same ADC conversion.
+reg [15:0] adc_read_snapshot;
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        adc_read_snapshot <= 16'd0;
+    else if (encoder_start && (read_addr == ADDR_ADC_VALUE))
+        adc_read_snapshot <= adc_latest_value;
+end
 
 reg [7:0] read_data_byte;
 always @(*) begin
@@ -267,6 +308,10 @@ always @(*) begin
 
         ADDR_FALL_RATE:
             read_data_byte = {5'b00000, fall_rate};
+
+        ADDR_ADC_VALUE:
+            read_data_byte = (read_byte_number == 16'd0) ?
+                             adc_read_snapshot[15:8] : adc_read_snapshot[7:0];
 
         default:
             read_data_byte = 8'h00;

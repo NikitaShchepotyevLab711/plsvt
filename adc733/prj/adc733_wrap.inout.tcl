@@ -1,7 +1,7 @@
 ############################################################
 ###                                                         
 ###   Generated     X-Place v2.48.61                             
-###   Date/Time     28.08.2026 / 18:18:57                                 
+###   Pin assignments audited 24.09.2026; no automatic output placement.
 ###                                                         
 ############################################################
 ###                                                         
@@ -10,50 +10,75 @@
 ###                                                         
 ############################################################
 
+# All outputs must be assigned: automatic placement drives other ICs.
+# Status/data ports below use F_MEZO lines (MVEC-PVSK_E3, sheet 14).
+# DATA_O and diagnostic ports occupy F_MEZO lines in this stand-alone
+# pinout; do not connect MEZOKIA while using this stand-alone bitstream.
+# An external active-low reset can be applied on F_MEZO_14 / IO[126].
 set xc(inout) {
-	{ se_watch IO[190] }
-	{ CHANNEL[2] IO[186] }
+	{ bb_clk_in bb_clk_in }
+	{ rst_l IO[126] }
+	{ CHANNEL[2] IO[92] }
 	{ SDOFS IO[181] }
-	{ sdofs_watch IO_GCLK[166] }
-	{ mclk_watch IO_GCLK[162] }
 	{ SDIFS IO_GCLK[159] }
-	{ clk IO_GCLK[152] }
 	{ SDI IO_GCLK[151] }
-	{ resetn_watch IO_GCLK[148] }
 	{ SE IO[143] }
 	{ SCLK IO[142] }
 	{ RESETn IO[141] }
 	{ MCLK IO[136] }
-	{ sdo_watch IO[133] }
 	{ SDO IO[135] }
-	{ sdi_watch IO[131] }
-	{ sclk_watch IO[127] }
-	{ sdifs_watch IO[178] }
-	{ CHANNEL[0] IO[99] }
-	{ rst_l IO[103] }
-	{ CHANNEL[1] IO_GCLK[22] }
+	{ CHANNEL[0] IO_GCLK[148] }
+	{ CHANNEL[1] IO_GCLK[166] }
+    { DATA_O[0] IO[115] }
+    { DATA_O[1] IO[133] }
+    { DATA_O[2] IO[131] }
+    { DATA_O[3] IO[127] }
+    { DATA_O[4] IO[121] }
+    { DATA_O[5] IO_GCLK[162] }
+    { DATA_O[6] IO[109] }
+    { DATA_O[7] IO[105] }
+    { DATA_O[8] IO[168] }
+    { DATA_O[9] IO[99] }
+    { DATA_O[10] IO_GCLK[152] }
+    { DATA_O[11] IO_GCLK[22] }
+    { DATA_O[12] IO[14] }
+    { DATA_O[13] IO[10] }
+    { DATA_O[14] IO[6] }
+    { DATA_O[15] IO[2] }
+    { RD_EN IO[184] }
+    { OP_MODE IO[190] }
 }
 set xc(inout_type) {
-	{ se_watch xci2_ob x }
+	{ bb_clk_in cpu_clk_in a }
+	{ rst_l xci2_ib a }
 	{ CHANNEL[2] xci2_ob x }
 	{ SDOFS xci2_ib a }
-	{ sdofs_watch xci2_ob x }
-	{ mclk_watch xci2_ob x }
 	{ SDIFS xci2_ob x }
-	{ clk xci2_ib a }
 	{ SDI xci2_ob x }
-	{ resetn_watch xci2_ob x }
 	{ SE xci2_ob x }
 	{ SCLK xci2_ib a }
 	{ RESETn xci2_ob x }
 	{ MCLK xci2_ob x }
-	{ sdo_watch xci2_ob x }
 	{ SDO xci2_ib a }
-	{ sdi_watch xci2_ob x }
-	{ sclk_watch xci2_ob x }
-	{ sdifs_watch xci2_ob x }
 	{ CHANNEL[0] xci2_ob x }
-	{ rst_l xci2_ib a }
 	{ CHANNEL[1] xci2_ob x }
+    { DATA_O[0] xci2_ob x }
+    { DATA_O[1] xci2_ob x }
+    { DATA_O[2] xci2_ob x }
+    { DATA_O[3] xci2_ob x }
+    { DATA_O[4] xci2_ob x }
+    { DATA_O[5] xci2_ob x }
+    { DATA_O[6] xci2_ob x }
+    { DATA_O[7] xci2_ob x }
+    { DATA_O[8] xci2_ob x }
+    { DATA_O[9] xci2_ob x }
+    { DATA_O[10] xci2_ob x }
+    { DATA_O[11] xci2_ob x }
+    { DATA_O[12] xci2_ob x }
+    { DATA_O[13] xci2_ob x }
+    { DATA_O[14] xci2_ob x }
+    { DATA_O[15] xci2_ob x }
+    { RD_EN xci2_ob x }
+    { OP_MODE xci2_ob x }
 }
 ###END

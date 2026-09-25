@@ -59,10 +59,10 @@ always @(posedge SCLK or negedge rst_l) begin
         operation_mode <= 1'b0;
     end else begin
         word_sent <= 1'b0;
-
+        SDIFS    <= SDOFS;
         case (tx_state)
             TX_WAIT_FRAME: begin
-                SDIFS <= 1'b0;
+//                SDIFS <= 1'b0;
                 SDI   <= 1'b0;
 
                 // SDOFS is sampled on the falling edge below, away from
@@ -70,7 +70,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 if (!operation_mode && sdofs_sampled) begin
                     // Do not put D15 on SDI yet. The ADC uses this complete
                     // SCLK period only to recognize the frame sync.
-                    SDIFS    <= 1'b1;
+//                    SDIFS    <= 1'b1;
                     tx_state <= TX_FRAME_SYNC;
                 end
             end
@@ -79,7 +79,7 @@ always @(posedge SCLK or negedge rst_l) begin
                 // Latch the word only after the frame-sync period. This also
                 // gives the wrapper time to advance config_index after the
                 // preceding word and prevents the first word being repeated.
-                SDIFS        <= 1'b0;
+//                SDIFS        <= 1'b0;
                 tx_shift     <= control_word;
                 tx_word      <= control_word;
                 tx_bit_count <= 5'd0;
@@ -88,7 +88,7 @@ always @(posedge SCLK or negedge rst_l) begin
             end
 
             TX_SHIFT: begin
-                SDIFS <= 1'b0;
+//                SDIFS <= 1'b0;
 
                 if (tx_bit_count == 5'd15) begin
                     tx_state  <= TX_WAIT_FRAME;
@@ -108,7 +108,7 @@ always @(posedge SCLK or negedge rst_l) begin
 
             default: begin
                 tx_state <= TX_WAIT_FRAME;
-                SDIFS    <= 1'b0;
+//                SDIFS    <= 1'b0;
                 SDI      <= 1'b0;
             end
         endcase

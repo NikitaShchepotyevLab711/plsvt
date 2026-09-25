@@ -1,9 +1,8 @@
 module adc733_wrap #(
     parameter integer CLK_FREQ_HZ  = 8_000_000,
-    parameter integer SYNC_FREQ_HZ = 300,
-    parameter integer RESET_CYCLES = 16
+    parameter integer SYNC_FREQ_HZ = 300
 ) (
-    input  wire        clk,
+    input  wire        bb_clk_in,
     input  wire        rst_l,
 
     // Dedicated connections to DD26 (1273PV19T).
@@ -20,22 +19,10 @@ module adc733_wrap #(
     output reg  [15:0] DATA_O,
     output reg         RD_EN,
     output wire        OP_MODE,
-    output reg  [2:0]  CHANNEL,
-
-    // Copies of all eight DD26 interface lines for a logic analyzer.
-    output wire        sclk_watch,
-    output wire        sdofs_watch,
-    output wire        sdo_watch,
-    output wire        sdifs_watch,
-    output wire        sdi_watch,
-    output wire        se_watch,
-    output wire        mclk_watch,
-    output wire        resetn_watch
+    output reg  [2:0]  CHANNEL
 );
 
-localparam integer RESET_COUNTER_WIDTH = $clog2(RESET_CYCLES + 1);
-
-reg [RESET_COUNTER_WIDTH-1:0] reset_counter;
+wire clk = bb_clk_in;
 
 wire        adc_logic_rst_l;
 wire        sync_300hz;
@@ -53,61 +40,15 @@ wire [2:0]  adc_channel;
 wire        adc_rd_en_pulse;
 reg         adc_rd_en_r;
 
-// DD26 uses the FPGA test clock as MCLK. Hold RESET# low for considerably
-// longer than the four MCLK cycles required by the specification.
+// External reset from MEZOKIA is shared by the ADC and every local register.
+// MCLK stays active while reset is asserted.
 assign MCLK            = clk;
-assign RESETn          = (reset_counter == RESET_CYCLES);
-//assign adc_logic_rst_l = rst_l & RESETn;
-assign adc_logic_rst_l = 1'b1 & RESETn;
+assign adc_logic_rst_l = rst_l;
 
-// Dedicated vendor buffers keep every analyzer output on a separate physical
-// path while preserving the logic level of the corresponding DD26 line.
-xci2_buf sclk_watch_buf (
-    .a(SCLK),
-    .y(sclk_watch)
+// The reset net drives both the local FPGA logic and an external ADC pin.
+xci2_buf adc_reset_buf (
+    .a(adc_logic_rst_l), .y(RESETn)
 );
-
-xci2_buf sdofs_watch_buf (
-    .a(SDOFS),
-    .y(sdofs_watch)
-);
-
-xci2_buf sdo_watch_buf (
-    .a(SDO),
-    .y(sdo_watch)
-);
-
-xci2_buf sdifs_watch_buf (
-    .a(SDIFS),
-    .y(sdifs_watch)
-);
-
-xci2_buf sdi_watch_buf (
-    .a(SDI),
-    .y(sdi_watch)
-);
-
-xci2_buf se_watch_buf (
-    .a(SE),
-    .y(se_watch)
-);
-
-xci2_buf mclk_watch_buf (
-    .a(MCLK),
-    .y(mclk_watch)
-);
-
-xci2_buf resetn_watch_buf (
-    .a(RESETn),
-    .y(resetn_watch)
-);
-
-always @(posedge clk or negedge rst_l) begin
-    if (!rst_l)
-        reset_counter <= {RESET_COUNTER_WIDTH{1'b0}};
-    else if (reset_counter != RESET_CYCLES)
-        reset_counter <= reset_counter + 1'b1;
-end
 
 // Periodic request to capture the next complete set of six channels.
 sync_strobe #(

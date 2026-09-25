@@ -1,4 +1,4 @@
-# Minimal MEZOKIA project: FTDI USB and DAC control only.
+# MEZOKIA FTDI, DAC control, ADC readback and independent POR.
 
 set_global_assignment -name FAMILY "Cyclone III"
 set_global_assignment -name DEVICE EP3C40F484C6
@@ -17,7 +17,8 @@ set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
 
-# 8 MHz system clock from 5510TC028 on inter-board contact 52.
+# System clock: 5510TC028 contact 52. Independent POR clock: TP3.
+set_location_assignment PIN_J6 -to POR_CLK_8MHZ
 
 # FTDI FT2232H synchronous FIFO interface.
 set_location_assignment PIN_G1 -to FCLK_OUT
@@ -43,15 +44,19 @@ set_location_assignment PIN_E1 -to FWR
 # Compact serial link: the MEZOKIA block carrying DP_IN_N[19..22]
 # mates with the leftmost MVEC-PVSK block X74.2.
 # MEZOKIA net      Cyclone pin   Contact   5510 board net / FPGA pin
-# DP_IN_P[19]      PIN_T10       51        F_MEZO_14 / IO[127] (RESET from 5510)
+# DP_IN_P[19]      PIN_T10       51        F_MEZO_14 / IO[126] (RESET to 5510)
 # DP_IN_N[19]      PIN_T11       52        F_MEZO_13 / IO_GCLK[152]
+# DP_IN_P[20]      PIN_T8        53        F_MEZO_10 / IO_GCLK[166]
 # DP_IN_N[20]      PIN_T9        54        F_MEZO_9  / IO[133]
+# DP_IN_P[21]      PIN_U19       55        F_MEZO_6  / IO[178]
 # DP_IN_N[21]      PIN_U20       56        F_MEZO_5  / IO[131]
 # Contact 58 (DP_IN_N[22]) is not driven: SYNC is generated locally by soc_top.
 set_location_assignment PIN_T11 -to CLK_FROM_5510
 set_location_assignment PIN_T9 -to CFG_DATA
 set_location_assignment PIN_U20 -to CFG_FRAME
-set_location_assignment PIN_T10 -to RESET_N_FROM_5510
+set_location_assignment PIN_T10 -to RESET_N_TO_5510
+set_location_assignment PIN_T8 -to ADC_SERIAL_DATA
+set_location_assignment PIN_U19 -to ADC_SERIAL_FRAME
 
 # HDL and the only generated IP required by the dual-clock FTDI FIFOs.
 set_global_assignment -name VERILOG_FILE src/verilog/umio_fifo_w16_r8.v
@@ -63,6 +68,7 @@ set_global_assignment -name VERILOG_FILE src/verilog/ftdi_controller_sdram.v
 set_global_assignment -name VERILOG_FILE src/verilog/fifo_w16_r16_beio.v
 set_global_assignment -name VERILOG_FILE src/verilog/crc8_ftdi.v
 set_global_assignment -name VERILOG_FILE src/verilog/rd_addr_controller.v
+set_global_assignment -name VERILOG_FILE src/verilog/adc_result_rx.v
 set_global_assignment -name VERILOG_FILE src/verilog/dac_config_tx.v
 set_global_assignment -name QIP_FILE src/ip/fifo_gen/fifo_gen.qip
 set_global_assignment -name SDC_FILE src/mezokia.sdc
@@ -83,7 +89,10 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CFG_DATA
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CFG_FRAME
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLK_FROM_5510
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RESET_N_FROM_5510
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RESET_N_TO_5510
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to POR_CLK_8MHZ
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_SERIAL_DATA
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_SERIAL_FRAME
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FCLK_OUT
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FODD
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FOE
@@ -103,6 +112,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FU_D[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FVBUS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FWR
+
 
 
 

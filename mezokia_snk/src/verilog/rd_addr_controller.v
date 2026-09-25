@@ -5,7 +5,7 @@
  */
 module rd_addr_controller #(
     parameter [7:0] FIRST_ADDR = 8'h10,
-    parameter [7:0] LAST_ADDR  = 8'h13
+    parameter [7:0] LAST_ADDR  = 8'h20
 ) (
     input  wire        clk,
     input  wire        rst_n,
@@ -30,6 +30,7 @@ always @(*) begin
         8'h11: data_size = 16'd2;
         8'h12: data_size = 16'd1;
         8'h13: data_size = 16'd1;
+        8'h20: data_size = 16'd2;
         default: data_size = 16'd1;
     endcase
 end
@@ -67,7 +68,8 @@ always @(posedge clk or negedge rst_n) begin
                         addr  <= FIRST_ADDR;
                         state <= IDLE;
                     end else begin
-                        addr  <= addr + 1'b1;
+                        // 0x14..0x1f are unallocated, not readback registers.
+                        addr  <= (addr == 8'h13) ? 8'h20 : addr + 1'b1;
                         state <= START;
                     end
                 end

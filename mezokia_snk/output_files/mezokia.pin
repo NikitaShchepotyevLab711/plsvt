@@ -293,7 +293,7 @@ FU_D[6]                      : J2        : bidir  : 3.3-V LVTTL       :         
 FU_D[4]                      : J3        : bidir  : 3.3-V LVTTL       :         : 1         : Y              
 FU_D[3]                      : J4        : bidir  : 3.3-V LVTTL       :         : 1         : Y              
 RESERVED_INPUT_WITH_WEAK_PULLUP : J5        :        :                   :         : 1         :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : J6        :        :                   :         : 1         :                
+POR_CLK_8MHZ                 : J6        : input  : 3.3-V LVTTL       :         : 1         : Y              
 RESERVED_INPUT_WITH_WEAK_PULLUP : J7        :        :                   :         : 1         :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : J8        :        :                   :         : 1         :                
 GND                          : J9        : gnd    :                   :         :           :                
@@ -449,9 +449,9 @@ RESERVED_INPUT_WITH_WEAK_PULLUP : T4        :        :                   :      
 RESERVED_INPUT_WITH_WEAK_PULLUP : T5        :        :                   :         : 2         :                
 VCCA1                        : T6        : power  :                   : 2.5V    :           :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : T7        :        :                   :         : 2         :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : T8        :        :                   :         : 3         :                
+ADC_SERIAL_DATA              : T8        : input  : 3.3-V LVTTL       :         : 3         : Y              
 CFG_DATA                     : T9        : output : 3.3-V LVTTL       :         : 3         : Y              
-RESET_N_FROM_5510            : T10       : input  : 3.3-V LVTTL       :         : 3         : Y              
+RESET_N_TO_5510              : T10       : output : 3.3-V LVTTL       :         : 3         : Y              
 CLK_FROM_5510                : T11       : input  : 3.3-V LVTTL       :         : 3         : Y              
 RESERVED_INPUT_WITH_WEAK_PULLUP : T12       :        :                   :         : 4         :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : T13       :        :                   :         : 4         :                
@@ -482,7 +482,7 @@ RESERVED_INPUT_WITH_WEAK_PULLUP : U15       :        :                   :      
 RESERVED_INPUT_WITH_WEAK_PULLUP : U16       :        :                   :         : 4         :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : U17       :        :                   :         : 4         :                
 VCCA4                        : U18       : power  :                   : 2.5V    :           :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : U19       :        :                   :         : 5         :                
+ADC_SERIAL_FRAME             : U19       : input  : 3.3-V LVTTL       :         : 5         : Y              
 CFG_FRAME                    : U20       : output : 3.3-V LVTTL       :         : 5         : Y              
 RESERVED_INPUT_WITH_WEAK_PULLUP : U21       :        :                   :         : 5         :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : U22       :        :                   :         : 5         :                
