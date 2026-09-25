@@ -55,10 +55,9 @@ dac045a #(
 );
 
 // DD26 = 1273PV19T. This is adc733, not adc733_foreign (DD25).
-adc733_wrap #(
-    .CLK_FREQ_HZ(CLK_FREQ_HZ)
-) adc733_inst (
+adc733_wrap adc733_inst (
     .bb_clk_in(bb_clk_in), .rst_l(reset_n_from_mezokia),
+    .sync_i(sync_pulse),
     .SCLK(ADC_SCLK), .SDOFS(ADC_SDOFS), .SDO(ADC_SDO),
     .SDIFS(ADC_SDIFS), .SDI(ADC_SDI), .SE(ADC_SE),
     .MCLK(ADC_MCLK), .RESETn(ADC_RESETn),

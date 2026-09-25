@@ -33,15 +33,11 @@ reg        sdofs_sampled;
 reg [15:0] rx_shift;
 reg [4:0]  rx_bit_count;
 reg        rx_active;
-reg [2:0]  next_channel;
-reg [2:0]  rx_channel;
-reg [2:0]  captured_channel;
 reg        capture_pending;
 reg        capture_active;
-reg        store_current_word;
 
 assign SE      = 1'b1;
-assign channel = captured_channel;
+assign channel = 3'd0; // Only ADC1 is powered; external channel index is zero-based.
 assign busy    = (tx_state != TX_WAIT_FRAME) | capture_active;
 
 // SDIFS is a one-SCLK-wide preamble: it is sampled one falling edge before
@@ -124,13 +120,9 @@ always @(negedge SCLK or negedge rst_l) begin
         rx_shift           <= 16'd0;
         rx_bit_count       <= 5'd0;
         rx_active          <= 1'b0;
-        next_channel       <= 3'd0;
-        rx_channel         <= 3'd0;
-        captured_channel   <= 3'd0;
         captured_data      <= 16'd0;
         capture_pending    <= 1'b0;
         capture_active     <= 1'b0;
-        store_current_word <= 1'b0;
         rd_en              <= 1'b0;
     end else begin
         sdofs_sampled <= SDOFS;
@@ -140,10 +132,8 @@ always @(negedge SCLK or negedge rst_l) begin
             rx_shift           <= 16'd0;
             rx_bit_count       <= 5'd0;
             rx_active          <= 1'b0;
-            next_channel       <= 3'd0;
             capture_pending    <= 1'b0;
             capture_active     <= 1'b0;
-            store_current_word <= 1'b0;
         end else begin
             if (sync)
                 capture_pending <= 1'b1;
@@ -152,21 +142,12 @@ always @(negedge SCLK or negedge rst_l) begin
                 rx_shift     <= 16'd0;
                 rx_bit_count <= 5'd0;
                 rx_active    <= 1'b1;
-                rx_channel   <= next_channel;
-
-                if (next_channel == 3'd5)
-                    next_channel <= 3'd0;
-                else
-                    next_channel <= next_channel + 1'b1;
-
-                // Start a six-channel acquisition only at channel 1.
-                if ((next_channel == 3'd0) &&
-                    (capture_pending || sync)) begin
+                // With only ADC1 enabled, each output frame belongs to ADC1.
+                if (capture_pending || sync) begin
                     capture_pending    <= 1'b0;
                     capture_active     <= 1'b1;
-                    store_current_word <= 1'b1;
                 end else begin
-                    store_current_word <= capture_active;
+                    capture_active <= 1'b0;
                 end
             end else if (rx_active) begin
                 rx_shift <= {rx_shift[14:0], SDO};
@@ -174,13 +155,10 @@ always @(negedge SCLK or negedge rst_l) begin
                 if (rx_bit_count == 5'd15) begin
                     rx_active <= 1'b0;
 
-                    if (store_current_word) begin
+                    if (capture_active) begin
                         captured_data    <= {rx_shift[14:0], SDO};
-                        captured_channel <= rx_channel;
                         rd_en            <= 1'b1;
-
-                        if (rx_channel == 3'd5)
-                            capture_active <= 1'b0;
+                        capture_active   <= 1'b0;
                     end
                 end else begin
                     rx_bit_count <= rx_bit_count + 1'b1;

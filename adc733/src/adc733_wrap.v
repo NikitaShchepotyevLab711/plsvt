@@ -1,9 +1,7 @@
-module adc733_wrap #(
-    parameter integer CLK_FREQ_HZ  = 8_000_000,
-    parameter integer SYNC_FREQ_HZ = 300
-) (
+module adc733_wrap (
     input  wire        bb_clk_in,
     input  wire        rst_l,
+    input  wire        sync_i,
 
     // Dedicated connections to DD26 (1273PV19T).
     input  wire        SCLK,
@@ -25,7 +23,6 @@ module adc733_wrap #(
 wire clk = bb_clk_in;
 
 wire        adc_logic_rst_l;
-wire        sync_300hz;
 wire        sync_toggle;
 wire        sync_pulse;
 wire        sync_toggle_sclk;
@@ -50,20 +47,11 @@ xci2_buf adc_reset_buf (
     .a(adc_logic_rst_l), .y(RESETn)
 );
 
-// Periodic request to capture the next complete set of six channels.
-sync_strobe #(
-    .CLK_FREQ_HZ   (CLK_FREQ_HZ),
-    .STROBE_FREQ_HZ(SYNC_FREQ_HZ)
-) sync_strobe_inst (
-    .clk   (clk),
-    .rst_l (adc_logic_rst_l),
-    .strobe(sync_300hz)
-);
-
+// A shared 32 Hz strobe from soc_top starts each ADC1 capture request.
 pulse_to_toggle pulse_to_toggle_inst (
     .clk         (clk),
     .rst         (adc_logic_rst_l),
-    .pulse       (sync_300hz),
+    .pulse       (sync_i),
     .reset_toggle(1'b0),
     .toggle      (sync_toggle)
 );
@@ -82,10 +70,10 @@ always @(*) begin
     case (config_index)
         4'd0: control_word = 16'h8000; // CRA: program mode, one device
         4'd1: control_word = 16'h8108; // CRB: SCLK=MCLK/2, fs=MCLK/2048
-        4'd2: control_word = 16'h8241; // CRC: all channels and REFOUT on
-        4'd3: control_word = 16'h8300; // CRD: channels 1/2, gain 0 dB
-        4'd4: control_word = 16'h8400; // CRE: channels 3/4, gain 0 dB
-        4'd5: control_word = 16'h8500; // CRF: channels 5/6, gain 0 dB
+        4'd2: control_word = 16'h8260; // CRC: global power off, reference and REFOUT on
+        4'd3: control_word = 16'h8308; // CRD: ADC1 on at 0 dB, ADC2 off
+        4'd4: control_word = 16'h8400; // CRE: ADC3/4 off
+        4'd5: control_word = 16'h8500; // CRF: ADC5/6 off
         4'd6: control_word = 16'h8600; // CRG: differential inputs
         4'd7: control_word = 16'h8700; // CRH: normal polarity
         default: control_word = 16'h8001; // CRA: enter data mode
