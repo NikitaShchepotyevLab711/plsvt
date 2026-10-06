@@ -106,10 +106,10 @@ adc_result_rx adc_result_rx_inst (
 
 // Restore the values used during the stand-alone DAC test after power-up.
 reg        step_coeff  = 1'b0;
-reg [15:0] dac_limit   = 16'hFFFF;
+reg [15:0] dac_limit   = 16'h0000;
 reg        wave_triangle = 1'b0;
 reg [2:0]  fall_rate = 3'd0;
-reg [7:0]  dac_limit_high_staging = 8'hFF;
+reg [7:0]  dac_limit_high_staging = 8'h00;
 
 // CFG_DATA and CFG_FRAME change on this clock's falling edge and are sampled
 // by the 5510TC028 on its rising edge. Both devices now share one source.
@@ -241,10 +241,10 @@ end
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         step_coeff  <= 1'b0;
-        dac_limit   <= 16'hFFFF;
+        dac_limit   <= 16'h0000;
         wave_triangle <= 1'b0;
         fall_rate <= 3'd0;
-        dac_limit_high_staging <= 8'hFF;
+        dac_limit_high_staging <= 8'h00;
     end else if (write_data_valid) begin
         case (write_addr)
             ADDR_STEP_COEFF: begin
