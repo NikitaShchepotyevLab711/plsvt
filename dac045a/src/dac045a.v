@@ -25,11 +25,17 @@ module dac045a #(
 wire [15:0] generated_code;
 wire        step_coeff;
 wire [15:0] dac_limit;
-wire        wave_triangle;
+wire [1:0]  wave_mode;
 wire [2:0]  fall_rate;
 wire        update_mode;
 wire        dac_rdy;
 wire        dac_value_valid;
+
+// Static mode bypasses the ramp and holds its state at the start of a period.
+// A level change is sent on the next SYNC, independent of STEP_COEFF/FALL_RATE.
+wire        dynamic_enable = (wave_mode != 2'd0);
+wire        wave_triangle = (wave_mode == 2'd2);
+wire [15:0] dac_code = dynamic_enable ? generated_code : dac_limit;
 
 // Generate additional, evenly spaced DAC update events between SYNC pulses.
 // The external SYNC is always the first event and re-aligns the local phase.
@@ -39,7 +45,7 @@ localparam integer UPDATE_COUNTER_WIDTH = $clog2(SYNC_PERIOD_CYCLES);
 reg [UPDATE_COUNTER_WIDTH-1:0] update_counter;
 reg [3:0]  extra_update_count;
 
-wire extra_update = update_mode && (extra_update_count != 4'd9) &&
+wire extra_update = dynamic_enable && update_mode && (extra_update_count != 4'd9) &&
                     (update_counter == UPDATE_INTERVAL_10X - 1'b1);
 wire dac_update = sync_i | extra_update;
 
@@ -50,7 +56,7 @@ always @(posedge clk or negedge rst_l) begin
     end else if (sync_i) begin
         update_counter <= {UPDATE_COUNTER_WIDTH{1'b0}};
         extra_update_count <= 4'd0;
-    end else if (!update_mode) begin
+    end else if (!dynamic_enable || !update_mode) begin
         update_counter <= {UPDATE_COUNTER_WIDTH{1'b0}};
         extra_update_count <= 4'd0;
     end else if (extra_update) begin
@@ -61,8 +67,7 @@ always @(posedge clk or negedge rst_l) begin
     end
 end
 
-// Receive the atomic 23-bit configuration frame from MEZOKIA. Until the
-// first valid frame arrives, the stand-alone test defaults remain active.
+// декодирование 24-битного слова от мезокиа для конфигурации ЦАП
 dac_config_rx dac_config_rx_inst (
     .clk       (clk),
     .rst_l     (rst_l),
@@ -70,7 +75,7 @@ dac_config_rx dac_config_rx_inst (
     .cfg_frame (cfg_frame),
     .step_coeff(step_coeff),
     .dac_limit (dac_limit),
-    .wave_triangle(wave_triangle),
+    .wave_mode (wave_mode),
     .fall_rate (fall_rate)
 );
 
@@ -79,7 +84,7 @@ dac_codegen dac_codegen_inst (
     .rst_l           (rst_l),
     // XPlace requires named signals of the exact port width here.
     .limit           (dac_limit),
-    .enable          (1'b1),
+    .enable          (dynamic_enable),
     .start           (dac_update),
     .step_coefficent (step_coeff),
     .wave_triangle   (wave_triangle),
@@ -91,7 +96,7 @@ dac_codegen dac_codegen_inst (
 spi_controller spi_inst (
     .clk     (clk),
     .rst_l   (rst_l),
-    .data_i  (generated_code),
+    .data_i  (dac_code),
     .dac_en  (1'b1),
     .renew   (dac_update),
     .rdy     (dac_rdy),

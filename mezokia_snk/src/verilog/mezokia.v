@@ -9,7 +9,7 @@
  *   0x01, 2 bytes write / 3 bytes read: software counter and board address
  *   0x10, 1 byte: STEP_COEFF[0] (0=1, 1=10 updates/SYNC)
  *   0x11, 2 bytes: DAC_LIMIT[15:8], DAC_LIMIT[7:0]
- *   0x12, 1 byte: WAVE_TRIANGLE[0] (0=sawtooth, 1=triangle)
+ *   0x12, 1 byte: WAVE_MODE (0=constant, 1=sawtooth, 2=triangle)
  *   0x13, 1 byte: FALL_RATE[2:0] (fall/rise slope = 1..8)
  */
 module mezokia #(
@@ -104,10 +104,10 @@ adc_result_rx adc_result_rx_inst (
     .sample_valid(adc_latest_valid)
 );
 
-// Restore the values used during the stand-alone DAC test after power-up.
+// Power-up defaults: constant zero output.
 reg        step_coeff  = 1'b0;
 reg [15:0] dac_limit   = 16'h0000;
-reg        wave_triangle = 1'b0;
+reg [1:0]  wave_mode = 2'd0;
 reg [2:0]  fall_rate = 3'd0;
 reg [7:0]  dac_limit_high_staging = 8'h00;
 
@@ -242,7 +242,7 @@ always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         step_coeff  <= 1'b0;
         dac_limit   <= 16'h0000;
-        wave_triangle <= 1'b0;
+        wave_mode <= 2'd0;
         fall_rate <= 3'd0;
         dac_limit_high_staging <= 8'h00;
     end else if (write_data_valid) begin
@@ -262,8 +262,10 @@ always @(posedge clk or negedge rst_n) begin
             end
 
             ADDR_WAVE_MODE: begin
-                if ((write_size == 16'd1) && (write_byte_number == 16'd0))
-                    wave_triangle <= write_data[0];
+                // Reject undefined modes rather than aliasing their low bits.
+                if ((write_size == 16'd1) && (write_byte_number == 16'd0) &&
+                    (write_data <= 8'd2))
+                    wave_mode <= write_data[1:0];
             end
 
             ADDR_FALL_RATE: begin
@@ -276,7 +278,7 @@ always @(posedge clk or negedge rst_n) begin
     end
 end
 
-// All four controls are sent together as one atomic 23-bit frame.
+// All four controls are sent together as one atomic 24-bit frame.
 dac_config_tx #(
     .CLK_FREQ_HZ     (CLK_FREQ_HZ),
     .REFRESH_FREQ_HZ(1000)
@@ -285,7 +287,7 @@ dac_config_tx #(
     .rst_n     (rst_n),
     .step_coeff({2'b00, step_coeff}),
     .dac_limit (dac_limit),
-    .wave_triangle(wave_triangle),
+    .wave_mode (wave_mode),
     .fall_rate (fall_rate),
     .cfg_data  (CFG_DATA),
     .cfg_frame (CFG_FRAME)
@@ -354,7 +356,7 @@ always @(*) begin
                              dac_limit[15:8] : dac_limit[7:0];
 
         ADDR_WAVE_MODE:
-            read_data_byte = {7'b0000000, wave_triangle};
+            read_data_byte = {6'b000000, wave_mode};
 
         ADDR_FALL_RATE:
             read_data_byte = {5'b00000, fall_rate};

@@ -1,6 +1,6 @@
 /*
  * Compact MEZOKIA -> 5510TS028 DAC configuration transmitter.
- * Frame: {STEP_COEFF[2:0], DAC_LIMIT[15:0], WAVE_TRIANGLE,
+ * 24-bit frame: {STEP_COEFF[2:0], DAC_LIMIT[15:0], WAVE_MODE[1:0],
  *         FALL_RATE[2:0]}, MSB first.
  * Data and frame change on falling edges; the receiver samples rising edges.
  */
@@ -12,18 +12,18 @@ module dac_config_tx #(
     input  wire        rst_n,
     input  wire [2:0]  step_coeff,
     input  wire [15:0] dac_limit,
-    input  wire        wave_triangle,
+    input  wire [1:0]  wave_mode,
     input  wire [2:0]  fall_rate,
     output reg         cfg_data,
     output reg         cfg_frame
 );
 
-localparam integer FRAME_BITS = 23;
+localparam integer FRAME_BITS = 24;
 localparam integer REFRESH_PERIOD_RAW = CLK_FREQ_HZ / REFRESH_FREQ_HZ;
 localparam integer REFRESH_PERIOD = (REFRESH_PERIOD_RAW < 1) ? 1 : REFRESH_PERIOD_RAW;
 
 wire [FRAME_BITS-1:0] current_value =
-    {step_coeff, dac_limit, wave_triangle, fall_rate};
+    {step_coeff, dac_limit, wave_mode, fall_rate};
 reg  [FRAME_BITS-1:0] payload;
 reg  [FRAME_BITS-1:0] last_sent;
 reg  [4:0]            bit_index;
