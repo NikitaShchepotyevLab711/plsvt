@@ -19,7 +19,11 @@ module dac045a #(
     output wire        SCK,
     output wire        CLRn,
     output wire        LDAc,
-    output wire        CSn
+    output wire        CSn,
+
+    // ADC fields decoded by the same receiver: no duplicate frame logic.
+    output wire        adc_fast_mode,
+    output wire        adc_capture_request
 );
 
 wire [15:0] generated_code;
@@ -76,7 +80,9 @@ dac_config_rx dac_config_rx_inst (
     .step_coeff(step_coeff),
     .dac_limit (dac_limit),
     .wave_mode (wave_mode),
-    .fall_rate (fall_rate)
+    .fall_rate (fall_rate),
+    .adc_fast_mode(adc_fast_mode),
+    .adc_capture_request(adc_capture_request)
 );
 
 dac_codegen dac_codegen_inst (

@@ -33,7 +33,8 @@ always @(posedge clk or negedge rst_n)
 assign full		= (rd_addr[ADDR_WIDTH] != wr_addr[ADDR_WIDTH]) & (rd_addr[ADDR_WIDTH-1:0] == wr_addr[ADDR_WIDTH-1:0]);
 assign empty	= (rd_addr == wr_addr);
 
-always @(posedge clk) if (wr_en & !full) fifo_ram[wr_addr] <= wr_data;
+// The extra pointer bit distinguishes full/empty; it is not a RAM address bit.
+always @(posedge clk) if (wr_en & !full) fifo_ram[wr_addr[ADDR_WIDTH-1:0]] <= wr_data;
 always @(posedge clk) rd_data_reg <= fifo_ram[mem_raddr];
 
 assign mem_raddr = rd_en ? (rd_addr[ADDR_WIDTH-1:0] + 1'b1) : rd_addr[ADDR_WIDTH-1:0];

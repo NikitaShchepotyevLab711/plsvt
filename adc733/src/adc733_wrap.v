@@ -47,7 +47,8 @@ xci2_buf adc_reset_buf (
     .a(adc_logic_rst_l), .y(RESETn)
 );
 
-// A shared 32 Hz strobe from soc_top starts each ADC1 capture request.
+// soc_top selects shared SYNC or the remotely generated 3 kHz request.
+// Capture the next ADC1 output frame after each request; retain the existing CDC.
 pulse_to_toggle pulse_to_toggle_inst (
     .clk         (clk),
     .rst         (adc_logic_rst_l),

@@ -11,9 +11,10 @@
  *   0x11, 2 bytes: DAC_LIMIT[15:8], DAC_LIMIT[7:0]
  *   0x12, 1 byte: WAVE_MODE (0=constant, 1=sawtooth, 2=triangle)
  *   0x13, 1 byte: FALL_RATE[2:0] (fall/rise slope = 1..8)
+ *   0x14, 1 byte: ADC_FAST_MODE (0=shared SYNC, 1=3 kHz capture requests)
  */
 module mezokia #(
-    parameter integer CLK_FREQ_HZ = 8_000_000,
+    parameter integer CLK_FREQ_HZ = 4_000_000,
     parameter [7:0]   BOARD_ADDRESS = 8'h01
 ) (
     // Independent 8 MHz POR clock on TP3; system clock is from 5510TC028.
@@ -51,6 +52,7 @@ localparam [7:0] ADDR_STEP_COEFF   = 8'h10;
 localparam [7:0] ADDR_DAC_LIMIT    = 8'h11;
 localparam [7:0] ADDR_WAVE_MODE    = 8'h12;
 localparam [7:0] ADDR_FALL_RATE    = 8'h13;
+localparam [7:0] ADDR_ADC_MODE     = 8'h14;
 localparam [7:0] ADDR_ADC_VALUE    = 8'h20;
 
 wire clk = CLK_FROM_5510;
@@ -58,7 +60,7 @@ wire clk = CLK_FROM_5510;
 // Hold reset long enough for the independently configured 5510 FPGA to
 // become ready. The requested eight-stage zero-initialized release pipe then
 // gives eight extra 8 MHz edges of active-low reset (1 us).
-localparam integer POR_HOLD_CYCLES = CLK_FREQ_HZ / 2; // 500 ms at 8 MHz
+localparam integer POR_HOLD_CYCLES = 4_000_000 / 2; // 500 ms on POR_CLK_8MHZ
 localparam integer POR_COUNT_WIDTH = $clog2(POR_HOLD_CYCLES + 1);
 reg [POR_COUNT_WIDTH-1:0] por_counter = {POR_COUNT_WIDTH{1'b0}};
 reg por_hold_done = 1'b0;
@@ -109,6 +111,8 @@ reg        step_coeff  = 1'b0;
 reg [15:0] dac_limit   = 16'h0000;
 reg [1:0]  wave_mode = 2'd0;
 reg [2:0]  fall_rate = 3'd0;
+reg        adc_fast_mode = 1'b0;
+reg        adc_capture_toggle;
 reg [7:0]  dac_limit_high_staging = 8'h00;
 
 // CFG_DATA and CFG_FRAME change on this clock's falling edge and are sampled
@@ -193,6 +197,7 @@ ftdi_decoder ftdi_decoder_inst (
 wire [7:0] time_data;
 wire [63:0] board_time;
 wire time_100ms_on;
+wire time_3khz_on;
 wire time_snapshot_lock;
 wire [15:0] read_byte_number;
 
@@ -208,6 +213,7 @@ umio_timer #(.CLK_FREQ_HZ(CLK_FREQ_HZ)) umio_timer_inst (
     .time_lock       (time_snapshot_lock),
     .time_data       (time_data),
     .time_100ms_on   (time_100ms_on),
+    .time_3khz_on    (time_3khz_on),
     .full_time       (board_time)
 );
 
@@ -244,6 +250,7 @@ always @(posedge clk or negedge rst_n) begin
         dac_limit   <= 16'h0000;
         wave_mode <= 2'd0;
         fall_rate <= 3'd0;
+        adc_fast_mode <= 1'b0;
         dac_limit_high_staging <= 8'h00;
     end else if (write_data_valid) begin
         case (write_addr)
@@ -273,19 +280,38 @@ always @(posedge clk or negedge rst_n) begin
                     fall_rate <= write_data[2:0];
             end
 
+            ADDR_ADC_MODE: begin
+                if ((write_size == 16'd1) && (write_byte_number == 16'd0) &&
+                    (write_data <= 8'd1))
+                    adc_fast_mode <= write_data[0];
+            end
+
             default: ;
         endcase
     end
 end
 
-// All four controls are sent together as one atomic 24-bit frame.
+// Reuse the existing 3 kHz timer and two formerly unused configuration bits.
+// Each toggle forces an immediate frame; periodic repeats cannot retrigger it.
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        adc_capture_toggle <= 1'b0;
+    else if (!adc_fast_mode)
+        adc_capture_toggle <= 1'b0;
+    else if (time_3khz_on)
+        adc_capture_toggle <= ~adc_capture_toggle;
+end
+
+// DAC settings, ADC mode and request toggle share one atomic 24-bit frame.
 dac_config_tx #(
     .CLK_FREQ_HZ     (CLK_FREQ_HZ),
     .REFRESH_FREQ_HZ(1000)
 ) dac_config_tx_inst (
     .clk       (clk),
     .rst_n     (rst_n),
-    .step_coeff({2'b00, step_coeff}),
+    .step_coeff(step_coeff),
+    .adc_fast_mode(adc_fast_mode),
+    .adc_capture_toggle(adc_capture_toggle),
     .dac_limit (dac_limit),
     .wave_mode (wave_mode),
     .fall_rate (fall_rate),
@@ -294,7 +320,8 @@ dac_config_tx #(
 );
 
 // -------------------------------------------------------------------------
-// Periodic readback: 0x00 -> 0x01 -> 0x10 -> 0x11 -> 0x12 -> 0x13 -> 0x20.
+// Slow readback at 10 Hz: 0x00 -> 0x01 -> 0x10 ... 0x14.
+// Independent 3 kHz readback of 0x20, interleaved only between whole packets.
 // -------------------------------------------------------------------------
 wire        encoder_start;
 wire        encoder_stop;
@@ -303,18 +330,19 @@ wire [7:0]  read_addr;
 wire [15:0] read_size;
 rd_addr_controller #(
     .FIRST_ADDR(TIMER_ADDR),
-    .LAST_ADDR (ADDR_ADC_VALUE)
+    .LAST_ADDR (ADDR_ADC_MODE)
 ) rd_addr_controller_inst (
-    .clk         (clk),
-    .rst_n       (usb_rst_n),
-    .begin_pulse (time_100ms_on),
-    .packet_done (encoder_stop),
-    .data_read   (encoder_data_read),
-    .start_packet(encoder_start),
-    .addr        (read_addr),
-    .data_size   (read_size),
-    .byte_number (read_byte_number),
-    .data_lock   (time_snapshot_lock)
+    .clk              (clk),
+    .rst_n            (usb_rst_n),
+    .begin_pulse      (time_100ms_on),
+    .begin_pulse_3khz (time_3khz_on),
+    .packet_done      (encoder_stop),
+    .data_read        (encoder_data_read),
+    .start_packet     (encoder_start),
+    .addr             (read_addr),
+    .data_size        (read_size),
+    .byte_number      (read_byte_number),
+    .data_lock        (time_snapshot_lock)
 );
 
 // Keep a software-counter packet coherent if the host writes it mid-read.
@@ -360,6 +388,9 @@ always @(*) begin
 
         ADDR_FALL_RATE:
             read_data_byte = {5'b00000, fall_rate};
+
+        ADDR_ADC_MODE:
+            read_data_byte = {7'b0000000, adc_fast_mode};
 
         ADDR_ADC_VALUE:
             read_data_byte = (read_byte_number == 16'd0) ?

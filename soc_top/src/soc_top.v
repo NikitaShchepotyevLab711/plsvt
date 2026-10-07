@@ -1,6 +1,5 @@
-// Separate 5510TC028 system project: domestic DD26 ADC and DAC.
 module soc_top #(
-    parameter integer CLK_FREQ_HZ  = 8_000_000,
+    parameter integer CLK_FREQ_HZ  = 4_000_000,
     parameter integer SYNC_FREQ_HZ = 32
 ) (
     input  wire bb_clk_in,
@@ -29,9 +28,15 @@ module soc_top #(
 );
 
 wire sync_pulse;
+wire adc_fast_mode;
+wire adc_capture_request;
+wire adc_sync = adc_fast_mode ? adc_capture_request : sync_pulse;
 wire [15:0] adc_sample;
 wire [2:0] adc_channel;
 wire adc_rd_en;
+
+wire adc_serial_data_prebuf;
+wire adc_serial_frame_prebuf;
 
 assign bb_clk_out = bb_clk_in;
 assign bb_apb_sync_clk = bb_clk_in;
@@ -51,13 +56,14 @@ dac045a #(
 ) dac045a_inst (
     .clk(bb_clk_in), .rst_l(reset_n_from_mezokia),
     .cfg_data(cfg_data), .cfg_frame(cfg_frame), .sync_i(sync_pulse),
-    .SDO(SDO), .SDI(SDI), .SCK(SCK), .CLRn(CLRn), .LDAc(LDAc), .CSn(CSn)
+    .SDO(SDO), .SDI(SDI), .SCK(SCK), .CLRn(CLRn), .LDAc(LDAc), .CSn(CSn),
+    .adc_fast_mode(adc_fast_mode), .adc_capture_request(adc_capture_request)
 );
 
 // DD26 = 1273PV19T. This is adc733, not adc733_foreign (DD25).
 adc733_wrap adc733_inst (
     .bb_clk_in(bb_clk_in), .rst_l(reset_n_from_mezokia),
-    .sync_i(sync_pulse),
+    .sync_i(adc_sync),
     .SCLK(ADC_SCLK), .SDOFS(ADC_SDOFS), .SDO(ADC_SDO),
     .SDIFS(ADC_SDIFS), .SDI(ADC_SDI), .SE(ADC_SE),
     .MCLK(ADC_MCLK), .RESETn(ADC_RESETn),
