@@ -11,11 +11,11 @@
  *   0x11, 2 bytes: DAC_LIMIT[15:8], DAC_LIMIT[7:0]
  *   0x12, 1 byte: WAVE_MODE (0=constant, 1=sawtooth, 2=triangle)
  *   0x13, 1 byte: FALL_RATE[2:0] (fall/rise slope = 1..8)
- *   0x14, 1 byte: ADC_FAST_MODE (0=shared SYNC, 1=3 kHz capture requests)
+ *   0x21, 1 byte: ADC_FAST_MODE (0=shared SYNC, 1=3 kHz capture requests)
  */
 module mezokia #(
     parameter integer CLK_FREQ_HZ = 4_000_000,
-    parameter [7:0]   BOARD_ADDRESS = 8'h01
+    parameter [7:0]   BOARD_ADDRESS = 8'h00
 ) (
     // Independent 8 MHz POR clock on TP3; system clock is from 5510TC028.
     input  wire        POR_CLK_8MHZ,
@@ -52,8 +52,8 @@ localparam [7:0] ADDR_STEP_COEFF   = 8'h10;
 localparam [7:0] ADDR_DAC_LIMIT    = 8'h11;
 localparam [7:0] ADDR_WAVE_MODE    = 8'h12;
 localparam [7:0] ADDR_FALL_RATE    = 8'h13;
-localparam [7:0] ADDR_ADC_MODE     = 8'h14;
 localparam [7:0] ADDR_ADC_VALUE    = 8'h20;
+localparam [7:0] ADDR_ADC_MODE     = 8'h21;
 
 wire clk = CLK_FROM_5510;
 
@@ -320,7 +320,7 @@ dac_config_tx #(
 );
 
 // -------------------------------------------------------------------------
-// Slow readback at 10 Hz: 0x00 -> 0x01 -> 0x10 ... 0x14.
+// Slow readback at 10 Hz: 0x00 -> 0x01 -> 0x10 ... 0x13 -> 0x21.
 // Independent 3 kHz readback of 0x20, interleaved only between whole packets.
 // -------------------------------------------------------------------------
 wire        encoder_start;

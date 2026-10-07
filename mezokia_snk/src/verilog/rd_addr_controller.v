@@ -6,7 +6,7 @@
  */
 module rd_addr_controller #(
     parameter [7:0] FIRST_ADDR = 8'h00,
-    parameter [7:0] LAST_ADDR  = 8'h14
+    parameter [7:0] LAST_ADDR  = 8'h21
 ) (
     input  wire        clk,
     input  wire        rst_n,
@@ -44,8 +44,8 @@ always @(*) begin
         8'h11: data_size = 16'd2;
         8'h12: data_size = 16'd1;
         8'h13: data_size = 16'd1;
-        8'h14: data_size = 16'd1;
         8'h20: data_size = 16'd2;
+        8'h21: data_size = 16'd1;
         default: data_size = 16'd1;
     endcase
 end
@@ -110,6 +110,9 @@ always @(posedge clk or negedge rst_n) begin
                             slow_addr <= FIRST_ADDR;
                         end else if (addr == 8'h01) begin
                             slow_addr <= 8'h10;
+                        end else if (addr == 8'h13) begin
+                            // 0x14..0x1F are unused; 0x20 is fast-only.
+                            slow_addr <= LAST_ADDR;
                         end else begin
                             slow_addr <= addr + 1'b1;
                         end
