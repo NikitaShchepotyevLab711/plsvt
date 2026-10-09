@@ -33,8 +33,8 @@ reg [7:0] slow_addr;
 reg last_was_adc;
 wire adc_requested = begin_pulse_adc || pending_adc;
 wire slow_requested = slow_active || begin_pulse || pending_pass;
-// Freeze the eight-byte time snapshot only while its packet is active.
-assign data_lock = (state != IDLE) && (addr == 8'h00);
+// Freeze the time snapshot for both standalone time and ADC+time packets.
+assign data_lock = (state != IDLE) && ((addr == 8'h00) || (addr == 8'h20));
 
 always @(*) begin
     case (addr)
@@ -44,7 +44,7 @@ always @(*) begin
         8'h11: data_size = 16'd2;
         8'h12: data_size = 16'd1;
         8'h13: data_size = 16'd1;
-        8'h20: data_size = 16'd2;
+        8'h20: data_size = 16'd10;
         default: data_size = 16'd1;
     endcase
 end

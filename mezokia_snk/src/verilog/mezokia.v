@@ -182,7 +182,11 @@ wire [63:0] board_time;
 wire time_100ms_on;
 wire time_adc_report_on;
 wire time_snapshot_lock;
+wire [7:0] read_addr;
 wire [15:0] read_byte_number;
+
+wire [15:0] time_read_byte_number =
+    (read_addr == ADDR_ADC_VALUE) ? (read_byte_number - 16'd2) : read_byte_number;
 
 umio_timer #(.CLK_FREQ_HZ(CLK_FREQ_HZ)) umio_timer_inst (
     .clk             (clk),
@@ -192,7 +196,7 @@ umio_timer #(.CLK_FREQ_HZ(CLK_FREQ_HZ)) umio_timer_inst (
     .time_dat        (write_data),
     .time_size       (write_size),
     .byte_number     (write_byte_number),
-    .time_byte_num   (read_byte_number),
+    .time_byte_num   (time_read_byte_number),
     .time_lock       (time_snapshot_lock),
     .time_data       (time_data),
     .time_100ms_on   (time_100ms_on),
@@ -299,7 +303,6 @@ dac_config_tx #(
 wire        encoder_start;
 wire        encoder_stop;
 wire        encoder_data_read;
-wire [7:0]  read_addr;
 wire [15:0] read_size;
 rd_addr_controller #(
     .FIRST_ADDR(TIMER_ADDR),
@@ -330,7 +333,7 @@ end
 wire [23:0] software_counter_frame =
     {BOARD_ADDRESS, software_counter_snapshot[15:8], software_counter_snapshot[7:0]};
 
-// Keep both bytes of the 0x20 packet from the same ADC conversion.
+// Keep the ADC word fixed while its 10-byte ADC+time packet is transmitted.
 reg [15:0] adc_read_snapshot;
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n)
@@ -363,8 +366,12 @@ always @(*) begin
             read_data_byte = {5'b00000, fall_rate};
 
         ADDR_ADC_VALUE:
-            read_data_byte = (read_byte_number == 16'd0) ?
-                             adc_read_snapshot[15:8] : adc_read_snapshot[7:0];
+            if (read_byte_number == 16'd0)
+                read_data_byte = adc_read_snapshot[15:8];
+            else if (read_byte_number == 16'd1)
+                read_data_byte = adc_read_snapshot[7:0];
+            else
+                read_data_byte = time_data;
 
         default:
             read_data_byte = 8'h00;
