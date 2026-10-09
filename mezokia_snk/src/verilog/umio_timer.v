@@ -15,7 +15,7 @@ module umio_timer #(
     input  wire        time_lock,
     output wire [7:0]  time_data,
     output reg         time_100ms_on,
-    output reg         time_3khz_on,
+    output reg         time_adc_report_on,
     output wire [63:0] full_time
 );
 
@@ -25,9 +25,9 @@ localparam [31:0] LAST_MS_OF_DAY = 32'd86_399_999;
 
 reg [TICK_WIDTH-1:0] us_divider;
 reg [16:0] interval_100ms;
-// Fractional divider: exactly 3000 requests per second on average, with
-// 2666/2667 clk intervals at 8 MHz. Independent of software clock setting.
-localparam integer ADC_REPORT_HZ = 3000;
+// Fractional divider: exactly 3200 requests per second on average.
+// At 6 MHz this is a fixed 1875-clock interval.
+localparam integer ADC_REPORT_HZ = 3200;
 localparam integer ADC_PHASE_WIDTH = $clog2(CLK_FREQ_HZ);
 reg [ADC_PHASE_WIDTH-1:0] adc_report_phase;
 reg [15:0] day_cnt;
@@ -119,12 +119,12 @@ end
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         adc_report_phase <= {ADC_PHASE_WIDTH{1'b0}};
-        time_3khz_on <= 1'b0;
+        time_adc_report_on <= 1'b0;
     end else begin
-        time_3khz_on <= 1'b0;
+        time_adc_report_on <= 1'b0;
         if (adc_report_phase >= CLK_FREQ_HZ - ADC_REPORT_HZ) begin
             adc_report_phase <= adc_report_phase + ADC_REPORT_HZ - CLK_FREQ_HZ;
-            time_3khz_on <= 1'b1;
+            time_adc_report_on <= 1'b1;
         end else begin
             adc_report_phase <= adc_report_phase + ADC_REPORT_HZ;
         end

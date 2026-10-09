@@ -1,6 +1,3 @@
-// 5510TC028 -> MEZOKIA: {RD_EN=1, CHANNEL[2:0], DATA_O[15:0]}, MSB first.
-// FRAME covers exactly 20 bits. Change outputs on the falling 8 MHz edge;
-// MEZOKIA samples on the rising edge of the shared clock.
 module adc_result_tx (
     input wire clk,
     input wire rst_l,

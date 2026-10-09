@@ -37,12 +37,9 @@ reg        capture_pending;
 reg        capture_active;
 
 assign SE      = 1'b1;
-assign channel = 3'd0; // Only ADC1 is powered; external channel index is zero-based.
+assign channel = 3'd0; 
 assign busy    = (tx_state != TX_WAIT_FRAME) | capture_active;
 
-// SDIFS is a one-SCLK-wide preamble: it is sampled one falling edge before
-// the falling edge that samples the first data bit (MSB). SDI is changed on
-// rising edges so that it is stable before every falling sampling edge.
 always @(posedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         tx_state       <= TX_WAIT_FRAME;
@@ -55,26 +52,20 @@ always @(posedge SCLK or negedge rst_l) begin
         operation_mode <= 1'b0;
     end else begin
         word_sent <= 1'b0;
+        SDIFS     <= SDOFS;
         case (tx_state)
             TX_WAIT_FRAME: begin
-                SDIFS <= 1'b0;
+//                SDIFS <= 1'b0;
                 SDI   <= 1'b0;
 
-                // SDOFS is sampled on the falling edge below, away from
-                // the edge on which the ADC changes this output.
                 if (!operation_mode && sdofs_sampled) begin
-                    // Do not put D15 on SDI yet. The ADC uses this complete
-                    // SCLK period only to recognize the frame sync.
-                    SDIFS    <= 1'b1;
+//                    SDIFS    <= 1'b1;
                     tx_state <= TX_FRAME_SYNC;
                 end
             end
 
             TX_FRAME_SYNC: begin
-                // Latch the word only after the frame-sync period. This also
-                // gives the wrapper time to advance config_index after the
-                // preceding word and prevents the first word being repeated.
-                SDIFS        <= 1'b0;
+//                SDIFS        <= 1'b0;
                 tx_shift     <= control_word;
                 tx_word      <= control_word;
                 tx_bit_count <= 5'd0;
@@ -83,15 +74,13 @@ always @(posedge SCLK or negedge rst_l) begin
             end
 
             TX_SHIFT: begin
-                SDIFS <= 1'b0;
+//                SDIFS <= 1'b0;
 
                 if (tx_bit_count == 5'd15) begin
                     tx_state  <= TX_WAIT_FRAME;
                     SDI       <= 1'b0;
                     word_sent <= 1'b1;
 
-                    // Check the latched word, not the live control_word bus:
-                    // config_index may already point at the following word.
                     if (tx_word == 16'h8001)
                         operation_mode <= 1'b1;
                 end else begin
@@ -103,16 +92,13 @@ always @(posedge SCLK or negedge rst_l) begin
 
             default: begin
                 tx_state <= TX_WAIT_FRAME;
-                SDIFS    <= 1'b0;
+//                SDIFS    <= 1'b0;
                 SDI      <= 1'b0;
             end
         endcase
     end
 end
 
-// The ADC changes SDO and SDOFS after the rising edge of SCLK. SDOFS is a
-// one-SCLK preamble, therefore its falling sampling edge only arms the
-// receiver. D15 is sampled on the following falling edge.
 always @(negedge SCLK or negedge rst_l) begin
     if (!rst_l) begin
         sdofs_sampled      <= 1'b0;
@@ -141,7 +127,6 @@ always @(negedge SCLK or negedge rst_l) begin
                 rx_shift     <= 16'd0;
                 rx_bit_count <= 5'd0;
                 rx_active    <= 1'b1;
-                // With only ADC1 enabled, each output frame belongs to ADC1.
                 if (capture_pending || sync) begin
                     capture_pending    <= 1'b0;
                     capture_active     <= 1'b1;
@@ -167,8 +152,6 @@ always @(negedge SCLK or negedge rst_l) begin
     end
 end
 
-// clk is retained in the interface because this module is also instantiated
-// by the complete project; serial transfers themselves are clocked by SCLK.
 wire unused_clk = clk;
 
 endmodule

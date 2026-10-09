@@ -1,6 +1,6 @@
 /*
  * Compact MEZOKIA -> 5510TS028 shared configuration transmitter.
- * 24-bit frame: {ADC_FAST_MODE, ADC_CAPTURE_TOGGLE, STEP_COEFF,
+ * 24-bit frame: {1'b1, ADC_CAPTURE_TOGGLE, STEP_COEFF,
  *         DAC_LIMIT[15:0], WAVE_MODE[1:0],
  *         FALL_RATE[2:0]}, MSB first.
  * Data and frame change on falling edges; the receiver samples rising edges.
@@ -12,7 +12,6 @@ module dac_config_tx #(
     input  wire        clk,
     input  wire        rst_n,
     input  wire        step_coeff,
-    input  wire        adc_fast_mode,
     input  wire        adc_capture_toggle,
     input  wire [15:0] dac_limit,
     input  wire [1:0]  wave_mode,
@@ -26,7 +25,7 @@ localparam integer REFRESH_PERIOD_RAW = CLK_FREQ_HZ / REFRESH_FREQ_HZ;
 localparam integer REFRESH_PERIOD = (REFRESH_PERIOD_RAW < 1) ? 1 : REFRESH_PERIOD_RAW;
 
 wire [FRAME_BITS-1:0] current_value =
-    {adc_fast_mode, adc_capture_toggle, step_coeff, dac_limit, wave_mode, fall_rate};
+    {1'b1, adc_capture_toggle, step_coeff, dac_limit, wave_mode, fall_rate};
 reg  [FRAME_BITS-1:0] payload;
 reg  [FRAME_BITS-1:0] last_sent;
 reg  [4:0]            bit_index;

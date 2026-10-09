@@ -29,7 +29,6 @@ reg [2:0]  state;
 reg [4:0]  bit_count;
 reg [15:0] shiftreg;
 
-// CLRn is asserted together with the asynchronous reset of the FPGA logic.
 assign CLRn = rst_l;
 
 always @(posedge clk or negedge rst_l) begin

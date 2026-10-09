@@ -6,12 +6,12 @@
  */
 module rd_addr_controller #(
     parameter [7:0] FIRST_ADDR = 8'h00,
-    parameter [7:0] LAST_ADDR  = 8'h21
+    parameter [7:0] LAST_ADDR  = 8'h13
 ) (
     input  wire        clk,
     input  wire        rst_n,
     input  wire        begin_pulse,
-    input  wire        begin_pulse_3khz,
+    input  wire        begin_pulse_adc,
     input  wire        packet_done,
     input  wire        data_read,
     output reg         start_packet,
@@ -31,7 +31,7 @@ reg pending_adc;
 reg slow_active;
 reg [7:0] slow_addr;
 reg last_was_adc;
-wire adc_requested = begin_pulse_3khz || pending_adc;
+wire adc_requested = begin_pulse_adc || pending_adc;
 wire slow_requested = slow_active || begin_pulse || pending_pass;
 // Freeze the eight-byte time snapshot only while its packet is active.
 assign data_lock = (state != IDLE) && (addr == 8'h00);
@@ -45,7 +45,6 @@ always @(*) begin
         8'h12: data_size = 16'd1;
         8'h13: data_size = 16'd1;
         8'h20: data_size = 16'd2;
-        8'h21: data_size = 16'd1;
         default: data_size = 16'd1;
     endcase
 end
@@ -65,7 +64,7 @@ always @(posedge clk or negedge rst_n) begin
         start_packet <= 1'b0;
         if (begin_pulse)
             pending_pass <= 1'b1;
-        if (begin_pulse_3khz)
+        if (begin_pulse_adc)
             pending_adc <= 1'b1;
 
         case (state)
@@ -110,9 +109,6 @@ always @(posedge clk or negedge rst_n) begin
                             slow_addr <= FIRST_ADDR;
                         end else if (addr == 8'h01) begin
                             slow_addr <= 8'h10;
-                        end else if (addr == 8'h13) begin
-                            // 0x14..0x1F are unused; 0x20 is fast-only.
-                            slow_addr <= LAST_ADDR;
                         end else begin
                             slow_addr <= addr + 1'b1;
                         end

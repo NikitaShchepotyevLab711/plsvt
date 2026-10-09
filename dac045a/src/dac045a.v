@@ -13,7 +13,6 @@ module dac045a #(
 //    output wire        dac_value_valid,
 //    output reg         clk_out,
 
-    // Serial interface of 5400TR045A-022.
     input  wire        SDO,
     output wire        SDI,
     output wire        SCK,
@@ -21,8 +20,6 @@ module dac045a #(
     output wire        LDAc,
     output wire        CSn,
 
-    // ADC fields decoded by the same receiver: no duplicate frame logic.
-    output wire        adc_fast_mode,
     output wire        adc_capture_request
 );
 
@@ -35,14 +32,10 @@ wire        update_mode;
 wire        dac_rdy;
 wire        dac_value_valid;
 
-// Static mode bypasses the ramp and holds its state at the start of a period.
-// A level change is sent on the next SYNC, independent of STEP_COEFF/FALL_RATE.
 wire        dynamic_enable = (wave_mode != 2'd0);
 wire        wave_triangle = (wave_mode == 2'd2);
 wire [15:0] dac_code = dynamic_enable ? generated_code : dac_limit;
 
-// Generate additional, evenly spaced DAC update events between SYNC pulses.
-// The external SYNC is always the first event and re-aligns the local phase.
 localparam integer SYNC_PERIOD_CYCLES = CLK_FREQ_HZ / SYNC_FREQ_HZ;
 localparam integer UPDATE_INTERVAL_10X = SYNC_PERIOD_CYCLES / 10;
 localparam integer UPDATE_COUNTER_WIDTH = $clog2(SYNC_PERIOD_CYCLES);
@@ -81,14 +74,12 @@ dac_config_rx dac_config_rx_inst (
     .dac_limit (dac_limit),
     .wave_mode (wave_mode),
     .fall_rate (fall_rate),
-    .adc_fast_mode(adc_fast_mode),
     .adc_capture_request(adc_capture_request)
 );
 
 dac_codegen dac_codegen_inst (
     .clk             (clk),
     .rst_l           (rst_l),
-    // XPlace requires named signals of the exact port width here.
     .limit           (dac_limit),
     .enable          (dynamic_enable),
     .start           (dac_update),

@@ -28,9 +28,11 @@ module soc_top #(
 );
 
 wire sync_pulse;
-wire adc_fast_mode;
 wire adc_capture_request;
-wire adc_sync = adc_fast_mode ? adc_capture_request : sync_pulse;
+wire adc_sync = adc_capture_request;
+// 32 ADC samples/s alternative: replace the line above with
+// wire adc_sync = sync_pulse;
+// The 0x20 USB reporting rate is independent and remains 3200 packets/s.
 wire [15:0] adc_sample;
 wire [2:0] adc_channel;
 wire adc_rd_en;
@@ -57,10 +59,9 @@ dac045a #(
     .clk(bb_clk_in), .rst_l(reset_n_from_mezokia),
     .cfg_data(cfg_data), .cfg_frame(cfg_frame), .sync_i(sync_pulse),
     .SDO(SDO), .SDI(SDI), .SCK(SCK), .CLRn(CLRn), .LDAc(LDAc), .CSn(CSn),
-    .adc_fast_mode(adc_fast_mode), .adc_capture_request(adc_capture_request)
+    .adc_capture_request(adc_capture_request)
 );
 
-// DD26 = 1273PV19T. This is adc733, not adc733_foreign (DD25).
 adc733_wrap adc733_inst (
     .bb_clk_in(bb_clk_in), .rst_l(reset_n_from_mezokia),
     .sync_i(adc_sync),

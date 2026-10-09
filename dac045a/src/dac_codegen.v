@@ -1,8 +1,3 @@
-// Area-oriented sawtooth/triangle generator. The rising edge always occupies
-// 96 SYNC intervals. STEP_COEFFICENT selects 1 or 10 DAC updates per SYNC;
-// the number of samples and the divisor grow together, so waveform timing and
-// amplitude do not change. A serial adder and restoring divider are reused for
-// both slopes; no multiplier is used.
 module dac_codegen (
     input wire clk,
     input wire rst_l,
@@ -34,22 +29,18 @@ reg [10:0] trial_reg;
 reg [4:0] bit_count;
 reg carry;
 
-// The same one-bit adder serves the numerator and ramp accumulation.
+
 wire add_a = (state == SUM) ? work_reg[0] : ramp[0];
-// With subtraction selected, complement the quotient bits and start the
-// accumulation carry at one (two's complement).
 wire add_b = (state == SUM) ? amplitude[0] :
              (falling_reg ? ~work_reg[0] : work_reg[0]);
 wire [1:0] bit_sum = {1'b0, add_a} + {1'b0, add_b} + carry;
 localparam [9:0] RISE_LENGTH_1X  = 10'd96;
 localparam [9:0] RISE_LENGTH_10X = 10'd960;
 
-// Register values: 0 = one update/SYNC, 1 = ten updates/SYNC.
 wire requested_update_mode = step_coefficent;
 wire [9:0] rise_length =
     update_mode ? RISE_LENGTH_10X : RISE_LENGTH_1X;
 
-// Falling-time gradation in whole 1/32-second intervals.
 reg [6:0] fall_base_length;
 always @(*) begin
     case (active_fall_rate)
@@ -70,14 +61,8 @@ wire [10:0] period_length = active_triangle ?
     ({1'b0, rise_length} + {1'b0, fall_length}) :
     {1'b0, rise_length};
 wire cycle_last = (sample_count == period_length - 1'b1);
-// Load the rise divisor only at the period boundary and the fall divisor
-// only at the turning point. It stays registered throughout each segment,
-// instead of carrying a phase compare into every division iteration.
-// Restoring division: remainder is always below the selected divisor.
 wire [10:0] trial = {remainder_reg, work_reg[16]} - {1'b0, divisor_reg};
-// Keep the rotating amplitude register out of the ten-bit sample-counter
-// decode. new_period is asserted at reset/wrap and consumed on the next
-// calculated SYNC sample.
+
 always @(posedge clk or negedge rst_l) begin
     if (!rst_l)
         amplitude <= 0;
@@ -154,8 +139,6 @@ always @(posedge clk or negedge rst_l) begin
                 state <= SUM;
             end
             SUM: begin
-                // The same separate amplitude register rotates and restores
-                // itself after 16 clocks (no second register is needed).
                 work_reg <= {1'b0, bit_sum[0], work_reg[15:1]};
                 carry <= bit_sum[1];
                 bit_count <= bit_count + 1'b1;
@@ -204,7 +187,5 @@ always @(posedge clk or negedge rst_l) begin
         endcase
     end
 end
-// One calculation needs about 68 clocks after start (< 9 us at 8 MHz).
-// start must be a one-clock pulse, with >= 69 clocks between pulses.
-// SPI consumes the previous completed code on SYNC, as in the original top.
+
 endmodule

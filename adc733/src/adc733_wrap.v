@@ -3,7 +3,6 @@ module adc733_wrap (
     input  wire        rst_l,
     input  wire        sync_i,
 
-    // Dedicated connections to DD26 (1273PV19T).
     input  wire        SCLK,
     input  wire        SDOFS,
     input  wire        SDO,
@@ -13,7 +12,6 @@ module adc733_wrap (
     output wire        MCLK,
     output wire        RESETn,
 
-    // Debug outputs.
     output reg  [15:0] DATA_O,
     output reg         RD_EN,
     output wire        OP_MODE,
@@ -37,18 +35,13 @@ wire [2:0]  adc_channel;
 wire        adc_rd_en_pulse;
 reg         adc_rd_en_r;
 
-// External reset from MEZOKIA is shared by the ADC and every local register.
-// MCLK stays active while reset is asserted.
 assign MCLK            = clk;
 assign adc_logic_rst_l = rst_l;
 
-// The reset net drives both the local FPGA logic and an external ADC pin.
 xci2_buf adc_reset_buf (
     .a(adc_logic_rst_l), .y(RESETn)
 );
 
-// soc_top selects shared SYNC or the remotely generated 3 kHz request.
-// Capture the next ADC1 output frame after each request; retain the existing CDC.
 pulse_to_toggle pulse_to_toggle_inst (
     .clk         (clk),
     .rst         (adc_logic_rst_l),
@@ -65,12 +58,10 @@ sync2_toggle_to_pulse_bothedge toggle_to_pulse_inst (
     .out_toggle(sync_toggle_sclk)
 );
 
-// Control-word format: D/C=1, W/R=0, device address=000,
-// register address, register data. DD26 is powered from 3.3 V.
 always @(*) begin
     case (config_index)
         4'd0: control_word = 16'h8000; // CRA: program mode, one device
-        4'd1: control_word = 16'h8108; // CRB: SCLK=MCLK/2, fs=MCLK/2048
+        4'd1: control_word = 16'h8109; // CRB: SCLK=MCLK/2, fs=MCLK/1024
         4'd2: control_word = 16'h8260; // CRC: global power off, reference and REFOUT on
         4'd3: control_word = 16'h8308; // CRD: ADC1 on at 0 dB, ADC2 off
         4'd4: control_word = 16'h8400; // CRE: ADC3/4 off
@@ -88,8 +79,6 @@ always @(posedge SCLK or negedge adc_logic_rst_l) begin
         config_index <= config_index + 1'b1;
 end
 
-// Delay the event by one SCLK period, then synchronize it into clk. The
-// captured word and channel remain stable throughout this interval.
 always @(posedge SCLK or negedge adc_logic_rst_l) begin
     if (!adc_logic_rst_l)
         adc_rd_en_r <= 1'b0;
